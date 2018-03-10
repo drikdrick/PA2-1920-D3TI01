@@ -8,7 +8,6 @@ use common\models\User as UserIdentity;
 use backend\modules\admin\models\search\UserSearch;
 use backend\modules\admin\models\form\UserForm;
 use backend\modules\admin\models\Role;
-
 use backend\modules\admin\models\AuthenticationMethod;
 use backend\modules\admin\models\search\AuthenticationMethodSearch;
 
