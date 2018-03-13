@@ -32,7 +32,7 @@ class AskmDataPaket extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['data_paket_id', 'tanggal_kedatangan', 'penerima', 'pengirim', 'diambil_oleh', 'tanggal_diambil', 'pegawai_id'], 'required'],
+            [['data_paket_id', 'tanggal_kedatangan', 'penerima', 'pengirim', 'diambil_oleh', 'pegawai_id'], 'required'],
             [['data_paket_id', 'pegawai_id'], 'integer'],
             [['tanggal_kedatangan', 'tanggal_diambil'], 'safe'],
             [['desc'], 'string'],

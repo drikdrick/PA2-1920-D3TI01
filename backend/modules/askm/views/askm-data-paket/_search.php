@@ -15,15 +15,15 @@ use yii\widgets\ActiveForm;
         'method' => 'get',
     ]); ?>
 
-    <?= $form->field($model, 'data_paket_id') ?>
+    <?php // echo $form->field($model, 'data_paket_id') ?>
 
-    <?= $form->field($model, 'tanggal_kedatangan') ?>
+    <?php // echo $form->field($model, 'tanggal_kedatangan') ?>
 
-    <?= $form->field($model, 'desc') ?>
+    <?php //echo $form->field($model, 'desc') ?>
 
     <?= $form->field($model, 'penerima') ?>
 
-    <?= $form->field($model, 'pengirim') ?>
+    <?php // echo $form->field($model, 'pengirim') ?>
 
     <?php // echo $form->field($model, 'diambil_oleh') ?>
 
@@ -32,8 +32,8 @@ use yii\widgets\ActiveForm;
     <?php // echo $form->field($model, 'pegawai_id') ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
+        <?= Html::submitButton('Cari', ['class' => 'btn btn-primary']) ?>
+        <?= Html::resetButton('Hapus', ['class' => 'btn btn-default']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

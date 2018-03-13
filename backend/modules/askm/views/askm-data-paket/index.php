@@ -7,30 +7,30 @@ use yii\grid\GridView;
 /* @var $searchModel backend\modules\askm\models\AskmDataPaketSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Askm Data Pakets';
+$this->title = 'Paket';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="askm-data-paket-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?php  echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a('Create Askm Data Paket', ['create'], ['class' => 'btn btn-success']) ?>
+        <?php // echo Html::a('Create Askm Data Paket', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
+        //'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'data_paket_id',
-            'tanggal_kedatangan',
-            'desc:ntext',
-            'penerima',
-            'pengirim',
+            //'data_paket_id',
+            'Penerima',
+            'Pengirim',
+            'Tanggal Kedatangan',
+            'Deskripsi:ntext',
+            'Tanggal Diambil',
             // 'diambil_oleh',
-            // 'tanggal_diambil',
             // 'pegawai_id',
 
             ['class' => 'yii\grid\ActionColumn'],
