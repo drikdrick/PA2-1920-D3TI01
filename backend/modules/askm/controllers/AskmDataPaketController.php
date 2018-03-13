@@ -10,9 +10,9 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * DataPaketController implements the CRUD actions for AskmDataPaket model.
+ * AskmDataPaketController implements the CRUD actions for AskmDataPaket model.
  */
-class DataPaketController extends Controller
+class AskmDataPaketController extends Controller
 {
     /**
      * @inheritdoc

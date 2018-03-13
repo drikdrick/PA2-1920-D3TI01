@@ -4,11 +4,11 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model backend\modules\askm\models\DataPaketSearch */
+/* @var $model backend\modules\askm\models\AskmDataPaketSearch */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="data-paket-search">
+<div class="askm-data-paket-search">
 
     <?php $form = ActiveForm::begin([
         'action' => ['index'],

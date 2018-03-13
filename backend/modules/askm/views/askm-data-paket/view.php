@@ -4,13 +4,13 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model backend\modules\askm\models\DataPaket */
+/* @var $model backend\modules\askm\models\AskmDataPaket */
 
 $this->title = $model->data_paket_id;
-$this->params['breadcrumbs'][] = ['label' => 'Data Pakets', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Askm Data Pakets', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="data-paket-view">
+<div class="askm-data-paket-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

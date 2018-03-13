@@ -5,12 +5,12 @@ namespace backend\modules\askm\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\modules\askm\models\DataPaket;
+use backend\modules\askm\models\AskmDataPaket;
 
 /**
- * DataPaketSearch represents the model behind the search form about `backend\modules\askm\models\DataPaket`.
+ * AskmDataPaketSearch represents the model behind the search form about `backend\modules\askm\models\AskmDataPaket`.
  */
-class DataPaketSearch extends DataPaket
+class AskmDataPaketSearch extends AskmDataPaket
 {
     /**
      * @inheritdoc
@@ -41,7 +41,7 @@ class DataPaketSearch extends DataPaket
      */
     public function search($params)
     {
-        $query = DataPaket::find();
+        $query = AskmDataPaket::find();
 
         // add conditions that should always apply here
 

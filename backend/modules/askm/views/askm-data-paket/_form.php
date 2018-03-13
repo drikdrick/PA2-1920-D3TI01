@@ -4,11 +4,11 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model backend\modules\askm\models\DataPaket */
+/* @var $model backend\modules\askm\models\AskmDataPaket */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="data-paket-form">
+<div class="askm-data-paket-form">
 
     <?php $form = ActiveForm::begin(); ?>
 

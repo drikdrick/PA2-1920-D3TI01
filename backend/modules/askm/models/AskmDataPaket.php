@@ -16,7 +16,7 @@ use Yii;
  * @property string $tanggal_diambil
  * @property integer $pegawai_id
  */
-class DataPaket extends \yii\db\ActiveRecord
+class AskmDataPaket extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
