@@ -36,6 +36,6 @@ class V2Asset extends AssetBundle {
 	];
 
 	public $publishOptions = [
-    	'forceCopy' => true
+    	'forceCopy' => false
 	];
 }

@@ -10,14 +10,14 @@ class ComponentController extends \yii\web\Controller
 	/**
 	 * Default behaviour to do privilege controll based on systemx-core privilege system
 	 */
-	public function behaviors(){
+	/*public function behaviors(){
         return [
                 'privilege' => [
                  'class' => \Yii::$app->privilegeControl->getAppPrivilegeControlClass(),
                  'skipActions' => ['*'],
                 ],
             ];
-    }
+    }*/
     public function actionIndex()
     {
         \Yii::$app->messenger->addInfoFlash("message flash dibuat!!");
