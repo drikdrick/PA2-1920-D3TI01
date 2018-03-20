@@ -3,14 +3,14 @@
 namespace backend\modules\askm\controllers;
 
 use Yii;
-use backend\modules\askm\models\AskmDataPaket;
-use backend\modules\askm\models\AskmDataPaketSearch;
+use backend\modules\askm\models\DataPaket;
+use backend\modules\askm\models\DataPaketSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * DataPaketController implements the CRUD actions for AskmDataPaket model.
+ * DataPaketController implements the CRUD actions for DataPaket model.
  */
 class DataPaketController extends Controller
 {
@@ -30,12 +30,12 @@ class DataPaketController extends Controller
     }
 
     /**
-     * Lists all AskmDataPaket models.
+     * Lists all DataPaket models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new AskmDataPaketSearch();
+        $searchModel = new DataPaketSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -45,7 +45,7 @@ class DataPaketController extends Controller
     }
 
     /**
-     * Displays a single AskmDataPaket model.
+     * Displays a single DataPaket model.
      * @param integer $id
      * @return mixed
      */
@@ -57,13 +57,13 @@ class DataPaketController extends Controller
     }
 
     /**
-     * Creates a new AskmDataPaket model.
+     * Creates a new DataPaket model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new AskmDataPaket();
+        $model = new DataPaket();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->data_paket_id]);
@@ -75,7 +75,7 @@ class DataPaketController extends Controller
     }
 
     /**
-     * Updates an existing AskmDataPaket model.
+     * Updates an existing DataPaket model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -94,7 +94,7 @@ class DataPaketController extends Controller
     }
 
     /**
-     * Deletes an existing AskmDataPaket model.
+     * Deletes an existing DataPaket model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -107,15 +107,15 @@ class DataPaketController extends Controller
     }
 
     /**
-     * Finds the AskmDataPaket model based on its primary key value.
+     * Finds the DataPaket model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return AskmDataPaket the loaded model
+     * @return DataPaket the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = AskmDataPaket::findOne($id)) !== null) {
+        if (($model = DataPaket::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

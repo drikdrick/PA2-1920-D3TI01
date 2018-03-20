@@ -3,7 +3,7 @@
 namespace backend\modules\askm;
 
 /**
- * askm module definition class
+ * Askm module definition class
  */
 class askm extends \yii\base\Module
 {

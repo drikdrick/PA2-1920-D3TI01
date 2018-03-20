@@ -128,7 +128,7 @@ $this->beginPage();
                     <li class="header">MAIN NAVIGATION</li>
                     <?php 
                         MenuRenderer::renderSidebarMenu(\Yii::$app->params['sidebarMenu']);
-                    ?>                    
+                    ?>
                     <!-- <li class="header">LABELS</li>
                     <li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Important</span></a></li>
                     <li><a href="#"><i class="fa fa-circle-o text-yellow"></i> <span>Warning</span></a></li>
