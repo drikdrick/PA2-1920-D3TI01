@@ -32,15 +32,26 @@ class DataPaketController extends Controller
     /**
      * Lists all DataPaket models.
      * @return mixed
-     */
+     * By Admin
+     */ 
     public function actionIndex()
     {
         $searchModel = new DataPaketSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('index', [
+        return $this->render('indexByAdmin', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    public function actionIndexByMahasiswa(){
+        $searchModel = new DataPaketSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('indexByMahasiswa',[
+            'searchModel'=>$searchModel,
+            'dataProvider'=>$dataProvider,
         ]);
     }
 
@@ -51,7 +62,7 @@ class DataPaketController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
+        return $this->render('viewByAdmin', [
             'model' => $this->findModel($id),
         ]);
     }
@@ -61,14 +72,14 @@ class DataPaketController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
-    {
+    //Add
+    public function actionDataPaketAdd(){
         $model = new DataPaket();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->data_paket_id]);
         } else {
-            return $this->render('create', [
+            return $this->render('DataPaketAdd', [
                 'model' => $model,
             ]);
         }
@@ -80,18 +91,21 @@ class DataPaketController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionUpdate($id)
-    {
+    //Edit 
+    public function actionDataPaketEdit($id){
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->data_paket_id]);
         } else {
-            return $this->render('update', [
+            return $this->render('DataPaketEdit', [
                 'model' => $model,
             ]);
         }
     }
+    //end edit
+
+
 
     /**
      * Deletes an existing DataPaket model.

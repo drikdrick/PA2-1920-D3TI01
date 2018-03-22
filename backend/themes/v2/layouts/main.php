@@ -49,7 +49,7 @@ $this->beginPage();
         <div class="wrapper">
             <header class="main-header">
                 <!-- Logo -->
-                <a href="/" class="logo">
+                <a href="http://localhost/cis-lite/backend/web/index.php" class="logo">
                     <span class="logo-mini">CLT</span>
                     <span class="logo-lg">CIS LITE</span>
                 </a>
@@ -129,6 +129,7 @@ $this->beginPage();
                     <?php 
                         MenuRenderer::renderSidebarMenu(\Yii::$app->params['sidebarMenu']);
                     ?>
+                    <li><a href="http://localhost/cis-lite/backend/web/index.php/askm/data-paket/"><i class="fa fa-archive"></i> <span>Data Paket</span></a></li>
                     <!-- <li class="header">LABELS</li>
                     <li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Important</span></a></li>
                     <li><a href="#"><i class="fa fa-circle-o text-yellow"></i> <span>Warning</span></a></li>

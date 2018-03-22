@@ -2,15 +2,15 @@
 
 use yii\helpers\Html;
 
+
 /* @var $this yii\web\View */
 /* @var $model backend\modules\askm\models\DataPaket */
 
-$this->title = 'Update Data Paket: ' . $model->data_paket_id;
+$this->title = 'Add Data Paket';
 $this->params['breadcrumbs'][] = ['label' => 'Data Pakets', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->data_paket_id, 'url' => ['view', 'id' => $model->data_paket_id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="data-paket-update">
+<div class="data-paket-create">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

@@ -7,17 +7,13 @@ use yii\grid\GridView;
 /* @var $searchModel backend\modules\askm\models\DataPaketSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Data Pakets';
+$this->title = 'Data Paket';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="data-paket-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h1><i class ="fa fa-archive"></i> <?= Html::encode($this->title) ?></h1>
     <?php echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <p>
-        <?php //echo Html::a('Create Data Paket', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'columns' => [
@@ -31,7 +27,18 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value'=>'pegawai.nama',
             ],
             'tanggal_diambil',
-            'desc:ntext',
+            //'desc:ntext',
+            ['class' => 'yii\grid\ActionColumn', 
+            'template' => '{view}',
+            'header'=>'Tools',
+            'buttons' => [
+                'view' => function ($url, $model) {
+                    return Html::a('<span>Rincian</span>', $url, [
+                                'title' => Yii::t('app', 'Rincian'),
+                    ]);
+                },
+                ],
+            ],
         ],
     ]); ?>
 </div>
