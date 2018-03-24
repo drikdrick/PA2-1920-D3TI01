@@ -5,7 +5,7 @@ namespace backend\modules\askm\controllers;
 use yii\web\Controller;
 
 /**
- * Default controller for the `Askm` module
+ * Default controller for the `AskmModule` module
  */
 class DefaultController extends Controller
 {
