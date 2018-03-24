@@ -18,7 +18,7 @@ class PaketSearch extends Paket
     public function rules()
     {
         return [
-            [['data_paket_id', 'pegawai_id', 'deleted'], 'integer'],
+            [['data_paket_id', 'deleted'], 'integer'],
             [['penerima', 'pengirim', 'tanggal_kedatangan', 'diambil_oleh', 'tanggal_diambil', 'posisi', 'desc', 'deleted_at', 'deleted_by', 'created_at', 'updated_at', 'updated_by'], 'safe'],
         ];
     }
@@ -59,7 +59,6 @@ class PaketSearch extends Paket
             'data_paket_id' => $this->data_paket_id,
             'tanggal_kedatangan' => $this->tanggal_kedatangan,
             'tanggal_diambil' => $this->tanggal_diambil,
-            'pegawai_id' => $this->pegawai_id,
             'deleted' => $this->deleted,
             'deleted_at' => $this->deleted_at,
             'created_at' => $this->created_at,
