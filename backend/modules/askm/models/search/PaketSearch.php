@@ -41,7 +41,7 @@ class PaketSearch extends Paket
      */
     public function search($params)
     {
-        $query = Paket::find();
+        $query = Paket::find()->where(['deleted'=>NULL]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

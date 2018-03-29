@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
-
+use yii\helpers\Url;
 /* @var $this yii\web\View */
 /* @var $searchModel backend\modules\askm\models\search\PaketSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -41,9 +41,20 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'created_at',
             // 'updated_at',
             // 'updated_by',
-            ['class' => 'yii\grid\ActionColumn',
-            'header'=>'Aksi'
-            ],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'header' => 'Aksi',
+                'headerOptions' => ['style' => 'color:#337ab7'],
+                'template' => '{view}{update}{delete}',
+                'buttons' => [
+                  'update' => function ($url, $model) {
+                      $url = Url::to(['paket-edit', 'id' => $model->data_paket_id]);
+                      return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, [
+                                  'title' => Yii::t('app', 'update'),
+                      ]);
+                  },
+                ],
+                ],
         ],
     ]); ?>
 

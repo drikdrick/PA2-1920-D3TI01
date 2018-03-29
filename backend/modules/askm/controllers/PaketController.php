@@ -56,7 +56,7 @@ class PaketController extends Controller
     public function actionIndexByAdmin(){
         $searchModel = new PaketSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
+        //$paket = Paket::find()->where('deleted!=1')->ALL();
         return $this->render('indexByAdmin', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -194,9 +194,9 @@ class PaketController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $this->findModel($id)->softDelete();
 
-        return $this->redirect(['index']);
+        return $this->redirect(['index-by-admin']);
     }
 
     /**
@@ -214,4 +214,5 @@ class PaketController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
 }

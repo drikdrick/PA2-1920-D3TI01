@@ -12,14 +12,14 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="paket-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-    <?php  echo $this->render('_search', ['model' => $searchModel]); ?>
-    <br>
+    <h1><b><?= Html::encode($this->title) ?></b></h1>
+    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <p>
       <!-- <?= Html::a('Tambah Paket', ['create'], ['class' => 'btn btn-success']) ?>-->
     </p>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
+        'filterModel'=>$searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             //'data_paket_id',
@@ -28,10 +28,10 @@ $this->params['breadcrumbs'][] = $this->title;
             'pengirim',
             'diambil_oleh',
             'tanggal_diambil',
-            [
+            /*[
                 'attribute'=>'created_by',
                 'value'=>'created_by',
-            ],
+            ],*/
             'posisi',
             'desc:ntext',
             // 'deleted',

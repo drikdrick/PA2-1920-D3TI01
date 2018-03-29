@@ -6,7 +6,7 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model backend\modules\askm\models\Paket */
 
-$this->title = $model->penerima." Paket's";
+$this->title = $model->penerima."'s Paket";
 $this->params['breadcrumbs'][] = ['label' => 'Pakets', 'url' => ['index-by-admin']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -15,8 +15,13 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Ambil', ['paket-ambil', 'id' => $model->data_paket_id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Edit', ['paket-edit', 'id' => $model->data_paket_id], ['class' => 'btn btn-warning']) ?>
+
+        <?php
+        if(isset($model->tanggal_diambil) == NULL) {
+        echo Html::a('Ambil', ['paket-ambil', 'id' => $model->data_paket_id], ['class' => 'btn btn-primary']) ;
+        }
+        ?>
+        <?= Html::a('Edit', ['paket-edit', 'id' => $model->data_paket_id], ['class' => 'btn btn-warning']);?>
         <?= Html::a('Delete', ['delete', 'id' => $model->data_paket_id], [
             'class' => 'btn btn-danger',
             'data' => [
