@@ -92,6 +92,13 @@ class PaketController extends Controller
         ]);
     }
 
+    public function actionPaketViewUser($id)
+    {
+        return $this->render('PaketViewUser', [
+            'model' => $this->findModel($id),
+        ]);
+    }
+
     /**
      * Creates a new Paket model.
      * If creation is successful, the browser will be redirected to the 'view' page.

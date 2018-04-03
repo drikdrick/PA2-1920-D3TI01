@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\modules\askm\models\search\PaketSearch */
@@ -67,6 +68,20 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'created_at',
             // 'updated_at',
             // 'updated_by',
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'header' => 'Aksi',
+                'headerOptions' => ['style' => 'color:#337ab7'],
+                'template' => '{view}',
+                'buttons' => [
+                  'view' => function ($url, $model) {
+                      $url = 'paket-view-user?id='.$model->data_paket_id;
+                      return Html::a('<button class="btn btn-info btn-sm">Rincian</button>', $url, [
+                                  'title' => Yii::t('app', 'view'),
+                      ]);
+                  },
+                ],
+            ],
         ],
     ]);
 
