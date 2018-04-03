@@ -11,37 +11,64 @@ $this->title = 'Paket';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="paket-index">
-
-    <h1><b><?= Html::encode($this->title) ?></b></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-    <p>
-      <!-- <?= Html::a('Tambah Paket', ['create'], ['class' => 'btn btn-success']) ?>-->
-    </p>
+    <?php echo $this->render('_searchByUser', ['model' => $searchModel]); ?>
     <?= GridView::widget([
+        'tableOptions' => ['class' => 'table table-stripped table-condensed table-bordered'],
         'dataProvider' => $dataProvider,
-        'filterModel'=>$searchModel,
+        //'filterModel'=>$searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             //'data_paket_id',
             'penerima',
-            'tanggal_kedatangan',
+            [
+              'attribute'=>'tanggal_kedatangan',
+              'format' => ['date', 'php:d M Y'],
+            ],
+            //'tanggal_kedatangan',
             'pengirim',
-            'diambil_oleh',
-            'tanggal_diambil',
-            /*[
-                'attribute'=>'created_by',
-                'value'=>'created_by',
-            ],*/
+            [
+                'attribute'=>'tanggal_diambil',
+                'label' => 'Status',
+                'format'=>'raw',
+                'headerOptions' => ['style' => 'color:#337ab7'],
+                'value'=>function($model,$key,$index){
+                    if($model->tanggal_diambil==NULL){
+                        return '<b class="text-danger">Belum diambil</b>';
+                    }
+                    else{
+                        return '<b class="text-success">Sudah diambil</b>';
+                    }
+                }
+            ],
+            
+            [
+                'attribute'=>'diambil_oleh',
+                'format'=>'raw',
+                'value'=>function($model,$key,$index){
+                    if($model->diambil_oleh==NULL){
+                        return '';
+                    }
+                    else{
+                        return '<b>'.$model['diambil_oleh'].'</b>';
+                    }
+                }
+            ],
+
             'posisi',
-            'desc:ntext',
+            //'desc:ntext',
+            [
+                'attribute'=>'desc',
+                'value'=>'desc',
+                'label'=>'Deskripsi',
+            ],
             // 'deleted',
             // 'deleted_at',
             // 'deleted_by',
             // 'created_at',
             // 'updated_at',
             // 'updated_by',
-            //['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
+    ]);
 
+     ?>
 </div>

@@ -11,7 +11,7 @@ use yii\base\BaseObject;
 <div class="paket-search">
 
     <?php $form = ActiveForm::begin([
-        'action' => ['index'],
+        'action' => ['index-by-user'],
         'method' => 'get',
     ]); ?>
 
@@ -48,9 +48,9 @@ use yii\base\BaseObject;
 
     <?php // echo $form->field($model, 'updated_by') ?>
 
-    <div class="form-group" style="margin-top:10px;">
+    <div class="form-group">
         <?= Html::submitButton('Cari', ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Reset',['/askm/paket/index-by-admin'], ['class' => 'btn btn-default']) ?>
+        <?= Html::a('Reset',['/askm/paket/index-by-user'], ['class' => 'btn btn-default']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

@@ -15,17 +15,11 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-
-        <?php
-        if(isset($model->tanggal_diambil) == NULL) {
-        echo Html::a('Ambil', ['paket-ambil', 'id' => $model->data_paket_id], ['class' => 'btn btn-primary']) ;
-        }
-        ?>
         <?= Html::a('Edit', ['paket-edit', 'id' => $model->data_paket_id], ['class' => 'btn btn-warning']);?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->data_paket_id], [
+        <?= Html::a('Delete', ['del', 'id' => $model->data_paket_id], [
             'class' => 'btn btn-danger',
             'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
+                'confirm' => 'Apakah kamu ingin menghapus data?',
                 'method' => 'post',
             ],
         ]) ?>

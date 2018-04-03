@@ -168,22 +168,6 @@ class PaketController extends Controller
         }
     }
 
-    /**
-     * action-id : paket-ambil
-     * action-desc : mengambil paket
-     */
-    public function actionPaketAmbil($id)
-    {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->data_paket_id]);
-        } else {
-            return $this->render('paketAmbil', [
-                'model' => $model,
-            ]);
-        }
-    }
 
 
     /**
@@ -192,7 +176,7 @@ class PaketController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionDelete($id)
+    public function actionDel($id)
     {
         $this->findModel($id)->softDelete();
 

@@ -41,10 +41,11 @@ class PaketSearch extends Paket
      */
     public function search($params)
     {
-        $query = Paket::find()->where(['deleted'=>NULL]);
+        $query = Paket::find()->where(['deleted'=>0])->orderBy(['tanggal_diambil'=>SORT_ASC,'tanggal_kedatangan'=>SORT_DESC]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination'=>['pageSize'=>10],
         ]);
 
         $this->load($params);
@@ -57,7 +58,6 @@ class PaketSearch extends Paket
 
         $query->andFilterWhere([
             'data_paket_id' => $this->data_paket_id,
-            'tanggal_kedatangan' => $this->tanggal_kedatangan,
             'tanggal_diambil' => $this->tanggal_diambil,
             'deleted' => $this->deleted,
             'deleted_at' => $this->deleted_at,
@@ -67,6 +67,7 @@ class PaketSearch extends Paket
 
         $query->andFilterWhere(['like', 'penerima', $this->penerima])
             ->andFilterWhere(['like', 'pengirim', $this->pengirim])
+            ->andFilterWhere(['like', 'tanggal_kedatangan',SUBSTR($this->tanggal_kedatangan,1,10)])
             ->andFilterWhere(['like', 'diambil_oleh', $this->diambil_oleh])
             ->andFilterWhere(['like', 'posisi', $this->posisi])
             ->andFilterWhere(['like', 'desc', $this->desc])
