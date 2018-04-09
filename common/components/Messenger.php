@@ -45,7 +45,7 @@ class Messenger extends Component {
 	const NOTIF_TAG	= "_notif_";
 	const DIRECT_MESSAGE_TAG = "_dm_";
 
-	public $messagingDriverClass = "common\components\PuroMessengerAPIDriver";
+	public $messagingDriverClass = "common\components\PuroMessengerAPIDriverDummy";
 	public $messagingServerBaseUrl = "http://api.puro.del.ac.id/v1";
 	public $apiKey = 'abc';
 	public $defaultEmailSender = 'cis-noreply@del.ac.id';
@@ -188,7 +188,7 @@ class Messenger extends Component {
 			}
 
 			return $apiClient::mail($this->messagingServerBaseUrl, $this->apiKey, [
-				'from' => $from,
+				'fromAddress' => $from,
 				'to' => $user->email,
 				'subject' => $subject,
 				'msg' => $body
