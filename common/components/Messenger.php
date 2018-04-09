@@ -150,7 +150,7 @@ class Messenger extends Component {
 	public function sendEmail($from, $to, $subject, $body, $options=[]) {
 		$apiClient = $this->messagingDriverClass;
 		return $apiClient::mail($this->messagingServerBaseUrl, $this->apiKey, [
-				'from' => $from,
+				'fromAddress' => $from,
 				'to' => $to,
 				'subject' => $subject,
 				'msg' => $body
