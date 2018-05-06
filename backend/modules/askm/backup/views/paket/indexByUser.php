@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\modules\askm\models\search\PaketSearch */
@@ -11,31 +12,15 @@ $this->title = 'Paket';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="paket-index">
-    <?php  echo $this->render('_searchByUser', ['model' => $searchModel]); ?>
-
-    
-
+    <?php echo $this->render('_searchByUser', ['model' => $searchModel]); ?>
     <?= GridView::widget([
-        'dataProvider' => $userProvider,
+        'tableOptions' => ['class' => 'table table-stripped table-condensed table-bordered'],
+        'dataProvider' => $dataProvider,
         //'filterModel'=>$searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-            'tag',
-            [
-                'attribute'=>'penerima',
-                'format'=>'raw',
-                'value'=>function($model,$key,$index){
-                    if($model->mahasiswa){
-                        return $model->mahasiswa->nama;
-                    }
-                    else if($model->pegawai){
-                        return $model->pegawai->nama;
-                    }
-                    else{
-                        return '-';
-                    }
-                }
-            ],
+            //'data_paket_id',
+            'penerima',
             [
               'attribute'=>'tanggal_kedatangan',
               'format' => ['date', 'php:d M Y'],
@@ -67,20 +52,22 @@ $this->params['breadcrumbs'][] = $this->title;
                     else{
                         return '<b>'.$model['diambil_oleh'].'</b>';
                     }
-                },
-                'contentOptions'=>['style'=>'max-width: 100px;']
-            ],
-            [
-                'attribute'=>'posisi',
-                'value'=>'posisis.nama_posisi',
+                }
             ],
 
+            'posisi',
+            //'desc:ntext',
             [
                 'attribute'=>'desc',
                 'value'=>'desc',
                 'label'=>'Deskripsi',
-                'contentOptions'=>['style'=>'max-width: 105px;']
             ],
+            // 'deleted',
+            // 'deleted_at',
+            // 'deleted_by',
+            // 'created_at',
+            // 'updated_at',
+            // 'updated_by',
             [
                 'class' => 'yii\grid\ActionColumn',
                 'header' => 'Aksi',
@@ -96,6 +83,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
             ],
         ],
-    ]); ?>
+    ]);
 
+     ?>
 </div>

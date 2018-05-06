@@ -10,7 +10,21 @@ $this->title = '#'.$model->tag;
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="paket-view">
-<?= DetailView::widget([
+
+    <h1><b><?= Html::encode($this->title) ?><b></h1>
+
+    <p>
+        <?= Html::a('Update', ['paket-edit', 'id' => $model->data_paket_id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Delete', ['paket-del', 'id' => $model->data_paket_id], [
+            'class' => 'btn btn-danger',
+            'data' => [
+                'confirm' => 'Are you sure you want to delete this item?',
+                'method' => 'post',
+            ],
+        ]) ?>
+    </p>
+
+    <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
             'tag',
@@ -94,4 +108,5 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ],
     ])?>
-    </div>
+
+</div>

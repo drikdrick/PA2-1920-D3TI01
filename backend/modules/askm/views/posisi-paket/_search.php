@@ -4,24 +4,21 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model backend\modules\askm\models\search\PaketSearch */
+/* @var $model backend\modules\askm\models\search\PosisiPaketSearch */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="paket-search">
+<div class="posisi-paket-search">
 
     <?php $form = ActiveForm::begin([
-        'action' => ['index-by-admin'],
+        'action' => ['index'],
         'method' => 'get',
     ]); ?>
 
-    <?= $form->field($model, 'mahasiswa')->label('Nama Mahasiswa') ?>
-    <?= $form->field($model, 'pegawai')->label('Nama Pegawai') ?>
-
-
+    <?= $form->field($model, 'nama_posisi') ?>
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Reset', ['index-by-admin'], ['class' => 'btn btn-default']) ?>
+        <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

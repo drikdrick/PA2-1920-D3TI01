@@ -3,17 +3,16 @@
 namespace backend\modules\askm\controllers;
 
 use Yii;
-use backend\modules\askm\models\Paket;
-use backend\modules\askm\models\search\PaketSearch;
-use backend\modules\askm\models\User;
+use backend\modules\askm\models\Posisi;
+use backend\modules\askm\models\search\PosisiSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * PaketController implements the CRUD actions for Paket model.
+ * PosisiController implements the CRUD actions for Posisi model.
  */
-class PaketController extends Controller
+class PosisiController extends Controller
 {
     public function behaviors()
     {
@@ -23,7 +22,7 @@ class PaketController extends Controller
                  'class' => \Yii::$app->privilegeControl->getAppPrivilegeControlClass(),
                  'skipActions' => ['*'],
                 ],
-             */   
+              */  
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -33,119 +32,92 @@ class PaketController extends Controller
         ];
     }
 
-
     /**
-     * Lists all Paket Models
+     * Lists all Posisi models.
+     * @return mixed
      */
-    public function actionIndexByAdmin(){
-        $searchModel = new PaketSearch();
+    public function actionIndex()
+    {
+        $searchModel = new PosisiSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('IndexByAdmin', [
+        return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
 
-    
     /**
-     * Lists spesific paket as user
-     */
-    public function actionIndexByUser(){
-        $searchModel = new PaketSearch();
-        $userProvider = $searchModel->searchUser(Yii::$app->request->queryParams);
-
-        return $this->render('indexByUser', [
-            'searchModel' => $searchModel,
-            'userProvider' => $userProvider,
-        ]);
-    }
-
-    /**
-     * Displays a single Paket model.
+     * Displays a single Posisi model.
      * @param integer $id
      * @return mixed
      */
-    public function actionPaketView($id)
+    public function actionPosisiView($id)
     {
-        return $this->render('PaketView', [
+        return $this->render('PosisiView', [
             'model' => $this->findModel($id),
         ]);
     }
 
     /**
-     * Displays a single Paket model.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionPaketViewUser($id)
-    {
-        return $this->render('PaketViewUser', [
-            'model' => $this->findModel($id),
-        ]);
-    }    
-    
-
-    /**
-     * Creates a new Paket model.
+     * Creates a new Posisi model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionPaketAdd()
+    public function actionPosisiAdd()
     {
-        $model = new Paket();
-
+        $model = new Posisi();
+        $model->deleted = 0;
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['PaketView', 'id' => $model->data_paket_id]);
+            return $this->redirect(['posisi-view', 'id' => $model->posisi_id]);
         } else {
-            return $this->render('PaketAdd', [
+            return $this->render('PosisiAdd', [
                 'model' => $model,
             ]);
         }
     }
 
     /**
-     * Updates an existing Paket model.
+     * Updates an existing Posisi model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
      */
-    public function actionPaketEdit($id)
+    public function actionPosisiEdit($id)
     {
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['PaketView', 'id' => $model->data_paket_id]);
+            return $this->redirect(['posisi-view', 'id' => $model->posisi_id]);
         } else {
-            return $this->render('PaketEdit', [
+            return $this->render('PosisiEdit', [
                 'model' => $model,
             ]);
         }
     }
 
     /**
-     * Deletes an existing Paket model.
+     * Deletes an existing Posisi model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
      */
-    public function actionPaketDel($id)
+    public function actionPosisiDel($id)
     {
         $this->findModel($id)->SoftDelete();
-
-        return $this->redirect(['index-by-admin']);
+        return $this->redirect(['index']);
     }
 
     /**
-     * Finds the Paket model based on its primary key value.
+     * Finds the Posisi model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Paket the loaded model
+     * @return Posisi the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Paket::findOne($id)) !== null) {
+        if (($model = Posisi::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

@@ -1,16 +1,16 @@
 <?php
 
 use yii\helpers\Html;
-use backend\modules\ubux\models\PosisiPaket;
+
 
 /* @var $this yii\web\View */
-/* @var $model backend\modules\askm\models\Paket */
+/* @var $model backend\modules\askm\models\PosisiPaket */
 
-$this->title = 'Create Paket';
-$this->params['breadcrumbs'][] = ['label' => 'Pakets', 'url' => ['index']];
+$this->title = 'Tambah Posisi Paket';
+$this->params['breadcrumbs'][] = ['label' => 'Posisi Paket', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="paket-create">
+<div class="posisi-paket-create">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

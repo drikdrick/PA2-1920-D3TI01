@@ -5,7 +5,6 @@ namespace backend\modules\askm\controllers;
 use Yii;
 use backend\modules\askm\models\Paket;
 use backend\modules\askm\models\search\PaketSearch;
-use backend\modules\askm\models\User;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -23,7 +22,7 @@ class PaketController extends Controller
                  'class' => \Yii::$app->privilegeControl->getAppPrivilegeControlClass(),
                  'skipActions' => ['*'],
                 ],
-             */   
+              */
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -33,72 +32,105 @@ class PaketController extends Controller
         ];
     }
 
-
     /**
-     * Lists all Paket Models
+     * Lists all Paket models.
+     * @return mixed
      */
-    public function actionIndexByAdmin(){
+    public function actionIndex()
+    {
         $searchModel = new PaketSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('IndexByAdmin', [
+        return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
 
-    
     /**
-     * Lists spesific paket as user
+     * action-id: index-by-admin
+     * action-desc: Index paket untuk Admin
      */
+
+
+    public function actionIndexByAdmin(){
+        $searchModel = new PaketSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        //$paket = Paket::find()->where('deleted!=1')->ALL();
+        return $this->render('indexByAdmin', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /**
+     * action-id: index-by-user
+     * action-desc: Index paket untuk User
+     */
+
     public function actionIndexByUser(){
         $searchModel = new PaketSearch();
-        $userProvider = $searchModel->searchUser(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('indexByUser', [
             'searchModel' => $searchModel,
-            'userProvider' => $userProvider,
+            'dataProvider' => $dataProvider,
         ]);
     }
+
+
 
     /**
      * Displays a single Paket model.
      * @param integer $id
      * @return mixed
      */
-    public function actionPaketView($id)
+    public function actionView($id)
     {
-        return $this->render('PaketView', [
+        return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
     }
 
-    /**
-     * Displays a single Paket model.
-     * @param integer $id
-     * @return mixed
-     */
     public function actionPaketViewUser($id)
     {
         return $this->render('PaketViewUser', [
             'model' => $this->findModel($id),
         ]);
-    }    
-    
+    }
 
     /**
      * Creates a new Paket model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
+    /*
+    public function actionCreate()
+    {
+        $model = new Paket();
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->data_paket_id]);
+        } else {
+            return $this->render('create', [
+                'model' => $model,
+            ]);
+        }
+    }
+    */
+
+    /**
+     * action-id : paket-add
+     * action-desc : menambah paket
+     */
     public function actionPaketAdd()
     {
         $model = new Paket();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['PaketView', 'id' => $model->data_paket_id]);
+            return $this->redirect(['view', 'id' => $model->data_paket_id]);
         } else {
-            return $this->render('PaketAdd', [
+            return $this->render('paketAdd', [
                 'model' => $model,
             ]);
         }
@@ -110,18 +142,40 @@ class PaketController extends Controller
      * @param integer $id
      * @return mixed
      */
+    /*
+    public function actionUpdate($id)
+    {
+        $model = $this->findModel($id);
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->data_paket_id]);
+        } else {
+            return $this->render('update', [
+                'model' => $model,
+            ]);
+        }
+    }
+    */
+
+    /**
+     * action-id : paket-edit
+     * action-desc : mengedit data paket
+     */
+
     public function actionPaketEdit($id)
     {
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['PaketView', 'id' => $model->data_paket_id]);
+            return $this->redirect(['view', 'id' => $model->data_paket_id]);
         } else {
-            return $this->render('PaketEdit', [
+            return $this->render('paketEdit', [
                 'model' => $model,
             ]);
         }
     }
+
+
 
     /**
      * Deletes an existing Paket model.
@@ -129,9 +183,9 @@ class PaketController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionPaketDel($id)
+    public function actionDel($id)
     {
-        $this->findModel($id)->SoftDelete();
+        $this->findModel($id)->softDelete();
 
         return $this->redirect(['index-by-admin']);
     }
@@ -151,4 +205,5 @@ class PaketController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
 }
