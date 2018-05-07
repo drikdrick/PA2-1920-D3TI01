@@ -129,10 +129,11 @@ $this->beginPage();
                     <?php 
                         MenuRenderer::renderSidebarMenu(\Yii::$app->params['sidebarMenu']);
                     ?>
-                   <li><a href="http://localhost/cis-lite/backend/web/index.php/askm/paket/index-by-admin"><i class="fa fa-archive"></i> <span>Paket By Admin</span></a></li>
+                   <!--<li><a href="http://localhost/cis-lite/backend/web/index.php/askm/paket/index-by-admin"><i class="fa fa-archive"></i> <span>Paket By Admin</span></a></li>
                    <li><a href="http://localhost/cis-lite/backend/web/index.php/askm/paket/index-by-user"><i class="fa fa-archive"></i> <span>Paket By User</span></a></li>
                    <li><a href="http://localhost/cis-lite/backend/web/index.php/askm/posisi-paket/index"><i class="fa fa-map-marker"></i> <span>Posisi Paket</span></a></li>
                    <li><a href="http://localhost/cis-lite/backend/web/index.php/askm/data-tamu/index"><i class="fa fa-user"></i> <span>Data Tamu</span></a></li>
+                   -->
                     <!-- <li class="header">LABELS</li>
                     <li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Important</span></a></li>
                     <li><a href="#"><i class="fa fa-circle-o text-yellow"></i> <span>Warning</span></a></li>

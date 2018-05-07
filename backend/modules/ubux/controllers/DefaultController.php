@@ -1,11 +1,11 @@
 <?php
 
-namespace backend\modules\askm\controllers;
+namespace backend\modules\ubux\controllers;
 
 use yii\web\Controller;
 
 /**
- * Default controller for the `AskmModule` module
+ * Default controller for the `ubux` module
  */
 class DefaultController extends Controller
 {
