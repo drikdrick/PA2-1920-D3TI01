@@ -7,23 +7,12 @@ use yii\widgets\DetailView;
 /* @var $model backend\modules\ubux\models\DataTamu */
 
 $this->title = $model->nama;
-$this->params['breadcrumbs'][] = ['label' => 'Data Tamus', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Data Tamu', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="data-tamu-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a('Delete', ['tamu-del', 'id' => $model->data_tamu_id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
-
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
