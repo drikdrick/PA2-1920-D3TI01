@@ -145,17 +145,17 @@ class User extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getDimxDims()
+    public function getDim()
     {
-        return $this->hasMany(DimxDim::className(), ['user_id' => 'user_id']);
+        return $this->hasMany(Dim::className(), ['user_id' => 'user_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getHrdxPegawais()
+    public function getPegawai()
     {
-        return $this->hasMany(HrdxPegawai::className(), ['user_id' => 'user_id']);
+        return $this->hasMany(Pegawai::className(), ['user_id' => 'user_id']);
     }
 
     /**

@@ -85,7 +85,7 @@ class StatusPaket extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getDataPakets()
+    public function getDataPaket()
     {
         return $this->hasMany(DataPaket::className(), ['status_paket_id' => 'status_paket_id']);
     }
