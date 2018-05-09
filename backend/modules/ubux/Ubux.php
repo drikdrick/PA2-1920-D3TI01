@@ -1,16 +1,16 @@
 <?php
 
-namespace backend\modules\askm;
+namespace backend\modules\ubux;
 
 /**
- * AskmModule module definition class
+ * ubux module definition class
  */
-class askm extends \yii\base\Module
+class Ubux extends \yii\base\Module
 {
     /**
      * @inheritdoc
      */
-    public $controllerNamespace = 'backend\modules\askm\controllers';
+    public $controllerNamespace = 'backend\modules\ubux\controllers';
 
     /**
      * @inheritdoc

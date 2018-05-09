@@ -1,16 +1,16 @@
 <?php
 
-namespace backend\modules\askm\models\search;
+namespace backend\modules\ubux\models\search;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\modules\askm\models\Paket;
+use backend\modules\ubux\models\DataTamu;
 
 /**
- * PaketSearch represents the model behind the search form about `backend\modules\askm\models\Paket`.
+ * DataTamuSearch represents the model behind the search form about `backend\modules\askm\models\DataTamu`.
  */
-class PaketSearch extends Paket
+class DataTamuSearch extends DataTamu
 {
     /**
      * @inheritdoc
@@ -18,8 +18,8 @@ class PaketSearch extends Paket
     public function rules()
     {
         return [
-            [['data_paket_id', 'deleted'], 'integer'],
-            [['penerima', 'pengirim', 'tanggal_kedatangan', 'diambil_oleh', 'tanggal_diambil', 'posisi', 'desc', 'deleted_at', 'deleted_by', 'created_at', 'updated_at', 'updated_by'], 'safe'],
+            [['data_tamu_id', 'deleted'], 'integer'],
+            [['nik', 'nama', 'waktu_kedatangan', 'desc', 'waktu_kembali', 'deleted_at', 'deleted_by', 'created_by', 'created_at', 'updated_at', 'updated_by'], 'safe'],
         ];
     }
 
@@ -41,11 +41,11 @@ class PaketSearch extends Paket
      */
     public function search($params)
     {
-        $query = Paket::find()->where(['deleted'=>0])->orderBy(['tanggal_diambil'=>SORT_ASC,'tanggal_kedatangan'=>SORT_DESC]);
+        $query = DataTamu::find()->andWhere('deleted!=1');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'pagination'=>['pageSize'=>10],
+            'sort' => ['defaultOrder' => ['data_tamu_id' => SORT_ASC, 'updated_at' => SORT_DESC, 'created_at' => SORT_DESC]],
         ]);
 
         $this->load($params);
@@ -57,22 +57,22 @@ class PaketSearch extends Paket
         }
 
         $query->andFilterWhere([
-            'data_paket_id' => $this->data_paket_id,
-            'tanggal_diambil' => $this->tanggal_diambil,
+            'data_tamu_id' => $this->data_tamu_id,
+            'waktu_kedatangan' => $this->waktu_kedatangan,
+            'waktu_kembali' => $this->waktu_kembali,
             'deleted' => $this->deleted,
             'deleted_at' => $this->deleted_at,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
 
-        $query->andFilterWhere(['like', 'penerima', $this->penerima])
-            ->andFilterWhere(['like', 'pengirim', $this->pengirim])
-            ->andFilterWhere(['like', 'tanggal_kedatangan',SUBSTR($this->tanggal_kedatangan,1,10)])
-            ->andFilterWhere(['like', 'diambil_oleh', $this->diambil_oleh])
-            ->andFilterWhere(['like', 'posisi', $this->posisi])
+        $query->andFilterWhere(['like', 'nik', $this->nik])
+            ->andFilterWhere(['like', 'nama', $this->nama])
             ->andFilterWhere(['like', 'desc', $this->desc])
             ->andFilterWhere(['like', 'deleted_by', $this->deleted_by])
-            ->andFilterWhere(['like', 'updated_by', $this->updated_by]);
+            ->andFilterWhere(['like', 'created_by', $this->created_by])
+            ->andFilterWhere(['like', 'updated_by', $this->updated_by])
+            ->andFilterWhere(['not', ['deleted' => 1]]);
 
         return $dataProvider;
     }
