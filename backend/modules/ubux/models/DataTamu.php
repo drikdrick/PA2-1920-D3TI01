@@ -1,24 +1,22 @@
 <?php
 
-namespace backend\modules\askm\models;
+namespace backend\modules\ubux\models;
 
 use Yii;
-use yii\db\ActiveRecord;
+
 use common\behaviors\TimestampBehavior;
 use common\behaviors\BlameableBehavior;
 use common\behaviors\DeleteBehavior;
 
 /**
- * This is the model class for table "ubux_data_paket".
+ * This is the model class for table "ubux_data_tamu".
  *
- * @property integer $data_paket_id
- * @property string $penerima
- * @property string $pengirim
- * @property string $tanggal_kedatangan
- * @property string $diambil_oleh
- * @property string $tanggal_diambil
- * @property string $posisi
+ * @property integer $data_tamu_id
+ * @property string $nik
+ * @property string $nama
+ * @property string $waktu_kedatangan
  * @property string $desc
+ * @property string $waktu_kembali
  * @property integer $deleted
  * @property string $deleted_at
  * @property string $deleted_by
@@ -26,9 +24,8 @@ use common\behaviors\DeleteBehavior;
  * @property string $created_at
  * @property string $updated_at
  * @property string $updated_by
- *
  */
-class Paket extends \yii\db\ActiveRecord
+class DataTamu extends \yii\db\ActiveRecord
 {
 
     /**
@@ -39,10 +36,6 @@ class Paket extends \yii\db\ActiveRecord
         return [
             'timestamp' => [
                 'class' => TimestampBehavior::className(),
-                'attributes' => [
-                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
-                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
-             ],
             ],
             'blameable' => [
                 'class' => BlameableBehavior::className(),
@@ -52,12 +45,13 @@ class Paket extends \yii\db\ActiveRecord
             ]
         ];
     }
+
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'ubux_data_paket';
+        return 'ubux_data_tamu';
     }
 
     /**
@@ -66,11 +60,11 @@ class Paket extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['tanggal_kedatangan','penerima'], 'required'],
-            [['tanggal_kedatangan', 'tanggal_diambil', 'deleted_at', 'created_at', 'updated_at'], 'safe'],
-            [[ 'deleted'], 'integer'],
+            [['waktu_kedatangan'], 'required'],
+            [['waktu_kedatangan', 'waktu_kembali', 'deleted_at', 'created_at', 'updated_at'], 'safe'],
             [['desc'], 'string'],
-            [['penerima', 'pengirim', 'diambil_oleh', 'posisi', 'deleted_by', 'created_by', 'updated_by'], 'string', 'max' => 32]
+            [['deleted'], 'integer'],
+            [['nik', 'nama', 'deleted_by', 'created_by', 'updated_by'], 'string', 'max' => 32]
         ];
     }
 
@@ -80,18 +74,16 @@ class Paket extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'data_paket_id' => 'Data Paket ID',
-            'penerima' => 'Penerima',
-            'pengirim' => 'Pengirim',
-            'tanggal_kedatangan' => 'Tanggal Kedatangan',
-            'diambil_oleh' => 'Diambil Oleh',
-            'tanggal_diambil' => 'Tanggal Diambil',
-            'posisi' => 'Posisi',
-            'desc' => 'Deskripsi',
+            'data_tamu_id' => 'Data Tamu ID',
+            'nik' => 'Nik',
+            'nama' => 'Nama',
+            'waktu_kedatangan' => 'Waktu Kedatangan',
+            'desc' => 'Desc',
+            'waktu_kembali' => 'Waktu Kembali',
             'deleted' => 'Deleted',
             'deleted_at' => 'Deleted At',
             'deleted_by' => 'Deleted By',
-            'created_by' => 'Petugas',
+            'created_by' => 'Created By',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
             'updated_by' => 'Updated By',

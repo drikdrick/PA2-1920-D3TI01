@@ -4,13 +4,13 @@ use yii\helpers\Html;
 
 
 /* @var $this yii\web\View */
-/* @var $model backend\modules\askm\models\Paket */
+/* @var $model backend\modules\ubux\models\DataPaket */
 
-$this->title = 'Tambah Paket';
-$this->params['breadcrumbs'][] = ['label' => 'Pakets', 'url' => ['index-by-admin']];
+$this->title = 'Create Data Paket';
+$this->params['breadcrumbs'][] = ['label' => 'Data Paket', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="paket-create">
+<div class="data-paket-create">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
