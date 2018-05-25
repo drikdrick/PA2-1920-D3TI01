@@ -11,6 +11,8 @@ use yii\filters\VerbFilter;
 
 /**
  * PosisiPaketController implements the CRUD actions for PosisiPaket model.
+ * controller-id: posisi-paket
+ * controller-desc: Controller untuk me-manage posisi dari paket
  */
 class PosisiPaketController extends Controller
 {
@@ -18,11 +20,10 @@ class PosisiPaketController extends Controller
     {
         return [
             //TODO: crud controller actions are bypassed by default, set the appropriate privilege
-           /* 'privilege' => [
+           'privilege' => [
                  'class' => \Yii::$app->privilegeControl->getAppPrivilegeControlClass(),
-                 'skipActions' => ['*'],
+                 'skipActions' => [],
                 ],
-             */   
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -33,6 +34,8 @@ class PosisiPaketController extends Controller
     }
 
     /**
+    * action-id: index
+     * action-desc: Display all data
      * Lists all PosisiPaket models.
      * @return mixed
      */
@@ -48,6 +51,8 @@ class PosisiPaketController extends Controller
     }
 
     /**
+    * action-id: posisi-paket-add
+     * action-desc: Menambahkan data posisi paket
      * Creates a new PosisiPaket model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
@@ -61,6 +66,8 @@ class PosisiPaketController extends Controller
     }
 
     /**
+    * action-id: posisi-paket-edit
+     * action-desc: Memperbaharui data posisi paket
      * Updates an existing PosisiPaket model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
@@ -76,6 +83,8 @@ class PosisiPaketController extends Controller
     }
 
     /**
+    * action-id: posisi-paket-del
+     * action-desc: Menghapus data posisi paket
      * Deletes an existing PosisiPaket model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id

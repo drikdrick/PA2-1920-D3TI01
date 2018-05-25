@@ -3,7 +3,8 @@
 namespace backend\modules\ubux;
 
 /**
- * ubux module definition class
+ * module-id: ubux
+ * module-desc: Modul mengenai Unit Bagian Umum
  */
 class Ubux extends \yii\base\Module
 {

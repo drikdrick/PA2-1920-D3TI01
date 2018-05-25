@@ -11,6 +11,8 @@ use yii\filters\VerbFilter;
 
 /**
  * DataTamuController implements the CRUD actions for DataTamu model.
+ * controller-id: data-tamu
+ * controller-desc: Controller untuk me-manage data tamu
  */
 class DataTamuController extends Controller
 {
@@ -18,11 +20,10 @@ class DataTamuController extends Controller
     {
         return [
             //TODO: crud controller actions are bypassed by default, set the appropriate privilege
-            /*'privilege' => [
+            'privilege' => [
                  'class' => \Yii::$app->privilegeControl->getAppPrivilegeControlClass(),
-                 'skipActions' => ['*'],
+                 'skipActions' => [],
                 ],
-                */
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -33,6 +34,8 @@ class DataTamuController extends Controller
     }
 
     /**
+    * action-id: index
+     * action-desc: Display all data
      * Lists all DataTamu models.
      * @return mixed
      */
@@ -48,6 +51,8 @@ class DataTamuController extends Controller
     }
 
     /**
+    * action-id: tamu-view
+     * action-desc: Display a data
      * Displays a single DataTamu model.
      * @param integer $id
      * @return mixed
@@ -60,6 +65,8 @@ class DataTamuController extends Controller
     }
 
     /**
+    * action-id: tamu-del
+     * action-desc: Menghapus data tamu
      * Deletes an existing DataTamu model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id

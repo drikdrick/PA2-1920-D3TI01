@@ -1,0 +1,61 @@
+<?php
+
+use yii\helpers\Html;
+use yii\helpers\Url;
+use yii\widgets\DetailView;
+use yii\grid\GridView;
+
+/* @var $this yii\web\View */
+/* @var $model backend\modules\askm\models\Kamar */
+
+$this->title = $model->nomor_kamar.' - '.$model->asrama['name'];
+$this->params['breadcrumbs'][] = ['label' => 'Asrama', 'url' => ['asrama/index']];
+$this->params['breadcrumbs'][] = ['label' => 'Kamar', 'url' => ['kamar/index', 'KamarSearch[asrama_id]' => $model->asrama_id, 'id_asrama' => $model->asrama_id]];
+$this->params['breadcrumbs'][] = $this->title;
+$uiHelper=\Yii::$app->uiHelper;
+?>
+<div class="kamar-view">
+
+    <div class="pull-right">
+        Pengaturan
+        <?= $uiHelper->renderButtonSet([
+                'template' => ['addMhs',/* 'reset',*/ 'edit'],
+                'buttons' => [
+                    'addMhs' => ['url' => Url::toRoute(['dim-kamar/add-penghuni-kamar', 'id' => $model->kamar_id]), 'label'=> 'Tambah Penghuni', 'icon'=>'fa fa-users'],
+                    'reset' => ['url' => Url::toRoute(['reset-kamar', 'id' => $model->kamar_id]), 'label'=> 'Reset Kamar', 'icon'=>'fa fa-refresh'],
+                    'edit' => ['url' => Url::toRoute(['edit-kamar', 'id' => $model->kamar_id]), 'label'=> 'Edit Kamar', 'icon'=>'fa fa-pencil'],
+                ],
+                
+            ]) ?>
+    </div>
+
+    <h1>Kamar <?= $this->title ?></h1>
+    <?= $uiHelper->renderLine(); ?>
+
+    <h2>Penghuni : </h2>
+
+    <?= GridView::widget([
+        'dataProvider' => $dataProvider,
+        // 'filterModel' => $searchModel,
+        'columns' => [
+            ['class' => 'yii\grid\SerialColumn'],
+
+            [
+                'attribute' => 'dim_id',
+                'label' => 'Nama',
+                'value' => 'dim.nama'
+            ],
+
+            ['class' => 'yii\grid\ActionColumn',
+                'template' => '{del}',
+                'contentOptions' => ['style' => 'width: 8.7%'],
+                'buttons'=>[
+                    'del'=>function ($url, $model) {
+                        return Html::a('<i class="fa fa-times"></i> Hapus', ['dim-kamar/del', 'id' => $model->dim_kamar_id, 'id_kamar' => $_GET['id']], ['class'=>'btn btn-danger']);
+                    },
+                ],
+            ],
+        ],
+    ]); ?>
+
+</div>

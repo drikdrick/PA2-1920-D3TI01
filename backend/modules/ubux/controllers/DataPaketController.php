@@ -11,6 +11,8 @@ use yii\filters\VerbFilter;
 
 /**
  * DataPaketController implements the CRUD actions for DataPaket model.
+ * controller-id: data-paket
+ * controller-desc: Controller untuk me-manage data paket di pos satpam
  */
 class DataPaketController extends Controller
 {
@@ -18,11 +20,10 @@ class DataPaketController extends Controller
     {
         return [
             //TODO: crud controller actions are bypassed by default, set the appropriate privilege
-            /*'privilege' => [
+            'privilege' => [
                  'class' => \Yii::$app->privilegeControl->getAppPrivilegeControlClass(),
-                 'skipActions' => ['*'],
+                 'skipActions' => [],
                 ],
-              */  
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -33,6 +34,8 @@ class DataPaketController extends Controller
     }
 
     /**
+     * action-id: index-by-admin
+     * action-desc: Display all data by admin view
      * Lists all DataPaket models.
      * @return mixed
      */
@@ -48,6 +51,8 @@ class DataPaketController extends Controller
     }
 
     /**
+    * action-id: index-by-mahasiswa
+     * action-desc: Display all data by student view
      * Lists all DataPaket mahasiswa & Unknown DataPaket.
      * @return mixed
      */
@@ -63,6 +68,8 @@ class DataPaketController extends Controller
     }
 
     /**
+    * action-id: index-by-pegawai
+     * action-desc: Display all data by employees view
      * Lists all DataPaket Pegawai & Unknown DataPaket.
      * @return mixed
      */
@@ -78,6 +85,8 @@ class DataPaketController extends Controller
     }
 
     /**
+    * action-id: data-paket-view
+     * action-desc: Display a package data
      * Displays a single DataPaket model.
      * @param integer $id
      * @return mixed
@@ -90,6 +99,8 @@ class DataPaketController extends Controller
     }
 
     /**
+    * action-id: data-paket-add
+     * action-desc: Menambahkan data paket yang datang
      * Creates a new DataPaket model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
@@ -108,6 +119,8 @@ class DataPaketController extends Controller
     }
 
     /**
+    * action-id: data-paket-edit
+     * action-desc: Memperbaharui data paket
      * Updates an existing DataPaket model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
@@ -127,6 +140,8 @@ class DataPaketController extends Controller
     }
 
     /**
+    * action-id: data-paket-del
+     * action-desc: Menghapus data paket
      * Deletes an existing DataPaket model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
