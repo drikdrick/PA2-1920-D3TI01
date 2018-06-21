@@ -152,7 +152,7 @@ class Pegawai extends \yii\db\ActiveRecord
             [['status_aktif_pegawai_id'], 'exist', 'skipOnError' => true, 'targetClass' => MrefRStatusAktifPegawai::className(), 'targetAttribute' => ['status_aktif_pegawai_id' => 'status_aktif_pegawai_id']],
             [['status_ikatan_kerja_pegawai_id'], 'exist', 'skipOnError' => true, 'targetClass' => MrefRStatusIkatanKerjaPegawai::className(), 'targetAttribute' => ['status_ikatan_kerja_pegawai_id' => 'status_ikatan_kerja_pegawai_id']],
             [['status_marital_id'], 'exist', 'skipOnError' => true, 'targetClass' => MrefRStatusMarital::className(), 'targetAttribute' => ['status_marital_id' => 'status_marital_id']],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => SysxUser::className(), 'targetAttribute' => ['user_id' => 'user_id']]
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'user_id']]
         ];
     }
 
@@ -343,7 +343,7 @@ class Pegawai extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(SysxUser::className(), ['user_id' => 'user_id']);
+        return $this->hasOne(User::className(), ['user_id' => 'user_id']);
     }
 
     /**

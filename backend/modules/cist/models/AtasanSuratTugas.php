@@ -62,7 +62,8 @@ class AtasanSuratTugas extends \yii\db\ActiveRecord
             [['surat_tugas_id', 'id_pegawai', 'perequest', 'deleted'], 'integer'],
             [['deleted_at', 'updated_at', 'created_at'], 'safe'],
             [['deleted_by', 'updated_by', 'created_by'], 'string', 'max' => 32],
-            [['surat_tugas_id'], 'exist', 'skipOnError' => true, 'targetClass' => SuratTugas::className(), 'targetAttribute' => ['surat_tugas_id' => 'surat_tugas_id']]
+            [['surat_tugas_id'], 'exist', 'skipOnError' => true, 'targetClass' => SuratTugas::className(), 'targetAttribute' => ['surat_tugas_id' => 'surat_tugas_id']],
+            [['id_pegawai'], 'exist', 'skipOnError' => true, 'targetClass' => Pegawai::className(), 'targetAttribute' => ['id_pegawai' => 'pegawai_id']]
         ];
     }
 
@@ -92,5 +93,10 @@ class AtasanSuratTugas extends \yii\db\ActiveRecord
     public function getIdSuratTugas()
     {
         return $this->hasOne(SuratTugas::className(), ['surat_tugas_id' => 'surat_tugas_id']);
+    }
+
+    public function getAtasan()
+    {
+        return $this->hasOne(Pegawai::className(), ['pegawai_id' => 'id_pegawai']);
     }
 }

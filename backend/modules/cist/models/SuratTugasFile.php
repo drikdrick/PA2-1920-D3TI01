@@ -60,7 +60,7 @@ class SuratTugasFile extends \yii\db\ActiveRecord
     {
         return [
             [['surat_tugas_file_id', 'deleted', 'surat_tugas_id'], 'integer'],
-            [['deleted_at', 'updated_at', 'created_at'], 'safe'],
+            [['deleted_at', 'updated_at', 'created_at', 'kode_file'], 'safe'],
             [['nama_file', 'lokasi_file'], 'string', 'max' => 100],
             [['deleted_by', 'updated_by', 'created_by'], 'string', 'max' => 32],
             [['surat_tugas_id'], 'exist', 'skipOnError' => true, 'targetClass' => SuratTugas::className(), 'targetAttribute' => ['surat_tugas_id' => 'surat_tugas_id']],
@@ -75,6 +75,7 @@ class SuratTugasFile extends \yii\db\ActiveRecord
         return [
             'surat_tugas_file_id' => 'Id File',
             'nama_file' => 'Nama File',
+            'kode_file' => 'Kode File',
             'lokasi_file' => 'Lokasi File',
             'surat_tugas_id' => 'Id Surat Tugas',
             'deleted' => 'Deleted',

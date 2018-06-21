@@ -7,13 +7,9 @@ use yii\helpers\Html;
         <title></title>
     </head>
 <?php 
-    $database = mysqli_connect("localhost","root","","cis_production");
     $id = $_GET['id'];
-    $query = 'SELECT * FROM cist_surat_tugas WHERE surat_tugas_id = '.$id.'';
-    $result_set = $database->query($query);
-    while($row = $result_set->fetch_assoc()){
-		list($tanggalBerangkat, $pukulBerangkat) = explode(' ', $row['tanggal_berangkat']);
-		list($tanggalKembali, $pukulKembali) = explode(' ', $row['tanggal_kembali']);
+	list($tanggalBerangkat, $pukulBerangkat) = explode(' ', $model->tanggal_berangkat);
+	list($tanggalKembali, $pukulKembali) = explode(' ', $model->tanggal_kembali);
 ?>
     <body>
         <table 	style ="width:100%">
@@ -36,7 +32,7 @@ use yii\helpers\Html;
         <hr>
         <p style="text-align: center;">
         	<b>Surat Tugas Perjalanan Dinas</b><br>
-        	No: <?= $row['no_surat'] ?>
+        	No: <?= $model->no_surat ?>
         </p>
         <p style="text-align: justify">
             Wakil Rektor Bidang Perencanaan, Keuangan, dan Sumber Daya Institut Teknologi Del(IT Del) dengan ini memberikan tugas kepada:
@@ -50,17 +46,12 @@ use yii\helpers\Html;
             </tr>
 			<?php
 				$idx = 1;
-				$query = 'SELECT * FROM cist_surat_tugas_assignee WHERE surat_tugas_id = ' . $id . '';
-				$results = $database->query($query);
-				while($data = $results->fetch_assoc()){
-					$queryPegawai = 'SELECT * FROM hrdx_pegawai WHERE pegawai_id = ' . $data['id_pegawai'] . '';
-					$resultsPegawai = $database->query($queryPegawai);
-					$pegawai = $resultsPegawai->fetch_object();
+				foreach($pesertas as $peserta){
 					echo ("	<tr style='text-align: left;'>
 								<td>". $idx ."</td>
-								<td>" . $pegawai->nama . "</td>
-								<td>". $pegawai->posisi ."</td>
-								<td>" . $pegawai->nip . "</td>
+								<td>" . $peserta->nama . "</td>
+								<td>". $peserta->posisi ."</td>
+								<td>" . $peserta->nip . "</td>
 							</tr>");
 					$idx++;
 				}
@@ -79,17 +70,17 @@ use yii\helpers\Html;
         	<tr>
         		<td>Pukul</td>
         		<td>:</td>
-        		<td><?= $pukulBerangkat . "Wib - selesai" ?></td>
+        		<td><?= $pukulBerangkat . " Wib - selesai" ?></td>
         	</tr>
         	<tr>
         		<td>Alamat</td>
         		<td>:</td>
-        		<td><?= $row['tempat'] ?></td>
+        		<td><?= $model->tempat ?></td>
         	</tr>
         	<tr>
         		<td>Agenda</td>
         		<td>:</td>
-        		<td><?= $row['agenda'] ?></td>
+        		<td><?= $model->agenda ?></td>
         	</tr>
         </table>
 
@@ -102,14 +93,14 @@ use yii\helpers\Html;
 
         <table border="1">
 			<?php
-				$datediff = strtotime($row['tanggal_kembali']) - strtotime($row['tanggal_berangkat']);
+				$datediff = strtotime($model->tanggal_kembali) - strtotime($model->tanggal_berangkat);
 				$penginapan = round($datediff / (60 * 60 * 24)) - 1;
 				$allowance = $penginapan + 1;
 			?>
 			<tr>
         		<td>1</td>
         		<td>Transportasi</td>
-				<td><?= $row['transportasi'] ?></td>
+				<td><?= $model->transportasi ?></td>
         	</tr>
 			<tr>
 				
@@ -124,14 +115,12 @@ use yii\helpers\Html;
         	</tr>
         </table>
 
-        <p>Catatan : <?= $row['catatan'] ?><br>
+        <p>Catatan : <?= $model->catatan ?><br>
 		<?php $today = time(); ?>
 		Sitoluama, <?= date('d M Y'); ?>
 		<br>
 		Plh Wakil Rektor Bidang Perencanaan, Keuangan, dan Sumber Daya
 		<br><br><br><br><br><br>
 		Christoper JS. Sinaga, ST., MAB 
-
-        <?php } ?>
 </body>
 </html>
