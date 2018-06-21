@@ -145,7 +145,7 @@ use backend\modules\cist\models\Pegawai;
             
             function addMore(){
                 $.ajax({
-                    url: '".\Yii::$app->urlManager->createUrl(['cist/surat-tugas/pegawais'])."',
+                    url: '".\Yii::$app->urlManager->createUrl(['cist/surat-tugas/pegawais-bawahan?id='.$pegawai->pegawai_id])."',
                     type: 'POST',
                     success: function(data){
                         data = jQuery.parseJSON(data);

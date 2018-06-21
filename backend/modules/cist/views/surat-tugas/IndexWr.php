@@ -4,7 +4,6 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use common\components\ToolsColumn;
 use backend\modules\cist\models\SuratTugas;
-use backend\modules\cist\models\JenisSurat;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use yii\widgets\Pjax;
@@ -21,7 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <?php 
+    <?php
         Pjax::begin();
         echo GridView::widget([
             'dataProvider' => $dataProvider,
@@ -30,19 +29,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => 'yii\i18n\Formatter',
                 'nullDisplay' => '-',
             ],
-            // 'filterModel' => $searchModel,
             'columns' => [
                 ['class' => 'yii\grid\SerialColumn'],
-
-                [
-                    'label' => 'Nama',
-                    'attribute' => 'perequest',
-                    'value' => 'perequest0.nama',
-                ],
+                'perequest0.nama',
                 'no_surat',
                 'agenda',
-                // 'tanggal_berangkat',
-                // 'tanggal_kembali',
                 [
                     'attribute' => 'tanggal_berangkat',
                     'value' => function($data){
@@ -50,7 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
                     'format' => 'html',
                     'filter' => '',
-
+    
                 ],
                 [
                     'attribute' => 'tanggal_kembali',
@@ -59,11 +50,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
                     'format' => 'html',
                     'filter' => '',
-
+    
                 ],
                 [
                     'label' => 'Status Surat Tugas',
-                    'attribute' => 'name',
+                    'attribute' => 'status_id',
                     'value' => 'statusName.name',
                     'filter' => ArrayHelper::map($status, 'status_id', 'name'),
                     'filterInputOptions' => ['class' => 'form-control', 'id' => null, 'prompt' => 'ALL'],
@@ -84,27 +75,30 @@ $this->params['breadcrumbs'][] = $this->title;
                     'headerOptions' => ['style' => 'width:15%'],
                 ],
                 ['class' => 'common\components\ToolsColumn',
-                    'template' => '{view}{print}',
+                    'template' => '{view}{confirm}{reject}',
                     'header' => 'Aksi',
                     'buttons' => [
                         'view' => function($url, $model){
                             return ToolsColumn::renderCustomButton($url, $model, 'Lihat Surat Tugas', 'fa fa-eye');
                         },
-                        'print' => function($url, $model){
-                            return ToolsColumn::renderCustomButton($url, $model, 'Print Surat Tugas', 'fa fa-print');
+                        'confirm' => function($url, $model){
+                            return ToolsColumn::renderCustomButton($url, $model, 'Terima Laporan', 'fa fa-check');
+                        },
+                        'reject' => function($url, $model){
+                            return ToolsColumn::renderCustomButton($url, $model, 'Tolak Laporan', 'fa fa-times');
                         },
                     ],
                     'urlCreator' => function($action, $model, $key, $index){
                         if($action === 'view'){
-                            $url = 'view-hrd?id=' . $model['surat_tugas_id'];
+                            $url = 'view-wr?id=' . $model['surat_tugas_id'];
                             
                             return $url;
-                        }else if($action === 'print'){
-                            $url = 'index-hrd';
-
-                            if($model['name'] == 3){
-                                $url = 'create-pdf?id=' . $model['surat_tugas_id'];
-                            }
+                        }else if($action === 'confirm'){
+                            $url = 'terima-laporan?id=' . $model['surat_tugas_id'];
+                            
+                            return $url;
+                        }else if($action === 'reject'){
+                            $url = 'tolak-laporan-tugas?id=' . $model['surat_tugas_id'];
                             
                             return $url;
                         }
@@ -112,7 +106,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
             ],
         ]); 
-        Pjax::end()
+        Pjax::end();
     ?>
 
 </div>

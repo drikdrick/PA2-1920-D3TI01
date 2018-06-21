@@ -36,7 +36,6 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
             'perequest0.nama',
             'no_surat',
             'agenda',
@@ -62,12 +61,12 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             // [
             //     'label' => 'Status Surat Tugas',
-            //     'attribute' => 'name',
+            //     'attribute' => 'status_id',
             //     'value' => 'statusName.name',
             // ],
             [
                     'label' => 'Status Surat Tugas',
-                    'attribute' => 'name',
+                    'attribute' => 'status_id',
                     'value' => 'statusName.name',
                     'filter' => ArrayHelper::map($status, 'status_id', 'name'),
                     'filterInputOptions' => ['class' => 'form-control', 'id' => null, 'prompt' => 'ALL'],
@@ -88,7 +87,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         return ToolsColumn::renderCustomButton($url, $model, 'Lihat Surat Tugas', 'fa fa-eye');
                     },
                     'edit' => function($url, $model){
-                        if($model['name'] == 1)
+                        if($model['status_id'] == 1)
                             return ToolsColumn::renderCustomButton($url, $model, 'Ubah Surat Tugas', 'fa fa-edit');
                     },
                 ],
@@ -100,7 +99,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     }else if($action === 'edit'){
                         $url = 'index-pegawai';
                         
-                        if($model['name'] == 1){
+                        if($model['status_id'] == 1){
                             $url = 'edit-luar-kampus?id=' . $model['surat_tugas_id'];
                         }
 

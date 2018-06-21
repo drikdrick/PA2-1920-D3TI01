@@ -112,23 +112,19 @@ use backend\modules\cist\models\Pegawai;
     ?>
 
     <!-- FileInput for lampiran -->
-    <!-- <?= $form->field($model, 'files[]')->fileInput(['multiple' => true]) ?> -->
-
-    <!-- <?= $form->field($model, 'files[]')->fileInput(['multiple' => true])
-	?> -->
     <div class="form-group field-materi-files">
-            <label class="control-label col-sm-2" for="materi-files">Lampiran</label>
-            <div class="col-sm-4">
-              <div id="file_input">
-                  <input type="file" class="form-control" name="files[]">
-              </div>
-              <div>
-                 <a href="#" onclick="addMoreFiles()">Tambah Lampiran</a>
-              </div>
+        <label class="control-label col-sm-2" for="materi-files">Lampiran</label>
+        <div class="col-sm-4">
+            <div id="file_input">
+                <input type="file" class="form-control" name="files[]">
+            </div>
+            <div>
+                <a href="#" onclick="addMoreFiles()">Tambah Lampiran</a>
             </div>
         </div>
-
-        <br />
+    </div>
+    <br/>
+    
     <?php
         //Get list of atasan
         $arrayAtasan = ArrayHelper::map($modelAtasan, 'pegawai_id', 'nama');
@@ -136,8 +132,7 @@ use backend\modules\cist\models\Pegawai;
         //CheckboxList for list of atasan
         echo $form->field($model, 'atasan')->checkboxList($arrayAtasan);
     ?>
-
-    <br />
+    <br/>
 
     <div class="form-group" >
         <div class="col-md-1 col-md-offset-2">
@@ -167,11 +162,21 @@ use backend\modules\cist\models\Pegawai;
                         data = jQuery.parseJSON(data);
                         pegawais = '';
                         for(var i = 0; i < data.length; i++){
-                            if(i == 0){
-                                pegawais += '<option selected=\"selected\" value=\"empty\">Pilih Peserta</option>';
-                                pegawais += '<option value=\"'+data[i]['pegawai_id']+'\">'+data[i]['nama']+'</option>';
+                            
+                            if(count == 1){
+                                
+                                if(data[i]['pegawai_id'] == ". $pegawai->pegawai_id ."){
+                                    pegawais += '<option selected=\"selected\" value=\"'+data[i]['pegawai_id']+'\">'+data[i]['nama']+'</option>';
+                                }else{
+                                    pegawais += '<option value=\"'+data[i]['pegawai_id']+'\">'+data[i]['nama']+'</option>';
+                                }
                             }else{
-                                pegawais += '<option value=\"'+data[i]['pegawai_id']+'\">'+data[i]['nama']+'</option>';
+                                if(i == 0){
+                                    pegawais += '<option selected=\"selected\" value=\"empty\">Pilih Peserta</option>';
+                                    pegawais += '<option value=\"'+data[i]['pegawai_id']+'\">'+data[i]['nama']+'</option>';
+                                }else{
+                                    pegawais += '<option value=\"'+data[i]['pegawai_id']+'\">'+data[i]['nama']+'</option>';
+                                }
                             }
                         }
                         add(pegawais);
@@ -185,7 +190,6 @@ use backend\modules\cist\models\Pegawai;
             }
 
             function addMoreFiles(){
-
                $('#file_input').append('<input type=file class=form-control name=files[]>');
            }
         ",

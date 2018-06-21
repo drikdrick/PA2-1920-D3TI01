@@ -82,7 +82,7 @@ class SuratTugas extends \yii\db\ActiveRecord
     {
         return [
             [['perequest'], 'required'],
-            [['perequest', 'jenis_surat_id', 'name', 'deleted'], 'integer'],
+            [['perequest', 'jenis_surat_id', 'status_id', 'deleted'], 'integer'],
             [['tanggal_berangkat', 'tanggal_kembali', 'tanggal_mulai', 'tanggal_selesai', 'deleted_at', 'updated_at', 'created_at'], 'safe'],
             [['review_surat', 'desc_surat_tugas', 'pengalihan_tugas', 'transportasi', 'catatan'], 'string'],
             [['no_surat'], 'string', 'max' => 45],
@@ -90,7 +90,7 @@ class SuratTugas extends \yii\db\ActiveRecord
             [['deleted_by', 'updated_by', 'created_by'], 'string', 'max' => 32],
             [['files'], 'file', 'maxFiles' => 0],
             [['atasan'], 'each', 'rule' => ['integer']],
-            [['name'], 'exist', 'skipOnError' => true, 'targetClass' => Status::className(), 'targetAttribute' => ['name' => 'status_id']],
+            [['status_id'], 'exist', 'skipOnError' => true, 'targetClass' => Status::className(), 'targetAttribute' => ['status_id' => 'status_id']],
             [['jenis_surat_id'], 'exist', 'skipOnError' => true, 'targetClass' => JenisSurat::className(), 'targetAttribute' => ['jenis_surat_id' => 'jenis_surat_id']],
             [['perequest'], 'exist', 'skipOnError' => true, 'targetClass' => Pegawai::className(), 'targetAttribute' => ['perequest' => 'pegawai_id']],
         ];
@@ -119,7 +119,7 @@ class SuratTugas extends \yii\db\ActiveRecord
             'transportasi' => 'Transportasi',
             'catatan' => 'Catatan',
             'jenis_surat_id' => 'Id Jenis Surat',
-            'name' => 'Status Name',
+            'status_id' => 'Status',
             'deleted' => 'Deleted',
             'deleted_at' => 'Deleted At',
             'deleted_by' => 'Deleted By',
@@ -143,7 +143,7 @@ class SuratTugas extends \yii\db\ActiveRecord
      */
     public function getStatusName()
     {
-        return $this->hasOne(Status::className(), ['status_id' => 'name']);
+        return $this->hasOne(Status::className(), ['status_id' => 'status_id']);
     }
 
     /**
@@ -210,7 +210,7 @@ class SuratTugas extends \yii\db\ActiveRecord
     public function getStatus($id){
         $model = Status::find()->where(['status_id' => $id])->one();
 
-        return $model->name;
+        return $model->status_id;
     }
 
     public function getNama($id){
@@ -230,6 +230,28 @@ class SuratTugas extends \yii\db\ActiveRecord
         $status = Status::find()->where(['status_id' => $laporan['status_id']])->one();
         
         return $status['name'];
+    }
+
+    public function getAssignee($id){
+        $suratTugasAssignee = SuratTugasAssignee::find()->select('id_pegawai')->where(['surat_tugas_id' => $id])->all();
+        $arrayAssignee = array();
+        foreach($suratTugasAssignee as $data){
+            array_push($arrayAssignee, $data['id_pegawai']);
+        }
+        $pegawais = Pegawai::find()->where(['in', 'pegawai_id', $arrayAssignee])->asArray()->all();
+
+        return $pegawais;
+    }
+
+    public function getAtasan($id){
+        $atasanSuratTugas = AtasanSuratTugas::find()->select('id_pegawai')->where(['surat_tugas_id' => $id])->all();
+        $arrayAtasan = array();
+        foreach($atasanSuratTugas as $data){
+            array_push($arrayAtasan, $data['id_pegawai']);
+        }
+        $pegawais = Pegawai::find()->where(['in', 'pegawai_id', $arrayAtasan])->asArray()->all();
+
+        return $pegawais;
     }
 
 }
