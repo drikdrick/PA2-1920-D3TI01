@@ -11,7 +11,7 @@ use yii\filters\VerbFilter;
 
 /**
  * IzinKolaboratifController implements the CRUD actions for IzinKolaboratif model.
-  * controller-id: izin-kolaboratif
+ * controller-id: izin-kolaboratif
  * controller-desc: Controller untuk me-manage data izin jam tambahan kolaboratif malam
  */
 class IzinKolaboratifController extends Controller
@@ -55,7 +55,6 @@ class IzinKolaboratifController extends Controller
         ]);
     }
 
-    // public function actionIzinByMahasiswaIndex($id_mhs)
     /*
     * action-id: izin-by-mahasiswa-index
     * action-desc: Menampilkan izin kolaboratif by mahasiswa
@@ -100,7 +99,7 @@ class IzinKolaboratifController extends Controller
         ]);
     }
 
-    /*
+     /*
     * action-id: izin-by-mahasiswa-add
     * action-desc: Menambahkan izin kolaboratif by mahasiswa
     */

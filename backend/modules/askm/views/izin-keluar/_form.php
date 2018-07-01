@@ -11,10 +11,6 @@ use backend\modules\askm\models\Dim;
 $datetime = new DateTime();
 $datetime->modify('+1 day');
 $dim = Dim::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$app->user->identity->user_id])->one();
-//echo '<pre>';
-//print_r($dim);
-echo Yii::$app->user->identity->user_id;
-die;
 ?>
 
 <div class="izin-keluar-form">

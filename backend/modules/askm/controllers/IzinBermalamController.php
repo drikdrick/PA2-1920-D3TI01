@@ -16,7 +16,7 @@ use mPDF;
 /**
  * IzinBermalamController implements the CRUD actions for IzinBermalam model.
   * controller-id: izin-bermalam
- * controller-desc: Controller untuk me-manage data izin bermalam mahasiswa
+ * controller-desc: Controller untuk me-manage data Izin Bermalam Mahasiswa
  */
 class IzinBermalamController extends Controller
 {
@@ -27,7 +27,7 @@ class IzinBermalamController extends Controller
             'privilege' => [
                  'class' => \Yii::$app->privilegeControl->getAppPrivilegeControlClass(),
                  'skipActions' => [],
-                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -40,65 +40,17 @@ class IzinBermalamController extends Controller
     /**
     * action-id: index-admin
      * action-desc: Menampilkan data seluruh izin bermalam by admin
-     * Lists all Izin Bermalam models.
+     * Lists all IzinBermalam models.
      * @return mixed
      */
     public function actionIndexAdmin()
     {
         $searchModel = new IzinBermalamSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        
-        $countSilo = 0;
-        $countKapernaum = 0;
-        $countBetvage = 0;
-        $countPniel = 0;
-        $countAnthiokia = 0;
-        $countNazareth = 0;
-        $countMamre = 0;
-        $countMahanaim = 0;
-        foreach($dataProvider->models as $c){
-            if($c->status_request_id==1){
-                foreach($c->dim->dimKamar as $k){
-                    if($k->kamar->asrama_id == 1){
-                        $countSilo++;
-                    } 
-                    if($k->kamar->asrama_id == 2){
-                        $countKapernaum++;
-                    } 
-                    if($k->kamar->asrama_id == 3){
-                        $countBetvage++;
-                    } 
-                    if($k->kamar->asrama_id == 4){
-                        $countPniel++;
-                    } 
-                    if($k->kamar->asrama_id == 5){
-                        $countAnthiokia++;
-                    } 
-                    if($k->kamar->asrama_id == 6){
-                        $countNazareth++;
-                    }
-                    if($k->kamar->asrama_id == 7){
-                        $countMamre++;
-                    }
-                    if($k->kamar->asrama_id == 8){
-                        $countMahanaim++;
-                    }
-                    break;
-                }
-            }
-        }
 
         return $this->render('IndexAdmin', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'countMahanaim' => $countMahanaim,
-            'countAnthiokia' => $countAnthiokia,
-            'countBetvage' => $countBetvage,
-            'countNazareth' => $countNazareth,
-            'countMamre' => $countMamre,
-            'countSilo' => $countSilo,
-            'countKapernaum' => $countKapernaum,
-            'countPniel' => $countPniel,
         ]);
     }
 
@@ -113,7 +65,7 @@ class IzinBermalamController extends Controller
 
         $dataProvider->pagination = ['pageSize' => 5];
 
-        return $this->render('indexMahasiswa', [
+        return $this->render('IndexMahasiswa', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
@@ -381,8 +333,6 @@ class IzinBermalamController extends Controller
         }
     }
 
-
-// remove if($m->save)
     /*
     * action-id: approve-all
      * action-desc: Menyetujui semua request izin bermalam dari mahasiswa
@@ -408,12 +358,21 @@ class IzinBermalamController extends Controller
             $params['IzinBermalamSearch']['status_request_id'] = $status_request;
         } 
 
-        \Yii::$app->messenger->addSuccessFlash("Semua izin bermalam telah disetujui");
-        return $this->render('IzinByAdminIndex', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-            'status_request_id' => $status_request,
-        ]);
+        if ($m->save()) {
+            \Yii::$app->messenger->addSuccessFlash("Semua izin bermalam telah disetujui");
+            return $this->render('IzinByAdminIndex', [
+                'searchModel' => $searchModel,
+                'dataProvider' => $dataProvider,
+                'status_request_id' => $status_request,
+            ]);
+        } else {
+            return $this->render('IzinByAdminIndex', [
+                'searchModel' => $searchModel,
+                'dataProvider' => $dataProvider,
+                'status_request_id' => $status_request,
+            ]);
+        }
+        
     }
 
     /*
@@ -478,7 +437,7 @@ class IzinBermalamController extends Controller
         $keasramaan = $id_keasramaan;
 
         foreach ($model as $m) {
-            while ($m->status_request_id != 3) {
+            while ($m->status_request_id == 1) {
                 $m->status_request_id = 3;
                 $m->keasramaan_id = $keasramaan;
                 $m->save();
@@ -489,12 +448,20 @@ class IzinBermalamController extends Controller
             $params['IzinBermalamSearch']['status_request_id'] = $status_request;
         }
 
-        \Yii::$app->messenger->addSuccessFlash("Semua izin bermalam telah ditolak");
-        return $this->render('IzinByAdminIndex', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-            'status_request_id' => $status_request,
-        ]);
+        if ($m->save()) {
+            \Yii::$app->messenger->addSuccessFlash("Semua izin bermalam telah ditolak");
+            return $this->render('IzinByAdminIndex', [
+                'searchModel' => $searchModel,
+                'dataProvider' => $dataProvider,
+                'status_request_id' => $status_request,
+            ]);
+        } else {
+            return $this->render('IzinByAdminIndex', [
+                'searchModel' => $searchModel,
+                'dataProvider' => $dataProvider,
+                'status_request_id' => $status_request,
+            ]);
+        }
     }
 
     /*

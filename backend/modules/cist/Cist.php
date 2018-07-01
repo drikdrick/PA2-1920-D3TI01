@@ -3,7 +3,8 @@
 namespace backend\modules\cist;
 
 /**
- * cist module definition class
+ * module-id: cist
+ * module-desc: Modul mengenai Surat Tugas dan Cuti Izin Pegawai
  */
 class Cist extends \yii\base\Module
 {

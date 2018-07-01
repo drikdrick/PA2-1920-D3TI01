@@ -27,7 +27,7 @@ use backend\modules\askm\models\Asrama;
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Buat Baru' : 'Selesai Edit', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
 
-        <?= Html::a('Batal', ['index'], ['class' => 'btn btn-danger']) ?>
+        <?= Html::a('Batal', ['view', 'id' => $_GET['id']], ['class' => 'btn btn-danger']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

@@ -13,7 +13,7 @@ use yii\helpers\Json;
 
 /**
  * KeasramaanController implements the CRUD actions for Keasramaan model.
-  * controller-id: keasramaan
+ * controller-id: keasramaan
  * controller-desc: Controller untuk me-manage data pengurus asrama
  */
 class KeasramaanController extends Controller

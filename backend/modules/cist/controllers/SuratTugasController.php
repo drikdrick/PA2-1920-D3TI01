@@ -24,6 +24,8 @@ use yii\helpers\ArrayHelper;
 
 /**
  * SuratTugasController implements the CRUD actions for SuratTugas model.
+ * controller-id: surat-tugas
+ * controller-desc: Controller untuk me-manage data Surat Tugas untuk Pegawai
  */
 class SuratTugasController extends Controller
 {
@@ -33,7 +35,7 @@ class SuratTugasController extends Controller
             //TODO: crud controller actions are bypassed by default, set the appropriate privilege
             'privilege' => [
                  'class' => \Yii::$app->privilegeControl->getAppPrivilegeControlClass(),
-                 'skipActions' => ['*'],
+                 'skipActions' => [],
                 ],
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -45,8 +47,8 @@ class SuratTugasController extends Controller
     }
 
     /**
-     * Lists all SuratTugas models.
-     * @return mixed
+     * action-id: index-pegawai
+     * action-desc: Display all surat tugas of specific pegawai
      */
     public function actionIndexPegawai()
     {
@@ -64,10 +66,14 @@ class SuratTugasController extends Controller
         ]);
     }
 
+    /**
+     * action-id: index-hrd
+     * action-desc: Display all surat tugas that have been confirmed or published
+     */
     public function actionIndexHrd(){
         $searchModel = new SuratTugasSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        // $dataProvider->query->where("status_id = 6 or status_id = 3")->orderBy(['created_at' => SORT_DESC]);
+        // $dataProvider->query->where("name = 6 or name = 3")->orderBy(['created_at' => SORT_DESC]);
         $jenisSurat = JenisSurat::find()->all();
         $status = Status::find()->where(['in', 'status_id', [6, 3]])->andWhere('deleted!=1')->all();
 
@@ -79,10 +85,14 @@ class SuratTugasController extends Controller
         ]);
     }
 
+    /**
+     * action-id: index-wr
+     * action-desc: Display all surat tugas that have been confirmed or published
+     */
     public function actionIndexWr(){
         $searchModel = new SuratTugasSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        // $dataProvider->query->where("status_id = 6 or status_id = 3")->orderBy(['created_at' => SORT_DESC]);
+        // $dataProvider->query->where("name = 6 or name = 3")->orderBy(['created_at' => SORT_DESC]);
         $jenisSurat = JenisSurat::find()->all();
         $status = Status::find()->where(['in', 'status_id', [6, 3]])->all();
 
@@ -94,6 +104,10 @@ class SuratTugasController extends Controller
         ]);
     }
 
+    /**
+     * action-id: index-surat-bawahan
+     * action-desc: Display all subordinate surat tugas to superior
+     */
     public function actionIndexSuratBawahan(){
         $searchModel = new SuratTugasSearch();
         $dataProvider = $searchModel->searchBawahan(Yii::$app->request->queryParams);
@@ -107,9 +121,8 @@ class SuratTugasController extends Controller
     }
 
     /**
-     * Displays a single SuratTugas model.
-     * @param integer $id
-     * @return mixed
+     * action-id: view-pegawai
+     * action-desc: View specific surat tugas of specific pegawai
      */
     public function actionViewPegawai($id)
     {
@@ -126,6 +139,10 @@ class SuratTugasController extends Controller
         ]);
     }
 
+    /**
+     * action-id: view-hrd
+     * action-desc: View specific surat tugas so HRD can either publish, change report submission date, give note, edit description
+     */
     public function actionViewHrd($id)
     {
         $modelFile = SuratTugasFile::find()->where(['surat_tugas_id' => $id])->all();
@@ -141,6 +158,10 @@ class SuratTugasController extends Controller
         ]);
     }
 
+    /**
+     * action-id: view-wr
+     * action-desc: View specific surat tugas so WR can either accept or reject surat tugas report
+     */
     public function actionViewWr($id)
     {
         $modelFile = SuratTugasFile::find()->where(['surat_tugas_id' => $id])->all();
@@ -156,6 +177,10 @@ class SuratTugasController extends Controller
         ]);
     }
 
+    /**
+     * action-id: view-surat-bawahan
+     * action-desc: View specific surat tugas of subordinate so superior can either accept, reject, give review of surat tugas
+     */
     public function actionViewSuratBawahan($id){
         $modelFile = SuratTugasFile::find()->where(['surat_tugas_id' => $id])->all();
         $modelAssignee = SuratTugasAssignee::find()->where(['surat_tugas_id' => $id])->all();
@@ -169,8 +194,9 @@ class SuratTugasController extends Controller
     }
 
     /**
-    * Add Luar Kampus
-    */
+     * action-id: add-luar-kampus
+     * action-desc: If there are new post request, call the save function else render a _formLuarKampus
+     */
     public function actionAddLuarKampus()
     {
         $model = new SuratTugas();
@@ -181,7 +207,7 @@ class SuratTugasController extends Controller
             //Set Default Information
             $model->perequest = $modelPegawai->pegawai_id;
             $model->jenis_surat_id = 1;
-            $model->status_id = 1;
+            $model->name = 1;
 
             //Get the date difference
             // $today = time();
@@ -239,7 +265,7 @@ class SuratTugasController extends Controller
                 }
 
                 //Files Handler
-                //if($model->files != null){
+                
                     $status = \Yii::$app->fileManager->saveUploadedFiles();
                         if($status != null && $status->status == 'success'){
                             $total = count($status->fileinfo);
@@ -249,8 +275,13 @@ class SuratTugasController extends Controller
                                 $modelFile->surat_tugas_id = $model->surat_tugas_id;
                                 $modelFile->nama_file = $status->fileinfo[$i]->name;
                                 //$modelFile->lokasi_file = $fileDir;
-                                $modelFile->kode_file = $status->fileinfo[$i]->id;
-                                if(!$modelFile->save()){
+                                $newFiles->kode_file = $status->fileinfo[$i]->id;
+                                if($modelFile->validate()){
+                                    //Save file to directory $fileDir
+                                    //$file->saveAs($fileDir);
+
+                                    $modelFile->save();
+                                }else{
                                     $errors = $modelFile->errors;
                                     print_r(array_values($errors));
                                     die();
@@ -258,7 +289,8 @@ class SuratTugasController extends Controller
                             }
                         }
                 
-                //     $model->files = UploadedFile::getInstances($model, 'files');
+                // $model->files = UploadedFile::getInstances($model, 'files');
+                // if($model->files != null){
                 //     foreach($model->files as $file){
                 //         $modelFile = new SuratTugasFile();
                 //         $fileDir = 'uploads/attachments/' . $file->baseName . '.' . $file->extension;
@@ -300,8 +332,9 @@ class SuratTugasController extends Controller
     }
 
     /**
-    * Add Dalam Kampus
-    */
+     * action-id: add-dalam-kampus
+     * action-desc: If there are new post, call save function else render _formDalamKampus
+     */
     public function actionAddDalamKampus()
     {
         $model = new SuratTugas();
@@ -311,7 +344,7 @@ class SuratTugasController extends Controller
         if ($model->load(Yii::$app->request->post())) {
             //Set Default Information
             $model->perequest = $modelPegawai->pegawai_id;
-            $model->status_id = 1;
+            $model->name = 1;
             $model->jenis_surat_id = 2;
 
             //Get the date difference
@@ -365,22 +398,27 @@ class SuratTugasController extends Controller
 
                 //Files Handler
                 $status = \Yii::$app->fileManager->saveUploadedFiles();
-                        if($status != null && $status->status == 'success'){
-                            $total = count($status->fileinfo);
-                            for ($i=0;$i<$total;$i++)
-                            {
-                                $modelFile = new SuratTugasFile();
-                                $modelFile->surat_tugas_id = $model->surat_tugas_id;
-                                $modelFile->nama_file = $status->fileinfo[$i]->name;
-                                //$modelFile->lokasi_file = $fileDir;
-                                $modelFile->kode_file = $status->fileinfo[$i]->id;
-                                if(!$modelFile->save()){
-                                    $errors = $modelFile->errors;
-                                    print_r(array_values($errors));
-                                    die();
-                                }
-                            }
+                if($status != null && $status->status == 'success'){
+                    $total = count($status->fileinfo);
+                    for ($i=0;$i<$total;$i++)
+                    {
+                        $modelFile = new SuratTugasFile();
+                        $modelFile->surat_tugas_id = $model->surat_tugas_id;
+                        $modelFile->nama_file = $status->fileinfo[$i]->name;
+                        //$modelFile->lokasi_file = $fileDir;
+                        $newFiles->kode_file = $status->fileinfo[$i]->id;
+                        if($modelFile->validate()){
+                            //Save file to directory $fileDir
+                            //$file->saveAs($fileDir);
+
+                            $modelFile->save();
+                        }else{
+                            $errors = $modelFile->errors;
+                            print_r(array_values($errors));
+                            die();
                         }
+                    }
+                }
                 //$model->files = UploadedFile::getInstances($model, 'files');
                 // if($model->files != null){
                 //     foreach($model->files as $file){
@@ -423,10 +461,8 @@ class SuratTugasController extends Controller
     }
 
     /**
-     * Updates an existing SuratTugas model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
+     * action-id: edit-dalam-kampus
+     * action-desc: If there are post request, call the save function else render _formUpdateDalamKampus
      */
     public function actionEditDalamKampus($id)
     {
@@ -479,22 +515,27 @@ class SuratTugasController extends Controller
 
                 //Files Handler
                 $status = \Yii::$app->fileManager->saveUploadedFiles();
-                        if($status != null && $status->status == 'success'){
-                            $total = count($status->fileinfo);
-                            for ($i=0;$i<$total;$i++)
-                            {
-                                $modelFile = new SuratTugasFile();
-                                $modelFile->surat_tugas_id = $model->surat_tugas_id;
-                                $modelFile->nama_file = $status->fileinfo[$i]->name;
-                                //$modelFile->lokasi_file = $fileDir;
-                                $modelFile->kode_file = $status->fileinfo[$i]->id;
-                                if(!$modelFile->save()){
-                                    $errors = $modelFile->errors;
-                                    print_r(array_values($errors));
-                                    die();
-                                }
-                            }
+                if($status != null && $status->status == 'success'){
+                    $total = count($status->fileinfo);
+                    for ($i=0;$i<$total;$i++)
+                    {
+                        $modelFile = new SuratTugasFile();
+                        $modelFile->surat_tugas_id = $model->surat_tugas_id;
+                        $modelFile->nama_file = $status->fileinfo[$i]->name;
+                        //$modelFile->lokasi_file = $fileDir;
+                        $newFiles->kode_file = $status->fileinfo[$i]->id;
+                        if($modelFile->validate()){
+                            //Save file to directory $fileDir
+                            //$file->saveAs($fileDir);
+
+                            $modelFile->save();
+                        }else{
+                            $errors = $modelFile->errors;
+                            print_r(array_values($errors));
+                            die();
                         }
+                    }
+                }
                 // if($model->files != null){
                 //     $model->files = UploadedFile::getInstances($model, 'files');
                 //     foreach($model->files as $file){
@@ -535,7 +576,8 @@ class SuratTugasController extends Controller
     }
 
     /**
-     * Ubah Luar Kampus
+     * action-id: edit-luar-kampus
+     * action-desc: If there are post request, call the save function else render _formUpdateLuarKampus
      */
     public function actionEditLuarKampus($id)
     {
@@ -548,6 +590,7 @@ class SuratTugasController extends Controller
         $modelLampiran = SuratTugasFile::find()->where(['surat_tugas_id' => $id])->all();
 
         if ($model->load(Yii::$app->request->post())) {
+            // echo $coba;
             if($model->validate()){
                 $model->save();
 
@@ -588,24 +631,30 @@ class SuratTugasController extends Controller
 
                 //Files Handler
                 $status = \Yii::$app->fileManager->saveUploadedFiles();
-                        if($status != null && $status->status == 'success'){
-                            $total = count($status->fileinfo);
-                            for ($i=0;$i<$total;$i++)
-                            {
-                                $modelFile = new SuratTugasFile();
-                                $modelFile->surat_tugas_id = $model->surat_tugas_id;
-                                $modelFile->nama_file = $status->fileinfo[$i]->name;
-                                //$modelFile->lokasi_file = $fileDir;
-                                $modelFile->kode_file = $status->fileinfo[$i]->id;
-                                if(!$modelFile->save()){
-                                    $errors = $modelFile->errors;
-                                    print_r(array_values($errors));
-                                    die();
-                                }
-                            }
+                if($status != null && $status->status == 'success'){
+                    $total = count($status->fileinfo);
+                    for ($i=0;$i<$total;$i++)
+                    {
+                        $modelFile = new SuratTugasFile();
+                        $modelFile->surat_tugas_id = $model->surat_tugas_id;
+                        $modelFile->nama_file = $status->fileinfo[$i]->name;
+                        //$modelFile->lokasi_file = $fileDir;
+                        $newFiles->kode_file = $status->fileinfo[$i]->id;
+                        if($modelFile->validate()){
+                            //Save file to directory $fileDir
+                            //$file->saveAs($fileDir);
+
+                            $modelFile->save();
+                        }else{
+                            $errors = $modelFile->errors;
+                            print_r(array_values($errors));
+                            die();
                         }
+                    }
+                }
+                
+                // $model->files = UploadedFile::getInstances($model, 'files');
                 // if($model->files != null){
-                //     $model->files = UploadedFile::getInstances($model, 'files');
                 //     foreach($model->files as $file){
                 //         $modelFile = new SuratTugasFile();
                 //         $fileDir = 'uploads/attachments/' . $file->baseName . '.' . $file->extension;
@@ -624,8 +673,9 @@ class SuratTugasController extends Controller
                 //             die();
                 //         }
                 //     }
-                    return $this->redirect(['view-pegawai', 'id' => $model->surat_tugas_id]);
-                //}
+                // }
+           
+                return $this->redirect(['view-pegawai', 'id' => $model->surat_tugas_id]);
             }else{
                 $errors = $model->errors;
                 print_r(array_values($errors));
@@ -642,13 +692,6 @@ class SuratTugasController extends Controller
         }
     }
 
-    /**
-     * Finds the SuratTugas model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return SuratTugas the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
     protected function findModel($id)
     {
         if (($model = SuratTugas::findOne($id)) !== null) {
@@ -659,12 +702,9 @@ class SuratTugasController extends Controller
     }
 
     /**
-     * Other action
+     * action-id: pegawais
+     * action-desc: return JSON format data of pegawai
      */
-
-    /**
-    * Get data from Pegawai table
-    */
     public function actionPegawais()
     {
         if(null !== Yii::$app->request->post()){
@@ -676,6 +716,10 @@ class SuratTugasController extends Controller
         }
     }
 
+    /**
+     * action-id: pegawais-bawahan
+     * action-desc: Return JSON format data of subordinate
+     */
     public function actionPegawaisBawahan($id){
         if(null !== Yii::$app->request->post()){
             $pegawais = InstApiModel::getBawahanByPegawaiId($id);
@@ -687,9 +731,6 @@ class SuratTugasController extends Controller
         }
     }
 
-    /**
-    * Download attachments from surat tugas
-    */
     // public function actionDownloadAttachments($id){
     //     $model = SuratTugasFile::find()->where(['surat_tugas_file_id' => $id])->one();
     //     $path = Yii::getAlias('@webroot').'/';
@@ -701,9 +742,6 @@ class SuratTugasController extends Controller
     //     }
     // }
 
-    /**
-     * Download reports from surat tugas
-     */
     // public function actionDownloadReports($id){
     //     $model = LaporanSuratTugas::find()->where(['laporan_surat_tugas_id' => $id])->one();
     //     $path = Yii::getAlias('@webroot').'/';
@@ -716,12 +754,13 @@ class SuratTugasController extends Controller
     // }
 
     /**
-    * Review Surat Tugas
-    */
+     * action-id: review
+     * action-desc: Give review to specific surat tugas
+     */
     public function actionReview($id){
         $model = $this->findModel($id);
         if($model->load(Yii::$app->request->post())){
-            $model->status_id = 2;
+            $model->name = 2;
             if($model->validate()){
                 $model->save();
                 return $this->redirect(['view-surat-bawahan', 'id' => $model->surat_tugas_id]);
@@ -733,14 +772,15 @@ class SuratTugasController extends Controller
     }
 
     /**
-    * Terima Surat Tugas
-    */
+     * action-id: terbitkan
+     * action-desc: Publish specific surat tugas
+     */
     public function actionTerbitkan($id){
         $model = $this->findModel($id);
         $modelLaporan = new LaporanSuratTugas();
 
         if($model->load(Yii::$app->request->post())){
-            $model->status_id = 3;
+            $model->name = 3;
             $modelLaporan->surat_tugas_id = $id;
             $modelLaporan->status_id = 8;
             $modelLaporan->batas_submit = date('Y-m-d H:i:s', strtotime('+2 day', strtotime($model->tanggal_kembali)));
@@ -760,10 +800,14 @@ class SuratTugasController extends Controller
         }
     }
 
+    /**
+     * action-id: terima
+     * action-desc: Accept specific surat tugas
+     */
     public function actionTerima($id){
         $model = $this->findModel($id);
-        // if($model->load(Yii::$app->request->post(), "")){
-            $model->status_id = 6;
+        if($model->name == 1 || $model->name == 2 || $model->name == 4 || $model->name == 6){
+            $model->name = 6;
             if($model->validate()){
                 $model->save();
                 return $this->redirect(['view-surat-bawahan', 'id' => $model->surat_tugas_id]);
@@ -771,16 +815,20 @@ class SuratTugasController extends Controller
                 $errors = $model->errors;
                 print_r(array_values($errors));
             }
-        // }
+        }else{
+            \Yii::$app->messenger->addErrorFlash("Surat tugas telah diterbitkan");
+            $this->redirect('index-surat-bawahan');
+        }
     }
 
     /**
-    * Tolak Surat Tugas
-    */
+     * action-id: tolak
+     * action-desc: Reject specific surat tugas
+     */
     public function actionTolak($id){
         $model = $this->findModel($id);
-        // if($model->load(Yii::$app->request->post(), "")){
-            $model->status_id = 4;
+        if($model->name == 1 || $model->name == 2 || $model->name == 4 || $model->name == 6){
+            $model->name = 4;
             if($model->validate()){
                 $model->save();
                 return $this->redirect(['view-surat-bawahan', 'id' => $model->surat_tugas_id]);
@@ -788,12 +836,16 @@ class SuratTugasController extends Controller
                 $errors = $model->errors;
                 print_r(array_values($errors));
             }
-        // }
+        }else{
+            \Yii::$app->messenger->addErrorFlash("Surat tugas telah diterbitkan");
+            $this->redirect('index-surat-bawahan');
+        }
     }
 
     /**
-    * Buka Submission
-    */
+     * action-id: buka-submission?id=
+     * action-desc: Open report submission time for specific surat tugas
+     */
     // public function actionBukaSubmission($id){
     //     $model = $this->findModel($id);
     //     $modelLaporan = new LaporanSuratTugas();
@@ -851,8 +903,9 @@ class SuratTugasController extends Controller
     // }
 
     /**
-    * Ubah Submission
-    */
+     * action-id: edit-submission
+     * action-desc: Edit report submission time of specific surat tugas
+     */
     public function actionEditSubmission($id){
         $model = $this->findModel($id);
         $modelLaporan = SuratTugas::getLaporan($id);
@@ -868,47 +921,40 @@ class SuratTugasController extends Controller
     }
 
     /**
-    * Hapus Peserta
-    */
+     * action-id: delete-peserta
+     * action-desc: Remove assignee from specific surat tugas dalam kampus
+     */
     public function actionDeletePeserta($id, $surattugas){
         $model = SuratTugasAssignee::find()->where(['id_pegawai' => $id])->andWhere(['surat_tugas_id' => $surattugas])->one();
-        $model->forceDelete();
-
-        return $this->redirect(['edit-dalam-kampus', 'id' => $surattugas]);
-    }
-
-    public function actionDeletePesertaLuar($id, $surattugas){
-        $model = SuratTugasAssignee::find()->where(['id_pegawai' => $id])->andWhere(['surat_tugas_id' => $surattugas])->one();
-        $model->forceDelete();
-
-        return $this->redirect(['edit-luar-kampus', 'id' => $surattugas]);
+        if($model->forceDelete())
+            return $this->redirect(['edit-dalam-kampus', 'id' => $surattugas]);
     }
 
     /**
-     * Hapus Lampiran
+     * action-id: delete-peserta-luar
+     * action-desc: Remove assignee from specific surat tugas luar kampus
+     */
+    public function actionDeletePesertaLuar($id, $surattugas){
+        $model = SuratTugasAssignee::find()->where(['id_pegawai' => $id])->andWhere(['surat_tugas_id' => $surattugas])->one();
+        if($model->forceDelete())
+            return $this->redirect(['edit-luar-kampus', 'id' => $surattugas]);
+    }
+
+    /**
+     * action-id: delete-file
+     * action-desc: Remove specific attachment from specific surat tugas
      */
     public function actionDeleteFile($id, $surattugas){
         $model = SuratTugasFile::find()->where(['file_id' => $id])->andWhere(['surat_tugas_id' => $surattugas])->one();
-        // $path = Yii::getAlias('@webroot').'/';
-        // $file = $path.$model->lokasi_file;
+        //$path = Yii::getAlias('@webroot').'/';
+        //$file = $path.$model->lokasi_file;
         //if(file_exists($file)){
             //unlink($file);
-            if($model->forceDelete()){
-                return $this->redirect(['edit-dalam-kampus', 'id' => $surattugas]);        
-            }
-            else{
-                echo '<pre>';
-                print_r($model->errors);
-                die;
-            }
+            if($model->softDelete())
+                return $this->redirect(['edit-dalam-kampus', 'id' => $surattugas]);
         //}
-
-        
     }
 
-    /**
-     * Ambil Sisa Atasan
-     */
     public function getSisaAtasan($pegawai_id, $surattugas, $instansi_id=null){
         $modelAssigned = SuratTugas::getAssignedAtasan($surattugas);
 
@@ -928,21 +974,19 @@ class SuratTugasController extends Controller
     }
 
     /**
-     * Hapus Atasan
+     * action-id: delete-atasan
+     * action-desc: Remove superior from specific surat tugas
      */
     public function actionDeleteAtasan($id, $surattugas){
         $modelAtasan = AtasanSuratTugas::find()->where(['id_pegawai' => $id])->andWhere(['surat_tugas_id' => $surattugas])->one();
-        if($modelAtasan->forceDelete()){
-            return $this->redirect(['edit-dalam-kampus', 'id' => $surattugas]);
-        }else{
-                echo '<pre>';
-                print_r($modelAtasan->errors);
-                die;
-            }
+        $modelAtasan->forceDelete();
+
+        return $this->redirect(['edit-dalam-kampus', 'id' => $surattugas]);
     }
 
     /**
-     * Submit Laporan
+     * action-id: submit-laporan
+     * action-desc: Submit report of specific surat tugas
      */
     public function actionSubmitLaporan($id){
         $model = $this->findModel($id);
@@ -952,22 +996,6 @@ class SuratTugasController extends Controller
 
         if(round($datediff / (60 * 60 * 24)) >= 2){
             //Files Handler
-            $status = \Yii::$app->fileManager->saveUploadedFiles();
-                        if($status != null && $status->status == 'success'){
-                            $total = count($status->fileinfo);
-                            for ($i=0;$i<$total;$i++)
-                            {
-                                $modelLaporan->status_id = 7;
-                                $modelLaporan->nama_file = $status->fileinfo[$i]->name;
-                                //$modelFile->lokasi_file = $fileDir;
-                                $modelLaporan->kode_file = $status->fileinfo[$i]->id;
-                                if(!$modelLaporan->save()){
-                                    $errors = $modelLaporan->errors;
-                                    print_r(array_values($errors));
-                                    die();
-                                }
-                            }
-                        }
             // $model->files = UploadedFile::getInstances($model, 'files');
             // foreach($model->files as $file){
             //     $fileDir = 'uploads/reports/' . $file->baseName . '.' . $file->extension;
@@ -984,7 +1012,28 @@ class SuratTugasController extends Controller
             //         print_r(array_values($errors));
             //         die();
             //     }
-            // }
+                $status = \Yii::$app->fileManager->saveUploadedFiles();
+                        if($status != null && $status->status == 'success'){
+                            $total = count($status->fileinfo);
+                            for ($i=0;$i<$total;$i++)
+                            {
+                                $modelLaporan->status_id = 7;
+                                $modelLaporan->nama_file = $status->fileinfo[$i]->name;
+                                $modelLaporan->kode_laporan = $status->fileinfo[$i]->id;;
+                                
+                                if($modelLaporan->validate()){
+                                    //Save file to directory $fileDir
+                                    //$file->saveAs($fileDir);
+
+                                    $modelLaporan->save();
+                                }else{
+                                    $errors = $modelLaporan->errors;
+                                    print_r(array_values($errors));
+                                    die();
+                                }
+                            }
+                        }
+            //}
 
             return $this->redirect(['view-pegawai', 'id' => $id]);
         }else{
@@ -994,7 +1043,8 @@ class SuratTugasController extends Controller
     }
 
     /**
-     * Print Surat Tugas
+     * action-id: create-pdf
+     * action-desc: Print specific surat tugas
      */
     public function actionCreatePdf($id){
         $modelLaporan = SuratTugas::find()->where(['surat_tugas_id' => $id])->one();
@@ -1012,7 +1062,8 @@ class SuratTugasController extends Controller
     }
 
     /**
-     * Terima Laporan
+     * action-id: terima-laporan
+     * action-desc: Accept report of specific surat tugas
      */
     public function actionTerimaLaporan($id){
         $model = LaporanSuratTugas::find()->where(['surat_tugas_id' => $id])->one();
@@ -1033,11 +1084,11 @@ class SuratTugasController extends Controller
     }
 
     /**
-     * Tolak Laporan
+     * action-id: tolak-laporan
+     * action-desc: Reject report of specific surat tugas
      */
     public function actionTolakLaporan($id){
         $model = LaporanSuratTugas::find()->where(['surat_tugas_id' => $id])->one();
-        // if($model->load(Yii::$app->request->post(), "")){
         if($model != null  && $model->nama_file != null){
             $model->status_id = 10;
             if($model->validate()){
@@ -1054,7 +1105,8 @@ class SuratTugasController extends Controller
     }
 
     /**
-     * Penugasan Luar Kampus
+     * action-id: add-penugasan-luar-kampus
+     * action-desc: If there are post request, call save function else render _formPenugasanLuarKampus
      */
     public function actionAddPenugasanLuarKampus(){
         $model = new SuratTugas();
@@ -1063,7 +1115,7 @@ class SuratTugasController extends Controller
         if($model->load(Yii::$app->request->post())){
             $model->perequest = $modelPegawai->pegawai_id;
             $model->jenis_surat_id = 3;
-            $model->status_id = 6;
+            $model->name = 6;
 
             if($model->validate()){
                 $model->save();
@@ -1114,16 +1166,21 @@ class SuratTugasController extends Controller
                                 $modelFile->surat_tugas_id = $model->surat_tugas_id;
                                 $modelFile->nama_file = $status->fileinfo[$i]->name;
                                 //$modelFile->lokasi_file = $fileDir;
-                                $modelFile->kode_file = $status->fileinfo[$i]->id;
-                                if(!$modelFile->save()){
+                                $newFiles->kode_file = $status->fileinfo[$i]->id;
+                                if($modelFile->validate()){
+                                    //Save file to directory $fileDir
+                                    //$file->saveAs($fileDir);
+
+                                    $modelFile->save();
+                                }else{
                                     $errors = $modelFile->errors;
                                     print_r(array_values($errors));
                                     die();
                                 }
                             }
                         }
+                // $model->files = UploadedFile::getInstances($model, 'files');
                 // if($model->files != null){
-                //     $model->files = UploadedFile::getInstances($model, 'files');
                 //     foreach($model->files as $file){
                 //         $modelFile = new SuratTugasFile();
                 //         $fileDir = 'uploads/attachments/' . $file->baseName . '.' . $file->extension;
@@ -1161,7 +1218,8 @@ class SuratTugasController extends Controller
     }
     
     /**
-     * Tambah Keterangan
+     * action-id: add-keterangan
+     * action-desc: Add description of specific surat tugas
      */
     public function actionAddKeterangan($id){
         $model = $this->findModel($id);
@@ -1179,7 +1237,8 @@ class SuratTugasController extends Controller
     }
 
     /**
-     * Tambah Catatan
+     * action-id: add-catatan
+     * action-desc: Give note to specific surat tugas
      */
     public function actionAddCatatan($id){
         $model = $this->findModel($id);
@@ -1197,7 +1256,8 @@ class SuratTugasController extends Controller
     }
 
     /**
-     * Konfimasi Tolak Surat Tugas
+     * action-id: tolak-surat-tugas
+     * action-desc: Confirmation before rejecting surat tugas
      */
     public function actionTolakSuratTugas($id){
         return $this->render('TolakSuratTugas', [
@@ -1206,7 +1266,8 @@ class SuratTugasController extends Controller
     }
 
     /**
-     * Konfimasi Laporan Surat Tugas
+     * action-id: tolak-laporan-tugas
+     * action-desc: Confirmation before rejecting report of surat tugas
      */
     public function actionTolakLaporanTugas($id){
         return $this->render('TolakLaporanTugas', [

@@ -23,7 +23,7 @@ $uiHelper=\Yii::$app->uiHelper;
     <div class="pull-right">
         Pengaturan
         <?= $uiHelper->renderButtonSet([
-                'template' => ['addKamar'],//, 'reset'],
+                'template' => ['addKamar', 'reset'],
                 'buttons' => [
                     'addKamar' => ['url' => Url::toRoute(['add-kamar']), 'label'=> 'Tambah Kamar', 'icon'=>'fa fa-plus'],
                     'reset' => ['url' => Url::toRoute(['reset-all-kamar', 'asrama_id' => $_GET['KamarSearch']['asrama_id']]), 'label'=> 'Reset Semua Kamar', 'icon'=>'fa fa-refresh'],
@@ -66,7 +66,7 @@ $uiHelper=\Yii::$app->uiHelper;
                 'value' => function($data){
                     return LinkHelper::renderLink([
                             'label' => '<strong>'.$data['asrama']->name.'</strong>',
-                            'url' => Url::to(['asrama/view', 'id' => $data['asrama_id']]),
+                            'url' => Url::to(['asrama/view-detail-asrama', 'id' => $data['asrama_id']]),
                         ]);
                 }
             ],

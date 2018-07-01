@@ -20,10 +20,10 @@ class PosisiPaketController extends Controller
     {
         return [
             //TODO: crud controller actions are bypassed by default, set the appropriate privilege
-           'privilege' => [
-                 'class' => \Yii::$app->privilegeControl->getAppPrivilegeControlClass(),
-                 'skipActions' => [],
-                ],
+          'privilege' => [
+                'class' => \Yii::$app->privilegeControl->getAppPrivilegeControlClass(),
+                'skipActions' => [],
+               ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [

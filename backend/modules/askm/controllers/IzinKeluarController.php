@@ -8,12 +8,11 @@ use backend\modules\askm\models\search\IzinKeluarSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use backend\modules\adak\models\Registrasi;
 
 /**
  * IzinKeluarController implements the CRUD actions for IzinKeluar model.
-  * controller-id: izin-keluar
- * controller-desc: Controller untuk me-manage data izin keluar mahasiswa
+   * controller-id: izin-keluar
+ * controller-desc: Controller untuk me-manage data Izin Bermalam Mahasiswa
  */
 class IzinKeluarController extends Controller
 {
@@ -23,7 +22,7 @@ class IzinKeluarController extends Controller
             //TODO: crud controller actions are bypassed by default, set the appropriate privilege
             'privilege' => [
                  'class' => \Yii::$app->privilegeControl->getAppPrivilegeControlClass(),
-                 'skipActions' => ['*'],
+                 'skipActions' => [],
                 ],
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -72,7 +71,7 @@ class IzinKeluarController extends Controller
     public function actionIkaByDosenIndex()
     {
         $searchModel = new IzinKeluarSearch();
-        $dataProvider = $searchModel->searchByDosenWali(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('IkaByDosenIndex', [
             'searchModel' => $searchModel,
@@ -173,15 +172,8 @@ class IzinKeluarController extends Controller
     {
         $model = new IzinKeluar();
 
-        if ($model->load(Yii::$app->request->post())) {
-            $registrasi = Registrasi::find()->where('adak_registrasi.deleted!=1')->andWhere(['adak_registrasi.ta' => Yii::$app->appConfig->get('tahun_ajaran', true), 'adak_registrasi.sem_ta' => Yii::$app->appConfig->get('semester_tahun_ajaran', true)])->joinWith([
-                'dim.user' => function($query){
-                    $query->where(['sysx_user.user_id' => \Yii::$app->user->identity->user_id])->andWhere('sysx_user.deleted!=1');
-                }
-            ])->orderBy(['adak_registrasi.created_at' => SORT_DESC])->one();
-            $model->dosen_wali_id = $registrasi->dosen_wali_id;
-            if($model->save())
-                return $this->redirect(['ika-by-mahasiswa-view', 'id' => $model->izin_keluar_id]);
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['ika-by-mahasiswa-view', 'id' => $model->izin_keluar_id]);
         } else {
             return $this->render('IkaByMahasiswaAdd', [
                 'model' => $model,
@@ -473,10 +465,6 @@ class IzinKeluarController extends Controller
      * @param integer $id
      * @return mixed
      */
-    /*
-    * action-id: del
-    * action-desc: Menghapus izin keluar kampus
-    */
     public function actionDel($id)
     {
         $this->findModel($id)->softDelete();

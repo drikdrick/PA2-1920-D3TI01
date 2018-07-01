@@ -67,13 +67,13 @@ use common\behaviors\DeleteBehavior;
  *
  * @property AdakPenugasanPengajaran[] $adakPenugasanPengajarans
  * @property AdakRegistrasi[] $adakRegistrasis
- * @property AskmIzinBermalam[] $askmIzinBermalams
- * @property AskmIzinKeluar[] $askmIzinKeluars
- * @property AskmIzinKeluar[] $askmIzinKeluars0
- * @property AskmIzinKeluar[] $askmIzinKeluars1
- * @property AskmIzinKolaboratif[] $askmIzinKolaboratifs
- * @property AskmIzinRuangan[] $askmIzinRuangans
- * @property AskmKeasramaan[] $askmKeasramaans
+ * @property IzinBermalam[] $IzinBermalams
+ * @property IzinKeluar[] $IzinKeluars
+ * @property IzinKeluar[] $IzinKeluars0
+ * @property IzinKeluar[] $IzinKeluars1
+ * @property IzinKolaboratif[] $IzinKolaboratifs
+ * @property IzinRuangan[] $IzinRuangans
+ * @property Keasramaan[] $Keasramaans
  * @property HrdxDosen[] $hrdxDosens
  * @property MrefRJenisKelamin $jenisKelamin
  * @property MrefRAgama $agama
@@ -84,7 +84,7 @@ use common\behaviors\DeleteBehavior;
  * @property MrefRStatusAktifPegawai $statusAktifPegawai
  * @property MrefRStatusIkatanKerjaPegawai $statusIkatanKerjaPegawai
  * @property MrefRStatusMarital $statusMarital
- * @property SysxUser $user
+ * @property User $user
  * @property HrdxPengajar[] $hrdxPengajars
  * @property HrdxRiwayatPendidikan[] $hrdxRiwayatPendidikans
  * @property HrdxStaf[] $hrdxStafs
@@ -147,16 +147,6 @@ class Pegawai extends \yii\db\ActiveRecord
             [['ext_num'], 'string', 'max' => 3],
             [['jabatan', 'status_akhir', 'status'], 'string', 'max' => 1],
             [['deleted_by', 'created_by', 'updated_by'], 'string', 'max' => 32],
-            [['jenis_kelamin_id'], 'exist', 'skipOnError' => true, 'targetClass' => MrefRJenisKelamin::className(), 'targetAttribute' => ['jenis_kelamin_id' => 'jenis_kelamin_id']],
-            [['agama_id'], 'exist', 'skipOnError' => true, 'targetClass' => MrefRAgama::className(), 'targetAttribute' => ['agama_id' => 'agama_id']],
-            [['golongan_darah_id'], 'exist', 'skipOnError' => true, 'targetClass' => MrefRGolonganDarah::className(), 'targetAttribute' => ['golongan_darah_id' => 'golongan_darah_id']],
-            [['jabatan_akademik_id'], 'exist', 'skipOnError' => true, 'targetClass' => MrefRJabatanAkademik::className(), 'targetAttribute' => ['jabatan_akademik_id' => 'jabatan_akademik_id']],
-            [['kabupaten_id'], 'exist', 'skipOnError' => true, 'targetClass' => MrefRKabupaten::className(), 'targetAttribute' => ['kabupaten_id' => 'kabupaten_id']],
-            [['ref_kbk_id'], 'exist', 'skipOnError' => true, 'targetClass' => InstProdi::className(), 'targetAttribute' => ['ref_kbk_id' => 'ref_kbk_id']],
-            [['status_aktif_pegawai_id'], 'exist', 'skipOnError' => true, 'targetClass' => MrefRStatusAktifPegawai::className(), 'targetAttribute' => ['status_aktif_pegawai_id' => 'status_aktif_pegawai_id']],
-            [['status_ikatan_kerja_pegawai_id'], 'exist', 'skipOnError' => true, 'targetClass' => MrefRStatusIkatanKerjaPegawai::className(), 'targetAttribute' => ['status_ikatan_kerja_pegawai_id' => 'status_ikatan_kerja_pegawai_id']],
-            [['status_marital_id'], 'exist', 'skipOnError' => true, 'targetClass' => MrefRStatusMarital::className(), 'targetAttribute' => ['status_marital_id' => 'status_marital_id']],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => SysxUser::className(), 'targetAttribute' => ['user_id' => 'user_id']]
         ];
     }
 
@@ -225,232 +215,57 @@ class Pegawai extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAdakPenugasanPengajarans()
+    public function getIzinBermalams()
     {
-        return $this->hasMany(AdakPenugasanPengajaran::className(), ['pegawai_id' => 'pegawai_id']);
+        return $this->hasMany(IzinBermalam::className(), ['keasramaan_id' => 'pegawai_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAdakRegistrasis()
+    public function getIzinKeluars()
     {
-        return $this->hasMany(AdakRegistrasi::className(), ['dosen_wali_id' => 'pegawai_id']);
+        return $this->hasMany(IzinKeluar::className(), ['dosen_id' => 'pegawai_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAskmIzinBermalams()
+    public function getIzinKeluars0()
     {
-        return $this->hasMany(AskmIzinBermalam::className(), ['keasramaan_id' => 'pegawai_id']);
+        return $this->hasMany(IzinKeluar::className(), ['keasramaan_id' => 'pegawai_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAskmIzinKeluars()
+    public function getIzinKeluars1()
     {
-        return $this->hasMany(AskmIzinKeluar::className(), ['dosen_id' => 'pegawai_id']);
+        return $this->hasMany(IzinKeluar::className(), ['staf_id' => 'pegawai_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAskmIzinKeluars0()
+    public function getIzinKolaboratifs()
     {
-        return $this->hasMany(AskmIzinKeluar::className(), ['keasramaan_id' => 'pegawai_id']);
+        return $this->hasMany(IzinKolaboratif::className(), ['staf_id' => 'pegawai_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAskmIzinKeluars1()
+    public function getIzinRuangans()
     {
-        return $this->hasMany(AskmIzinKeluar::className(), ['staf_id' => 'pegawai_id']);
+        return $this->hasMany(IzinRuangan::className(), ['staf_id' => 'pegawai_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAskmIzinKolaboratifs()
+    public function getKeasramaans()
     {
-        return $this->hasMany(AskmIzinKolaboratif::className(), ['staf_id' => 'pegawai_id']);
+        return $this->hasMany(Keasramaan::className(), ['pegawai_id' => 'pegawai_id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAskmIzinRuangans()
-    {
-        return $this->hasMany(AskmIzinRuangan::className(), ['staf_id' => 'pegawai_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAskmKeasramaans()
-    {
-        return $this->hasMany(AskmKeasramaan::className(), ['pegawai_id' => 'pegawai_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getHrdxDosens()
-    {
-        return $this->hasMany(HrdxDosen::className(), ['pegawai_id' => 'pegawai_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getJenisKelamin()
-    {
-        return $this->hasOne(MrefRJenisKelamin::className(), ['jenis_kelamin_id' => 'jenis_kelamin_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAgama()
-    {
-        return $this->hasOne(MrefRAgama::className(), ['agama_id' => 'agama_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getGolonganDarah()
-    {
-        return $this->hasOne(MrefRGolonganDarah::className(), ['golongan_darah_id' => 'golongan_darah_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getJabatanAkademik()
-    {
-        return $this->hasOne(MrefRJabatanAkademik::className(), ['jabatan_akademik_id' => 'jabatan_akademik_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getKabupaten()
-    {
-        return $this->hasOne(MrefRKabupaten::className(), ['kabupaten_id' => 'kabupaten_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getRefKbk()
-    {
-        return $this->hasOne(InstProdi::className(), ['ref_kbk_id' => 'ref_kbk_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getStatusAktifPegawai()
-    {
-        return $this->hasOne(MrefRStatusAktifPegawai::className(), ['status_aktif_pegawai_id' => 'status_aktif_pegawai_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getStatusIkatanKerjaPegawai()
-    {
-        return $this->hasOne(MrefRStatusIkatanKerjaPegawai::className(), ['status_ikatan_kerja_pegawai_id' => 'status_ikatan_kerja_pegawai_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getStatusMarital()
-    {
-        return $this->hasOne(MrefRStatusMarital::className(), ['status_marital_id' => 'status_marital_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUser()
-    {
-        return $this->hasOne(SysxUser::className(), ['user_id' => 'user_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getHrdxPengajars()
-    {
-        return $this->hasMany(HrdxPengajar::className(), ['pegawai_id' => 'pegawai_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getHrdxRiwayatPendidikans()
-    {
-        return $this->hasMany(HrdxRiwayatPendidikan::className(), ['pegawai_id' => 'pegawai_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getHrdxStafs()
-    {
-        return $this->hasMany(HrdxStaf::className(), ['pegawai_id' => 'pegawai_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getInstPejabats()
-    {
-        return $this->hasMany(InstPejabat::className(), ['pegawai_id' => 'pegawai_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getInvtPicBarangs()
-    {
-        return $this->hasMany(InvtPicBarang::className(), ['pegawai_id' => 'pegawai_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getLppmTLogreviews()
-    {
-        return $this->hasMany(LppmTLogreview::className(), ['pegawai_id' => 'pegawai_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getLppmTPublikasis()
-    {
-        return $this->hasMany(LppmTPublikasi::className(), ['pegawai_id' => 'pegawai_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPrklCourseUnits()
-    {
-        return $this->hasMany(PrklCourseUnit::className(), ['pegawai_id' => 'pegawai_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPrklKrsMhs()
-    {
-        return $this->hasMany(PrklKrsMhs::className(), ['approved_by' => 'pegawai_id']);
-    }
 }

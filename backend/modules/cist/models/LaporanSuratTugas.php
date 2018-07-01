@@ -61,7 +61,7 @@ class LaporanSuratTugas extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['tanggal_submit', 'deleted_at', 'updated_at', 'created_at', 'batas_submit', 'kode_laporan'], 'safe'],
+            [['tanggal_submit', 'deleted_at', 'updated_at', 'created_at', 'batas_submit'], 'safe'],
             [['surat_tugas_id', 'batas_submit'], 'required'],
             [['surat_tugas_id', 'deleted', 'status_id'], 'integer'],
             [['nama_file', 'lokasi_file'], 'string', 'max' => 200],
@@ -80,7 +80,6 @@ class LaporanSuratTugas extends \yii\db\ActiveRecord
             'laporan_surat_tugas_id' => 'Id Laporan',
             'nama_file' => 'Nama File',
             'lokasi_file' => 'Lokasi File',
-            'kode_laporan' => 'Kode Laporan',
             'tanggal_submit' => 'Tanggal Submit',
             'surat_tugas_id' => 'Id Surat Tugas',
             'status_id' => 'status_id',
