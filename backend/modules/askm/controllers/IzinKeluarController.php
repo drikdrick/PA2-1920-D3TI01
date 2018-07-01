@@ -71,7 +71,7 @@ class IzinKeluarController extends Controller
     public function actionIkaByDosenIndex()
     {
         $searchModel = new IzinKeluarSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->searchByDosenWali(Yii::$app->request->queryParams);
 
         return $this->render('IkaByDosenIndex', [
             'searchModel' => $searchModel,
