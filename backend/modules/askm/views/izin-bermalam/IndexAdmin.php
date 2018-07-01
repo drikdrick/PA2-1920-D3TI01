@@ -4,7 +4,8 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\GridView;
 use common\components\ToolsColumn;
-use backend\modules\models\Asrama;
+use backend\modules\askm\models\Asrama;
+use backend\modules\askm\models\IzinBermalam;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\modules\askm\models\search\IzinBermalamSearch */
@@ -13,6 +14,8 @@ use backend\modules\models\Asrama;
 $this->title = 'Izin Bermalam';
 $this->params['breadcrumbs'][] = $this->title;
 $uiHelper=\Yii::$app->uiHelper;
+$asramaCount = Asrama::find()->andWhere('deleted != 1')->all();
+$requestCount = IzinBermalam::find()->where('status_request_id = 1')->andWhere('deleted != 1')->all();
 ?>
 <div class="izin-bermalam-index">
 
@@ -48,146 +51,52 @@ $uiHelper=\Yii::$app->uiHelper;
 
     <?=$uiHelper->beginContentRow() ?>
 
-        <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-maroon">
-            <div class="inner">
-                <h4>Pniel</h4>
-
-                <div class="icon">
-                    <i class="ion" style="color: #fff"><?php echo $countPniel; ?></i>
-                </div>
-
-              <p>Request Masuk</p>
-            </div>
-
-            <a href="izin-by-admin-index?IzinBermalamSearch%5Bdim_asrama%5D=4&IzinBermalamSearch%5Bstatus_request_id%5D=1" class="small-box-footer">Lihat <i class="fa fa-arrow-circle-right"></i></a>
-          </div>
-        </div>
+        <?php 
+            $i = 0;
+            foreach ($asramaCount as $row) { 
+                $i++;
+        ?>
 
         <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-orange">
-            <div class="inner">
-                <h4>Kapernaum</h4>
+            <!-- small box -->
+            <div class="small-box bg-aqua">
+                <div class="inner">
+
+                    <h4><?php echo $row->name; ?></h4>
 
                 <div class="icon">
-                    <i class="ion" style="color: #fff"><?php echo $countKapernaum; ?></i>
+                    <i class="ion" style="color: #fff">
+                        <?php
+                        
+                        $count = 0;
+                        foreach($requestCount as $c){
+                            if($c->status_request_id == 1){
+                                foreach($c->dim->dimKamar as $k){
+                                    if($k->kamar->asrama_id == $row->asrama_id){
+                                        $count++;
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+
+                        echo $count;
+
+                        ?>    
+                    </i>
                 </div>
 
-              <p>Request Masuk</p>
-            </div>
-
-            <a href="izin-by-admin-index?IzinBermalamSearch%5Bdim_asrama%5D=2&IzinBermalamSearch%5Bstatus_request_id%5D=1" class="small-box-footer">Lihat <i class="fa fa-arrow-circle-right"></i></a>
-          </div>
-        </div>
-
-        <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-olive">
-            <div class="inner">
-                <h4>Silo</h4>
-
-                <div class="icon">
-                    <i class="ion" style="color: #fff"><?php echo $countSilo; ?></i>
+                    <p>Request Masuk</p>
                 </div>
-
-              <p>Request Masuk</p>
+                <a href="izin-by-admin-index?IzinBermalamSearch%5Bdim_asrama%5D=<?php echo $i; ?>&IzinBermalamSearch%5Bstatus_request_id%5D=1" class="small-box-footer">Lihat <i class="fa fa-arrow-circle-right"></i></a>
             </div>
-
-            <a href="izin-by-admin-index?IzinBermalamSearch%5Bdim_asrama%5D=1&IzinBermalamSearch%5Bstatus_request_id%5D=1" class="small-box-footer">Lihat <i class="fa fa-arrow-circle-right"></i></a>
-          </div>
         </div>
 
-        <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-lime">
-            <div class="inner">
-                <h4>Betfage</h4>
+    <?php
+        }
+    ?>
 
-                <div class="icon">
-                    <i class="ion" style="color: #fff"><?php echo $countBetvage; ?></i>
-                </div>
-
-              <p>Request Masuk</p>
-            </div>
-
-            <a href="izin-by-admin-index?IzinBermalamSearch%5Bdim_asrama%5D=3&IzinBermalamSearch%5Bstatus_request_id%5D=1" class="small-box-footer">Lihat <i class="fa fa-arrow-circle-right"></i></a>
-          </div>
-        </div>
-
-    <?=$uiHelper->endContentRow() ?>
-
-    <?=$uiHelper->beginContentRow() ?>
-
-        <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-fuchsia">
-            <div class="inner">
-                <h4>Anthiokia</h4>
-
-                <div class="icon">
-                    <i class="ion" style="color: #fff"><?php echo $countAnthiokia; ?></i>
-                </div>
-
-              <p>Request Masuk</p>
-            </div>
-
-            <a href="izin-by-admin-index?IzinBermalamSearch%5Bdim_asrama%5D=5&IzinBermalamSearch%5Bstatus_request_id%5D=1" class="small-box-footer">Lihat <i class="fa fa-arrow-circle-right"></i></a>
-          </div>
-        </div>
-
-        <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-aqua">
-            <div class="inner">
-                <h4>Mahanaim</h4>
-
-                <div class="icon">
-                    <i class="ion" style="color: #fff"><?php echo $countMahanaim; ?></i>
-                </div>
-
-              <p>Request Masuk </p>
-            </div>
-
-            <a href="izin-by-admin-index?IzinBermalamSearch%5Bdim_asrama%5D=8&IzinBermalamSearch%5Bstatus_request_id%5D=1" class="small-box-footer">Lihat <i class="fa fa-arrow-circle-right"></i></a>
-          </div>
-        </div>
-
-        <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-purple">
-            <div class="inner">
-                <h4>Mamre</h4>
-
-                <div class="icon">
-                    <i class="ion" style="color: #fff"><?php echo $countMamre; ?></i>
-                </div>
-
-              <p>Request Masuk</p>
-            </div>
-
-            <a href="izin-by-admin-index?IzinBermalamSearch%5Bdim_asrama%5D=7&IzinBermalamSearch%5Bstatus_request_id%5D=1" class="small-box-footer">Lihat <i class="fa fa-arrow-circle-right"></i></a>
-          </div>
-        </div>
-
-        <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-teal">
-            <div class="inner">
-                <h4>Nazareth</h4>
-
-                <div class="icon">
-                    <i class="ion" style="color: #fff"><?php echo $countNazareth; ?></i>
-                </div>
-
-              <p>Request Masuk</p>
-            </div>
-
-            <a href="izin-by-admin-index?IzinBermalamSearch%5Bdim_asrama%5D=6&IzinBermalamSearch%5Bstatus_request_id%5D=1" class="small-box-footer">Lihat <i class="fa fa-arrow-circle-right"></i></a>
-          </div>
-        </div>
-
+        
     <?=$uiHelper->endContentRow() ?>
 
     <?=$uiHelper->beginContentRow() ?>

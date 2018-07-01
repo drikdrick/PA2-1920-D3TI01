@@ -4,6 +4,7 @@ namespace backend\modules\askm\controllers;
 
 use Yii;
 use backend\modules\askm\models\Kamar;
+use backend\modules\askm\models\Asrama;
 use backend\modules\askm\models\DimKamar;
 use backend\modules\askm\models\search\KamarSearch;
 use backend\modules\askm\models\search\DimKamarSearch;
@@ -13,7 +14,7 @@ use yii\filters\VerbFilter;
 
 /**
  * KamarController implements the CRUD actions for Kamar model.
-  * controller-id: kamar
+ * controller-id: kamar
  * controller-desc: Controller untuk me-manage data kamar di asrama
  */
 class KamarController extends Controller
@@ -58,30 +59,41 @@ class KamarController extends Controller
     * action-id: reset-all-kamar
     * action-desc: Me-reset semua penghuni kamar
     */
-    public function actionResetAllKamar($asrama_id){
+    public function actionResetAllKamar($asrama_id, $confirm=false){
         $models = DimKamar::find()->from('askm_kamar,askm_dim_kamar')->where(['askm_kamar.asrama_id'=>$asrama_id])->all();
-        
-        foreach($models as $model){
-            $model->forceDelete();
+        $asrama = Asrama::find()->where(['asrama_id' => $asrama_id])->one();
+
+        if ($confirm) {
+            foreach($models as $model){
+                $model->forceDelete();
+                $asrama->jumlah_mahasiswa = 0;
+                $asrama->save();
+            }
+            \Yii::$app->messenger->addInfoFlash("Penghuni kamar telah dikosongkan");
+            return $this->redirect(['kamar/index', 'KamarSearch[asrama_id]' => $asrama_id]);
         }
-        \Yii::$app->messenger->addInfoFlash("Semua kamar telah dikosongkan");
-        return $this->redirect(Yii::$app->request->referrer);
-        
+        return $this->render('confirmDeleteAll', ['asrama_id' => $asrama_id]);
     }
     
     /*
     * action-id: reset-kamar
     * action-desc: Me-reset satu penghuni kamar
     */
-    public function actionResetKamar($id){
-        $kamar = Kamar::find()->where(['kamar_id'=>$id])->one();
-        $models = DimKamar::find()->where(['kamar_id'=>$id])->all();
-        
-        foreach($models as $model){
-            $model->forceDelete();
+    public function actionResetKamar($id, $confirm=false){
+        $models = DimKamar::find()->where(['kamar_id' => $id])->all();
+        $kamar = Kamar::find()->where(['kamar_id' => $id])->one();
+        $asrama = Asrama::find()->where(['asrama_id' => $kamar->asrama_id])->one();
+        if ($confirm) {
+            foreach($models as $model){
+                $model->forceDelete();
+                $asrama->jumlah_mahasiswa -=1;
+                $asrama->save();
+            }
+            \Yii::$app->messenger->addInfoFlash("Penghuni kamar telah dikosongkan");
+            return $this->redirect(['view', 'id' => $id]);
         }
-         \Yii::$app->messenger->addInfoFlash("Penghuni Kamar ".$kamar['nomor_kamar']." telah dikosongkan");
-        return $this->redirect(Yii::$app->request->referrer);
+        $k = Kamar::findOne(['kamar_id' => $id, 'deleted' => 0]);
+        return $this->render('confirmDelete', ['id' => $id, 'nomor_kamar' => $k->nomor_kamar]);
     }
     
     /*
@@ -110,6 +122,7 @@ class KamarController extends Controller
     {
         $searchModel = new DimKamarSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->query->andWhere('askm_dim_kamar.kamar_id = '.$id);
 
         return $this->render('view', [
             'dataProvider' => $dataProvider,

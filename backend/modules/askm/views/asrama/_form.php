@@ -18,8 +18,6 @@ use yii\widgets\ActiveForm;
 
             <?= $form->field($model, 'lokasi')->textInput(['maxlength' => true]) ?>
 
-            <?= $form->field($model, 'jumlah_mahasiswa')->textInput() ?>
-
             <?= $form->field($model, 'kapasitas')->textInput() ?>
         </div>
     </div>

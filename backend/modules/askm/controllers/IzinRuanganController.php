@@ -11,7 +11,7 @@ use yii\filters\VerbFilter;
 
 /**
  * IzinRuanganController implements the CRUD actions for IzinRuangan model.
-  * controller-id: izin-ruangan
+ * controller-id: izin-ruangan
  * controller-desc: Controller untuk me-manage data izin pemakaian ruangan
  */
 class IzinRuanganController extends Controller
@@ -58,7 +58,7 @@ class IzinRuanganController extends Controller
             }
         }
 
-        return $this->render('indexMahasiswa', [
+        return $this->render('IndexMahasiswa', [
             'events' => $task,
         ]);
     }
@@ -84,7 +84,7 @@ class IzinRuanganController extends Controller
             }
         }
 
-        return $this->render('indexBaak', [
+        return $this->render('IndexBaak', [
             'events' => $task,
         ]);
     }

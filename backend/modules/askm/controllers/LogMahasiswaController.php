@@ -88,7 +88,6 @@ class LogMahasiswaController extends Controller
      * @param integer $id
      * @return mixed
      */
-    
     public function actionView($id)
     {
         return $this->render('view', [

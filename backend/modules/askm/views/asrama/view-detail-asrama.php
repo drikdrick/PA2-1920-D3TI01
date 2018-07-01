@@ -19,7 +19,20 @@ $uiHelper=\Yii::$app->uiHelper;
 
     <div class="pull-right">
         Pengaturan
-        <?= $uiHelper->renderButtonSet([
+        <?php 
+        if ($model->jumlah_mahasiswa == 0) {
+            echo $uiHelper->renderButtonSet([
+                'template' => ['edit', 'keasramaan', 'kamar', 'del'],
+                'buttons' => [
+                    'edit' => ['url' => Url::toRoute(['edit', 'id' => $model->asrama_id]), 'label'=> 'Edit Asrama', 'icon'=>'fa fa-pencil'],
+                    'keasramaan' => ['url' => Url::toRoute(['keasramaan/add-pengurus', 'id_asrama' => $model->asrama_id]), 'label'=> 'Tambah Pengurus', 'icon'=>'fa fa-users'],
+                    'kamar' => ['url' => Url::toRoute(['kamar/index', 'KamarSearch[asrama_id]' => $model->asrama_id]), 'label'=> 'Daftar Kamar', 'icon'=>'fa fa-list'],
+                    'del' => ['url' => Url::toRoute(['del', 'asrama_id' => $model->asrama_id]), 'label'=> 'Hapus Asrama', 'icon'=>'fa fa-times'],
+                ],
+                
+            ]);
+        } else {
+            echo $uiHelper->renderButtonSet([
                 'template' => ['edit', 'keasramaan', 'kamar'],
                 'buttons' => [
                     'edit' => ['url' => Url::toRoute(['edit', 'id' => $model->asrama_id]), 'label'=> 'Edit Asrama', 'icon'=>'fa fa-pencil'],
@@ -27,7 +40,9 @@ $uiHelper=\Yii::$app->uiHelper;
                     'kamar' => ['url' => Url::toRoute(['kamar/index', 'KamarSearch[asrama_id]' => $model->asrama_id]), 'label'=> 'Daftar Kamar', 'icon'=>'fa fa-list'],
                 ],
                 
-            ]) ?>
+            ]);
+        }
+        ?>
     </div>
 
     <h1>Asrama <?= $this->title ?></h1>
@@ -76,7 +91,13 @@ $uiHelper=\Yii::$app->uiHelper;
                 'contentOptions' => ['style' => 'width: 8.7%'],
                 'buttons'=>[
                     'del'=>function ($url, $model) {
-                        return Html::a('<i class="fa fa-times"></i> Hapus', ['keasramaan/del-pengurus', 'id' => $model->keasramaan_id], ['class'=>'btn btn-danger']);
+                        return Html::a('<i class="fa fa-times"></i> Hapus', ['keasramaan/del-pengurus', 'id' => $model->keasramaan_id], [
+                            'class' => 'btn btn-danger',
+                            'data' => [
+                                'confirm' => 'Are you sure you want to delete this item?',
+                                'method' => 'post',
+                            ],
+                        ]);
                     },
                 ],
             ],

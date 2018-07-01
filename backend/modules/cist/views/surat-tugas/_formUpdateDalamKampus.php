@@ -95,7 +95,7 @@ use backend\modules\cist\models\Pegawai;
         foreach($modelLampiran as $data){
             echo("
             <div>
-                <p class='col-sm-8'>". $idx . ". " . $data->nama_file . "</p>" . Html::a('Hapus', ['delete-file', 'id' => $data->file_id, 'surattugas' => $model->surat_tugas_id], ['class' => 'btn btn-danger']) . 
+            <p class='col-sm-8'>". $idx . ". " . Html::a($data->nama_file, ['download-attachments', 'id' => $data->surat_tugas_file_id]) . "</p>" . Html::a('Hapus', ['delete-file', 'id' => $data->surat_tugas_file_id, 'surattugas' => $model->surat_tugas_id], ['class' => 'btn btn-danger']) . 
             "</div>");
             $idx++;
         }

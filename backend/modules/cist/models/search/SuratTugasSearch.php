@@ -49,7 +49,6 @@ class SuratTugasSearch extends SuratTugas
             'query' => $query,
             'sort' => [
                 'defaultOrder' => [
-                    'status_id' => SORT_ASC,
                     'updated_at' => SORT_DESC,
                     'created_at' => SORT_DESC
                 ]
@@ -92,7 +91,7 @@ class SuratTugasSearch extends SuratTugas
             ->andFilterWhere(['like', 'deleted_by', $this->deleted_by])
             ->andFilterWhere(['like', 'updated_by', $this->updated_by])
             ->andFilterWhere(['like', 'created_by', $this->created_by])
-            //->andFilterWhere(['in', 'status_id', [3, 6]])
+            ->andFilterWhere(['in', 'status_id', [3, 6]])
             ->andFilterWhere(['not', ['deleted' => 1]]);
 
         return $dataProvider;
@@ -106,7 +105,6 @@ class SuratTugasSearch extends SuratTugas
             'query' => $query,
             'sort' => [
                 'defaultOrder' => [
-                    'status_id' => SORT_ASC,
                     'updated_at' => SORT_DESC,
                     'created_at' => SORT_DESC
                 ]
@@ -131,15 +129,7 @@ class SuratTugasSearch extends SuratTugas
             'atasan.user' => function($query){
                 $query->where(['sysx_user.user_id' => Yii::$app->user->identity->id]);
             }
-        ]);
-        // $pegawai = Pegawai::find()->select(['pegawai_id'])->where(['user_id' => Yii::$app->user->identity->id])->one();
-        // $surat_tugas = AtasanSuratTugas::find()->select(['surat_tugas_id'])->where(['id_pegawai' => $pegawai->pegawai_id])->andWhere(['!=', 'deleted', 1])->asArray()->all();
-        // $arraySuratTugasId = array();
-        // foreach($surat_tugas as $surat){
-        //     array_push($arraySuratTugasId, $surat['surat_tugas_id']);
-        // }
-        // echo "<pre>";print_r($surat_tugas);
-        // die();
+        ])->asArray();
         $query->andFilterWhere([
             // ['in', 'surat_tugas_id', $arraySuratTugasId],
             'perequest' => $this->perequest,
@@ -164,7 +154,6 @@ class SuratTugasSearch extends SuratTugas
             ->andFilterWhere(['like', 'deleted_by', $this->deleted_by])
             ->andFilterWhere(['like', 'updated_by', $this->updated_by])
             ->andFilterWhere(['like', 'created_by', $this->created_by])
-            //->andFilterWhere(['in', 'status_id', [3, 6, 4]])
             ->andFilterWhere(['not', ['deleted' => 1]]);
 
         return $dataProvider;

@@ -74,7 +74,7 @@ $uiHelper=\Yii::$app->uiHelper;
             // 'updated_by',
 
             ['class' => 'common\components\ToolsColumn',
-                'template' => '{view} {edit} {keasramaan} {kamar} {excel}',//' {delete-asrama}',
+                'template' => '{view} {edit} {keasramaan} {kamar} {excel} {delete-asrama}',
                 'header' => 'Aksi',
                 'buttons' => [
                     'view' => function ($url, $model){
@@ -111,7 +111,7 @@ $uiHelper=\Yii::$app->uiHelper;
                     }else if($action==='excel'){
                         return Url::toRoute(['excel', 'asrama_id' => $key]);
                     }else if($action==='delete-asrama'){
-						return Url::toRoute(['del-asrama', 'asrama_id' => $key]);
+						return Url::toRoute(['del', 'asrama_id' => $key]);
 					}
 
                 }

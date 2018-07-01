@@ -77,7 +77,7 @@ class Kamar extends \yii\db\ActiveRecord
         return [
             'kamar_id' => 'Kamar ID',
             'nomor_kamar' => 'Nomor Kamar',
-            'asrama_id' => 'Asrama ID',
+            'asrama_id' => 'Asrama',
             'deleted' => 'Deleted',
             'deleted_at' => 'Deleted At',
             'deleted_by' => 'Deleted By',

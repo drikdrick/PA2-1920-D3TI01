@@ -72,7 +72,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             // [
             //     'label' => 'Status Surat Tugas',
-            //     'attribute' => 'status_id',
+            //     'attribute' => 'name',
             //     'value' => 'statusName.name',
             // ],
             [

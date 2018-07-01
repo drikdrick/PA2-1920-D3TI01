@@ -8,7 +8,7 @@ use yii\helpers\Html;
 
 $this->title = 'Tambah Penghuni';
 $this->params['breadcrumbs'][] = ['label' => 'Asrama', 'url' => ['asrama/index']];
-$this->params['breadcrumbs'][] = ['label' => 'Kamar', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Kamar', 'url' => ['kamar/index']];
 $this->params['breadcrumbs'][] = ['label' => 'Penghuni Kamar', 'url' => ['/askm/kamar/view', 'id' => $_GET['id']]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

@@ -19,7 +19,7 @@ $uiHelper=\Yii::$app->uiHelper;
     <div class="pull-right">
         Pengaturan
         <?= $uiHelper->renderButtonSet([
-                'template' => ['addMhs',/* 'reset',*/ 'edit'],
+                'template' => ['addMhs', 'reset', 'edit'],
                 'buttons' => [
                     'addMhs' => ['url' => Url::toRoute(['dim-kamar/add-penghuni-kamar', 'id' => $model->kamar_id]), 'label'=> 'Tambah Penghuni', 'icon'=>'fa fa-users'],
                     'reset' => ['url' => Url::toRoute(['reset-kamar', 'id' => $model->kamar_id]), 'label'=> 'Reset Kamar', 'icon'=>'fa fa-refresh'],
@@ -51,7 +51,13 @@ $uiHelper=\Yii::$app->uiHelper;
                 'contentOptions' => ['style' => 'width: 8.7%'],
                 'buttons'=>[
                     'del'=>function ($url, $model) {
-                        return Html::a('<i class="fa fa-times"></i> Hapus', ['dim-kamar/del', 'id' => $model->dim_kamar_id, 'id_kamar' => $_GET['id']], ['class'=>'btn btn-danger']);
+                        return Html::a('<i class="fa fa-times"></i> Hapus', ['dim-kamar/del-penghuni', 'id' => $model->dim_kamar_id, 'id_kamar' => $_GET['id']], [
+                            'class' => 'btn btn-danger',
+                            'data' => [
+                                'confirm' => 'Are you sure you want to delete this item?',
+                                'method' => 'post',
+                            ],
+                        ]);
                     },
                 ],
             ],

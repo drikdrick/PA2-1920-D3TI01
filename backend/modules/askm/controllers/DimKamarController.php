@@ -5,6 +5,8 @@ namespace backend\modules\askm\controllers;
 use Yii;
 use backend\modules\askm\models\DimKamar;
 use backend\modules\askm\models\Dim;
+use backend\modules\askm\models\Kamar;
+use backend\modules\askm\models\Asrama;
 use backend\modules\askm\models\search\DimKamar as DimKamarSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -14,8 +16,8 @@ use yii\helpers\Json;
 
 /**
  * DimKamarController implements the CRUD actions for DimKamar model.
-  * controller-id: dim-kamar
- * controller-desc: Controller untuk me-manage data penghuni kamar asrama
+ * controller-id: dim-kamar
+ * controller-desc: Controller untuk me-manage data Mahasiswa Penghuni Asrama
  */
 class DimKamarController extends Controller
 {
@@ -26,7 +28,7 @@ class DimKamarController extends Controller
             'privilege' => [
                  'class' => \Yii::$app->privilegeControl->getAppPrivilegeControlClass(),
                  'skipActions' => [],
-                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -54,7 +56,7 @@ class DimKamarController extends Controller
     }
 
     /**
-    * action-id: view
+     * action-id: view
      * action-desc: Display a data
      * Displays a single DimKamar model.
      * @param integer $id
@@ -79,6 +81,11 @@ class DimKamarController extends Controller
         $model = new DimKamar();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $kamar = Kamar::find()->where(['kamar_id' => $model->kamar_id])->one();
+            $asrama = Asrama::find()->where(['asrama_id' => $kamar->asrama_id])->one();
+            $asrama->jumlah_mahasiswa +=1;
+            $asrama->save();
+            \Yii::$app->messenger->addSuccessFlash("Penghuni telah ditambahkan");
             return $this->redirect(['kamar/view', 'id' => $_GET['id']]);
         } else {
             return $this->render('addPenghuniKamar', [
@@ -91,11 +98,17 @@ class DimKamarController extends Controller
     * action-id: del-penghuni
      * action-desc: Menghapus data penghuni kamar
 */
-    public function actionDelPenghuni($d_k_m){
-        $model  = DimKamar::find()->where(['dim_kamar_id'=>$d_k_m])->one();
-        $model->forceDelete();
-        //$model->save();
-        return $this->redirect(['/askm/kamar/view', 'id' => $_GET['kamar_id']]);
+    public function actionDelPenghuni($id, $id_kamar){
+        $this->findModel($id)->softDelete();
+
+        $kamar = Kamar::find()->where(['kamar_id' => $id_kamar])->one();
+        $asrama = Asrama::find()->where(['asrama_id' => $kamar->asrama_id])->one();
+        $asrama->jumlah_mahasiswa -=1;
+        $asrama->save();
+
+        \Yii::$app->messenger->addSuccessFlash("Penghuni telah dihapus");
+
+        return $this->redirect(['/askm/kamar/view', 'id' => $id_kamar]);
         
     }
 

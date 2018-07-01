@@ -91,7 +91,6 @@ class Prodi extends \yii\db\ActiveRecord
             [['created_by', 'deleted_by'], 'string', 'max' => 32],
             [['updated_by'], 'string', 'max' => 45],
             [['kbk_id'], 'unique'],
-            [['jenjang_id'], 'exist', 'skipOnError' => true, 'targetClass' => InstRJenjang::className(), 'targetAttribute' => ['jenjang_id' => 'jenjang_id']]
         ];
     }
 
@@ -127,68 +126,5 @@ class Prodi extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
         ];
     }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getDimxDims()
-    {
-        return $this->hasMany(DimxDim::className(), ['ref_kbk_id' => 'ref_kbk_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getHrdxDosens()
-    {
-        return $this->hasMany(HrdxDosen::className(), ['prodi_id' => 'ref_kbk_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getHrdxPegawais()
-    {
-        return $this->hasMany(HrdxPegawai::className(), ['ref_kbk_id' => 'ref_kbk_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getHrdxStafs()
-    {
-        return $this->hasMany(HrdxStaf::className(), ['prodi_id' => 'ref_kbk_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getJenjang()
-    {
-        return $this->hasOne(InstRJenjang::className(), ['jenjang_id' => 'jenjang_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getKrkmKuliahs()
-    {
-        return $this->hasMany(KrkmKuliah::className(), ['ref_kbk_id' => 'ref_kbk_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getKrkmKuliahProdis()
-    {
-        return $this->hasMany(KrkmKuliahProdi::className(), ['ref_kbk_id' => 'ref_kbk_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getKrkmKurikulumProdis()
-    {
-        return $this->hasMany(KrkmKurikulumProdi::className(), ['ref_kbk_id' => 'ref_kbk_id']);
-    }
+    
 }

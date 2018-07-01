@@ -127,12 +127,12 @@ use backend\modules\cist\models\Pegawai;
     <?=  '<label class="control-label col-sm-2">List Lampiran</label><br/>'; ?>
     <?php
         $idx = 1;
-        echo("<div class='col-sm-8' style='margin-top: -12px;'>");
+        echo("<div class='col-sm-10' style='margin-top: -12px;'>");
         foreach($modelLampiran as $data){
             echo("
-            <div>
-                <p>". $idx . ". " . $data->nama_file . "</p>" . Html::a('Hapus', ['delete-file', 'id' => $data->file_id, 'surattugas' => $model->surat_tugas_id], ['class' => 'btn btn-danger']) . 
-            "</div>");
+                <div>
+                    <p class='col-sm-8'>". $idx . ". " . Html::a($data->nama_file, ['download-attachments', 'id' => $data->surat_tugas_file_id]) . "</p>" . Html::a('Hapus', ['delete-file', 'id' => $data->surat_tugas_file_id, 'surattugas' => $model->surat_tugas_id], ['class' => 'btn btn-danger']) . 
+                "</div>");
             $idx++;
         }
         echo("</div>");
@@ -141,18 +141,17 @@ use backend\modules\cist\models\Pegawai;
     <br />
 
     <div class="form-group field-materi-files">
-            <label class="control-label col-sm-2" for="materi-files">Lampiran</label>
-            <div class="col-sm-4">
-              <div id="file_input">
-                  <input type="file" class="form-control" name="files[]">
-              </div>
-              <div>
-                 <a href="#" onclick="addMoreFiles()">Tambah Lampiran</a>
-              </div>
+        <label class="control-label col-sm-2" for="materi-files">Lampiran</label>
+        <div class="col-sm-4">
+            <div id="file_input">
+                <input type="file" class="form-control" name="files[]">
+            </div>
+            <div>
+                <a href="#" onclick="addMoreFiles()">Tambah Lampiran</a>
             </div>
         </div>
-
-        <br />
+    </div>
+    <br/>
 
     <?=  '<label class="control-label col-sm-2">List Atasan</label><br/>'; ?>
     <?php
@@ -177,7 +176,7 @@ use backend\modules\cist\models\Pegawai;
         <div class="col-md-1 col-md-offset-2">
             <?= Html::submitButton($model->isNewRecord ? 'Buat' : 'Ubah', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-warning']) ?>
         </div>
-        <?= Html::a('Kembali', ['index-dosen'], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Kembali', ['index-pegawai'], ['class' => 'btn btn-primary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

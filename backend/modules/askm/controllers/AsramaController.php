@@ -19,8 +19,8 @@ use PHPExcel_IOFactory;
 
 /**
  * AsramaController implements the CRUD actions for Asrama model.
-  * controller-id: asrama
- * controller-desc: Controller untuk me-manage data asrama
+ * controller-id: asrama
+ * controller-desc: Controller untuk me-manage data Asrama
  */
 class AsramaController extends Controller
 {
@@ -31,7 +31,7 @@ class AsramaController extends Controller
             'privilege' => [
                  'class' => \Yii::$app->privilegeControl->getAppPrivilegeControlClass(),
                  'skipActions' => [],
-                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -42,7 +42,8 @@ class AsramaController extends Controller
     }
 
     /**
-    * action-id: index
+     * Lists all Asrama models.
+     * action-id: index
      * action-desc: Display all data
      * Lists all Asrama models.
      * @return mixed
@@ -63,26 +64,6 @@ class AsramaController extends Controller
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-        ]);
-    }
-
-    /**
-    * action-id: view
-     * action-desc: Display a data asrama by specified id
-     * Displays a single Asrama model.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionView($id)
-    {
-        $searchModel = new KeasramaanSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $dataProvider->query->where('deleted != 1')->andWhere(['asrama_id' => $id]);
-
-        return $this->render('view-detail-asrama', [
-            'dataProvider' => $dataProvider,
-            'searchModel' => $searchModel,
-            'model' => $this->findModel($id),
         ]);
     }
 
@@ -146,7 +127,7 @@ class AsramaController extends Controller
     }
 
     /**
-    * action-id: add
+     * action-id: add
      * action-desc: Menambahkan data asrama
      * Creates a new Asrama model.
      * If creation is successful, the browser will be redirected to the 'view' page.
@@ -192,12 +173,19 @@ class AsramaController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionDel($id)
+    public function actionDel($asrama_id, $confirm=false)
     {
-        $this->findModel($id)->softDelete();
-
-        
-        return $this->redirect(['index']);
+        $model = $this->findModel($asrama_id);
+        if ($model->jumlah_mahasiswa == 0) {
+            if ($confirm) {
+                $this->findModel($asrama_id)->softDelete();
+                \Yii::$app->messenger->addInfoFlash("Asrama telah dihapus");
+                return $this->redirect(['index']);
+            }
+            return $this->render('confirmDelete', ['id' => $asrama_id]);
+        } else {
+            return $this->render('cannotDelete');
+        }
     }
 
     /**
@@ -271,7 +259,7 @@ class AsramaController extends Controller
                  }
                 $_objWriter = PHPExcel_IOFactory::createWriter($_PHPExcel,'Excel2007');
                 header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-                header('Content-Disposition: attachment;filename="Data Asrama.xlsx"');
+                header('Content-Disposition: attachment;filename="History Izin Bermalam.xlsx"');
                 $_objWriter->save('php://output');
     }
 }

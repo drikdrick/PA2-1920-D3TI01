@@ -7,6 +7,7 @@ use backend\modules\cist\models\Pegawai;
 use backend\modules\cist\models\LaporanSuratTugas;
 use backend\modules\cist\models\Status;
 use backend\modules\cist\models\SuratTugas;
+use backend\modules\cist\models\SuratTugasFile;
 use backend\modules\inst\models\InstApiModel;
 use yii\bootstrap\Modal;
 use yii\bootstrap\ActiveForm;
@@ -42,34 +43,10 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'agenda',
             'tempat',
-            [
-                'attribute' => 'tanggal_berangkat',
-                'value' => function($data){
-                    return date('d M Y', strtotime($data->tanggal_berangkat)).' '.date('H:i', strtotime($data->tanggal_berangkat));
-                },
-                'format' => 'html',
-            ],
-            [
-                'attribute' => 'tanggal_kembali',
-                'value' => function($data){
-                    return date('d M Y', strtotime($data->tanggal_kembali)).' '.date('H:i', strtotime($data->tanggal_kembali));
-                },
-                'format' => 'html',
-            ],
-            [
-                'attribute' => 'tanggal_mulai',
-                'value' => function($data){
-                    return date('d M Y', strtotime($data->tanggal_mulai)).' '.date('H:i', strtotime($data->tanggal_mulai));
-                },
-                'format' => 'html',
-            ],
-            [
-                'attribute' => 'tanggal_selesai',
-                'value' => function($data){
-                    return date('d M Y', strtotime($data->tanggal_selesai)).' '.date('H:i', strtotime($data->tanggal_selesai));
-                },
-                'format' => 'html',
-            ],
+            'tanggal_berangkat',
+            'tanggal_kembali',
+            'tanggal_mulai',
+            'tanggal_selesai',
             [
                 'attribute' => 'desc_surat_tugas',
                 'format' => 'html',
@@ -78,15 +55,17 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => 'Peserta',
                 'value' => function($model){
                     $pegawais = SuratTugas::getAssignee($model->surat_tugas_id);
-                    return implode(', ', array_column($pegawais, 'nama'));
-                }
+                    return implode('<br/>', array_column($pegawais, 'nama'));
+                },
+                'format' => 'html',
             ],
             [
                 'label' => 'Atasan',
                 'value' => function($model){
                     $pegawais = SuratTugas::getAtasan($model->surat_tugas_id);
-                    return implode(', ', array_column($pegawais, 'nama'));
-                }
+                    return implode('<br/>', array_column($pegawais, 'nama'));
+                },
+                'format' => 'html',
             ],
             [
                 'attribute' => 'pengalihan_tugas',
@@ -101,9 +80,68 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format' => 'html',
             ],
             [
+                'attribute' => 'statusName.name',
                 'label' => 'Status',
-                'value' => function($model){ return $model->statusName->name; }
             ],
+            [
+                'label' => 'Lampiran',
+                'value' => function($model){
+                    $result = null;
+                    $modelFile = SuratTugasFile::find()->where(['surat_tugas_id' => $model->surat_tugas_id])->all();
+                    foreach($modelFile as $data){
+                        //$result .= Html::a($data['nama_file'], ['download-attachments', 'id' => $data['surat_tugas_file_id']]) . "<br/>";
+                        $result .= LinkHelper::renderLink(['options'=>'target = _blank', 'label'=>$data['nama_file'], 'url'=>\Yii::$app->fileManager->generateUri($data['kode_file'])]) . "<br/>";
+                    }
+
+                    return $result;
+                },
+                'format' => 'html',
+            ],
+            [
+                'label' => 'Laporan',
+                'value' => function($model){
+                    $result = null;
+                    $modelLaporan = $modelLaporan = LaporanSuratTugas::find()->where(['surat_tugas_id' => $model->surat_tugas_id])->all();
+                    foreach($modelLaporan as $data){
+                        if($data->nama_file != null){
+                            //$result .= Html::a($data->nama_file, ['download-reports', 'id' => $data->laporan_surat_tugas_id]) . "<br/>";
+                            $result .= LinkHelper::renderLink(['options'=>'target = _blank', 'label'=>$data->nama_file, 'url'=>\Yii::$app->fileManager->generateUri($data->kode_laporan)]) . "<br/>";
+                        }
+                    }
+                    
+                    return $result;
+                },
+                'format' => 'html',
+            ],
+            [
+                'label' => 'Batas Submission',
+                'value' => function($model){
+                    $result = null;
+                    $modelLaporan = $modelLaporan = LaporanSuratTugas::find()->where(['surat_tugas_id' => $model->surat_tugas_id])->all();
+                    foreach($modelLaporan as $data){
+                        $result .= $data->batas_submit . "<br/>";
+                    }
+                    
+                    return $result;
+                },
+                'format' => 'html',
+            ],
+            [
+                'label' => 'Status Laporan',
+                'value' => function($model){
+                    $result = null;
+                    $modelLaporan = $modelLaporan = LaporanSuratTugas::find()->where(['surat_tugas_id' => $model->surat_tugas_id])->all();
+                    foreach($modelLaporan as $data){
+                        if(SuratTugas::getStatus($data->status_id) != null){
+                            $status = $data->status_id;
+                            $result .= SuratTugas::getStatus($data->status_id) . "<br/>";
+                        }
+                    }
+                    
+                    return $result;
+                },
+                'format' => 'html',
+            ]
         ],
     ]) ?>
 
@@ -114,7 +152,7 @@ $this->params['breadcrumbs'][] = $this->title;
             echo "<b>Lampiran</b>:<br/>"; 
             foreach($modelFile as $data){
                 echo $idx . ". " . LinkHelper::renderLink(['options'=>'target = _blank', 'label'=>$data->nama_file, 'url'=>\Yii::$app->fileManager->generateUri($data->kode_file)]) . "<br/>";
-                //echo $idx . ". " . Html::a($data->nama_file, ['download-attachments', 'id' => $data->file_id]) . "<br/>";
+
             }
             echo "<br/>";
         }
@@ -123,17 +161,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php
         if($modelLaporan != null){  //If there are Laporan in this Surat Tugas
             foreach($modelLaporan as $data){
-                if($data->nama_file != null){
-                    echo "<b>Laporan</b>:<br/>";
-                    echo LinkHelper::renderLink(['options'=>'target = _blank', 'label'=>$data->nama_file, 'url'=>\Yii::$app->fileManager->generateUri($data->kode_laporan)]) . "<br/><br/>";
-                    //echo Html::a($data->nama_file, ['download-reports', 'id' => $data->laporan_surat_tugas_id]) . "<br/><br/>";
-                }
-                echo "<b>Batas Submission</b>:<br/>"; 
-                echo $data->batas_submit . "<br/><br/>";
                 if(SuratTugas::getStatus($data->status_id) != null){
                     $status = $data->status_id;
-                    echo "<b>Status Laporan</b>:<br/>"; 
-                    echo SuratTugas::getStatus($data->status_id) . "<br/><br/>";
                 }
             }
         }

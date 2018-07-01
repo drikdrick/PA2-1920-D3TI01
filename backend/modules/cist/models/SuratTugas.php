@@ -210,7 +210,7 @@ class SuratTugas extends \yii\db\ActiveRecord
     public function getStatus($id){
         $model = Status::find()->where(['status_id' => $id])->one();
 
-        return $model->status_id;
+        return $model->name;
     }
 
     public function getNama($id){

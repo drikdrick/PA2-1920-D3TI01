@@ -24,20 +24,10 @@ $this->params['header'] = 'Izin Bermalam';
 $status_url = urldecode('IzinBermalamSearch%5Bstatus_request_id%5D');
 
 $uiHelper=\Yii::$app->uiHelper;
+$pegawai = Pegawai::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$app->user->identity->user_id])->one();
 ?>
 <div class="izin-bermalam-index">
     
-    <!-- <div class="pull-right"> -->
-        <!-- Manage Request -->
-        <!-- <?= $uiHelper->renderButtonSet([
-                'template' => ['approve', 'approve-all', 'reject', 'reject-all'],
-                'buttons' => [
-                    'approve-all' => ['url' => Url::toRoute(['approve-all', 'id_keasramaan' => 1]), 'label'=> 'Setujui semua request', 'icon'=>'fa fa-check'],
-                    'approve' => ['url' => Url::to('approve-selected'), 'onclick' => "submit()", 'label'=> 'Setujui yang dipilih', 'icon'=>'fa fa-check'],
-                    'reject-all' => ['url' => Url::toRoute(['reject-all', 'id_keasramaan' => 1]), 'label'=> 'Tolak semua request', 'icon'=>'fa fa-times'],
-                    'reject' => ['url' => Url::toRoute(['reject-selected']), 'label'=> 'Tolak yang dipilih', 'icon'=>'fa fa-times'],
-                ],
-            ]) ?> -->
     <div class="pull-right">
         Manage Request
         <div class="btn-group">
@@ -48,19 +38,19 @@ $uiHelper=\Yii::$app->uiHelper;
                     <!-- <button type="button" onclick="submit()">Setujui yang dipilih</button> -->
                     <a href="#" id="selected-approve"><i class="fa fa-check"></i>Setujui yang dipilih</a>
                 </li>
-                <!-- <li>
-                    <a href="/cis-lite/backend/web/index.php/askm/izin-bermalam/approve-all?id_keasramaan=<?= Yii::$app->user->identity->user_id ?>"><i class="fa fa-check"></i>Setujui semua request</a>
-                </li> -->
+                <li>
+                    <a href="/cis-lite/backend/web/index.php/askm/izin-bermalam/approve-all?id_keasramaan=<?= $pegawai->pegawai_id ?>"><i class="fa fa-check"></i>Setujui semua request</a>
+                </li>
                 <li>
                     <a href="#" id="selected-reject"><i class="fa fa-times"></i>Tolak yang dipilih</a>
                 </li>
-                <!-- <li>
-                    <a href="/cis-lite/backend/web/index.php/askm/izin-bermalam/reject-all?id_keasramaan=<?= Yii::$app->user->identity->user_id ?>"><i class="fa fa-times"></i>Tolak semua request</a>
-                </li> -->
+                <li>
+                    <a href="/cis-lite/backend/web/index.php/askm/izin-bermalam/reject-all?id_keasramaan=<?= $pegawai->pegawai_id ?>"><i class="fa fa-times"></i>Tolak semua request</a>
+                </li>
             </ul>
         </div>
     </div>
-    <!-- </div> -->
+    
     <?= $uiHelper->renderContentSubHeader(' '.$this->title, ['icon' => 'fa fa-list']);?>
     <?= $uiHelper->renderLine(); ?>
 
