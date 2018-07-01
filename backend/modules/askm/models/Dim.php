@@ -7,6 +7,7 @@ use Yii;
 use common\behaviors\TimestampBehavior;
 use common\behaviors\BlameableBehavior;
 use common\behaviors\DeleteBehavior;
+use backend\modules\adak\models\Registrasi;
 
 /**
  * This is the model class for table "dimx_dim".
@@ -311,9 +312,9 @@ class Dim extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAdakRegistrasis()
+    public function getRegistrasis()
     {
-        return $this->hasMany(AdakRegistrasi::className(), ['dim_id' => 'dim_id']);
+        return $this->hasMany(Registrasi::className(), ['dim_id' => 'dim_id']);
     }
 
     /**
