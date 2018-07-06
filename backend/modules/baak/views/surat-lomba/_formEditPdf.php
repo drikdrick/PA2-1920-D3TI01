@@ -14,6 +14,12 @@ use common\widgets\Redactor;
 
 <div class="surat-pengantar-ta-form">
 
+
+     <?php
+        if($model->nomor_surat == NULL)
+        {
+    ?>
+      
     <?= DetailView::widget([
         'model' => $nomor_surat,
         'formatter' => [
@@ -24,6 +30,9 @@ use common\widgets\Redactor;
           'nomor_surat',
         ],
     ]) ?>
+    <?php
+        }
+    ?>
 
     <?php $form = ActiveForm::begin([
       'layout' => 'horizontal',
@@ -38,8 +47,21 @@ use common\widgets\Redactor;
       ],
     ]) ?>
 
-    <?= $form->field($model, 'nomor_surat',['horizontalCssClasses' => ['wrapper' => 'col-sm-8']])->textInput(['maxlength' => true]) ?>
+    <?php
+        if($model->nomor_surat == NULL)
+        {
+    ?>
+        <?= $form->field($model, 'nomor_surat',['horizontalCssClasses' => ['wrapper' => 'col-sm-8']])->textInput(['maxlength' => true]) ?>
 
+    <?php
+        }
+        else{
+        ?>
+        <?= $form->field($model, 'nomor_surat',['horizontalCssClasses' => ['wrapper' => 'col-sm-8']])->textInput(['readonly'=>true,'maxlength' => true]) ?>        
+        <?php      
+        }
+    ?>
+    
     <?= $form->field($model, 'perihal',['horizontalCssClasses' => ['wrapper' => 'col-sm-8']])->textarea(['rows' => 3]) ?>
 
     <?= $form->field($model, 'banyak_lampiran',['horizontalCssClasses' => ['wrapper' => 'col-sm-8']])->textInput(['maxlength' => true]) ?>

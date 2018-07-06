@@ -29,6 +29,66 @@ $this->params['breadcrumbs'][] = ['label' => 'Surat Mahasiswa Aktif', 'url' => [
         ?>
     </p>
 
+     <?php
+        if($model->status_pengajuan_id == 1)
+        {
+    ?>
+        <?= DetailView::widget([
+        'model' => $model,
+        'formatter' => [
+            'class' => 'yii\i18n\Formatter',
+            'nullDisplay' => '-',
+        ],
+        'attributes' => [
+            'tujuan',
+            'pemohon.nama',
+            'statusPengajuan.name',
+        ],
+    ]) ?>
+    <?php
+        }
+        if($model->status_pengajuan_id == 2)
+        {
+    ?>
+        <?= DetailView::widget([
+        'model' => $model,
+        'formatter' => [
+            'class' => 'yii\i18n\Formatter',
+            'nullDisplay' => '-',
+        ],
+        'attributes' => [
+            'tujuan',
+            'pemohon.nama',
+            'statusPengajuan.name',
+            'pegawai.nama',
+        ],
+    ]) ?>
+    <?php
+        }
+        if($model->status_pengajuan_id == 3)
+        {
+    ?>
+             <?= DetailView::widget([
+        'model' => $model,
+        'formatter' => [
+            'class' => 'yii\i18n\Formatter',
+            'nullDisplay' => '-',
+        ],
+        'attributes' => [
+            'tujuan',
+            'pemohon.nama',
+            'statusPengajuan.name',
+            'pegawai.nama',
+            'alasan_penolakan',
+        ],
+    ]) ?>
+    <?php
+        }
+        if($model->status_pengajuan_id == 4 || $model->status_pengajuan_id == 5)
+        {
+    ?>
+
+
     <?= DetailView::widget([
         'model' => $model,
         'formatter' => [
@@ -38,10 +98,14 @@ $this->params['breadcrumbs'][] = ['label' => 'Surat Mahasiswa Aktif', 'url' => [
         'attributes' => [
             'tujuan',
             'pemohon.nama',
-            'pegawai.nama',
             'statusPengajuan.name',
+            'pegawai.nama',
             'waktu_pengambilan',
         ],
     ]) ?>
+
+    <?php
+        }
+    ?>
 
 </div>

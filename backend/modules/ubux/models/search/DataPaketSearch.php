@@ -50,7 +50,7 @@ class DataPaketSearch extends DataPaket
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination'=>['pageSize'=>10],
-            'sort' => ['defaultOrder' => ['data_paket_id' => SORT_ASC, 'updated_at' => SORT_DESC, 'created_at' => SORT_DESC]],
+            'sort' => ['defaultOrder' => ['data_paket_id' => SORT_DESC, 'updated_at' => SORT_DESC, 'created_at' => SORT_DESC]],
         ]);
 
         $this->load($params);
@@ -66,7 +66,6 @@ class DataPaketSearch extends DataPaket
             'tag' => $this->tag,
             'dim_id' => $this->dim_id,
             'pegawai_id' => $this->pegawai_id,
-            'tanggal_kedatangan' => $this->tanggal_kedatangan,
             'tanggal_diambil' => $this->tanggal_diambil,
             'posisi_paket_id' => $this->posisi_paket_id,
             'status_paket_id' => $this->status_paket_id,
@@ -80,6 +79,8 @@ class DataPaketSearch extends DataPaket
             ->andFilterWhere(['like', 'hrdx_pegawai.nama', $this->pegawai_nama])
             ->andFilterWhere(['like', 'pengirim', $this->pengirim])
             ->andFilterWhere(['like', 'diambil_oleh', $this->diambil_oleh])
+            ->andFilterWhere(['like', 'tanggal_kedatangan',SUBSTR($this->tanggal_kedatangan,1,10)])
+            ->andFilterWhere(['like', 'hrdx_pegawai.nama', $this->pegawai_nama])
             ->andFilterWhere(['like', 'desc', $this->desc])
             ->andFilterWhere(['like', 'deleted_by', $this->deleted_by])
             ->andFilterWhere(['like', 'created_by', $this->created_by])
@@ -102,7 +103,7 @@ class DataPaketSearch extends DataPaket
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination'=>['pageSize'=>10],
-            'sort' => ['defaultOrder' => ['data_paket_id' => SORT_ASC, 'updated_at' => SORT_DESC, 'created_at' => SORT_DESC]],
+            'sort' => ['defaultOrder' => ['dim_id' => SORT_DESC, 'updated_at' => SORT_DESC, 'created_at' => SORT_DESC]],
         ]);
 
         $this->load($params);
@@ -117,7 +118,6 @@ class DataPaketSearch extends DataPaket
             'data_paket_id' => $this->data_paket_id,
             'tag' => $this->tag,
             'dim_id' => $this->dim_id,
-            'tanggal_kedatangan' => $this->tanggal_kedatangan,
             'tanggal_diambil' => $this->tanggal_diambil,
             'posisi_paket_id' => $this->posisi_paket_id,
             'status_paket_id' => $this->status_paket_id,
@@ -133,6 +133,7 @@ class DataPaketSearch extends DataPaket
             ->andFilterWhere(['like', 'deleted_by', $this->deleted_by])
             ->andFilterWhere(['like', 'created_by', $this->created_by])
             ->andFilterWhere(['like', 'updated_by', $this->updated_by])
+            ->andFilterWhere(['like', 'tanggal_kedatangan',SUBSTR($this->tanggal_kedatangan,1,10)])
             ->andFilterWhere(['not', ['deleted' => 1]]);
 
         return $dataProvider;
@@ -149,7 +150,7 @@ class DataPaketSearch extends DataPaket
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination'=>['pageSize'=>10],
-            'sort' => ['defaultOrder' => ['data_paket_id' => SORT_ASC, 'updated_at' => SORT_DESC, 'created_at' => SORT_DESC]],
+            'sort' => ['defaultOrder' => ['pegawai_id' => SORT_DESC, 'updated_at' => SORT_DESC, 'created_at' => SORT_DESC]],
         ]);
 
         $this->load($params);
@@ -164,7 +165,6 @@ class DataPaketSearch extends DataPaket
             'data_paket_id' => $this->data_paket_id,
             'tag' => $this->tag,
             'pegawai_id' => $this->pegawai_id,
-            'tanggal_kedatangan' => $this->tanggal_kedatangan,
             'tanggal_diambil' => $this->tanggal_diambil,
             'posisi_paket_id' => $this->posisi_paket_id,
             'status_paket_id' => $this->status_paket_id,
@@ -178,6 +178,7 @@ class DataPaketSearch extends DataPaket
             ->andFilterWhere(['like', 'diambil_oleh', $this->diambil_oleh])
             ->andFilterWhere(['like', 'desc', $this->desc])
             ->andFilterWhere(['like', 'deleted_by', $this->deleted_by])
+            ->andFilterWhere(['like', 'tanggal_kedatangan',SUBSTR($this->tanggal_kedatangan,1,10)])
             ->andFilterWhere(['like', 'created_by', $this->created_by])
             ->andFilterWhere(['like', 'updated_by', $this->updated_by])
             ->andFilterWhere(['not', ['deleted' => 1]]);

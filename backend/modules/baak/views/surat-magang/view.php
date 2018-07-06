@@ -34,22 +34,83 @@ $this->params['breadcrumbs'][] = ['label' => 'Surat Magang', 'url' => ['index']]
         ?>
     </p>
 
-    <?= DetailView::widget([
-        'model' => $model,
-        'formatter' => [
-            'class' => 'yii\i18n\Formatter',
-            'nullDisplay' => '-',
-        ],
-        'attributes' => [
-            'nama_perusahaan',
-            'alamat_perusahaan',
-            'waktu_awal_magang',
-            'waktu_akhir_magang',
-            'dims',
-            'statusPengajuan.name',
-            'pegawai.nama',
-            'waktu_pengambilan',
-        ],
-    ]) ?>
+    <?php 
+        if($model->status_pengajuan_id == 1){?>
+            <?= DetailView::widget([
+                'model' => $model,
+                'formatter' => [
+                    'class' => 'yii\i18n\Formatter',
+                    'nullDisplay' => '-',
+                ],
+                'attributes' => [
+                    'nama_perusahaan',
+                    'alamat_perusahaan',
+                    'waktu_awal_magang',
+                    'waktu_akhir_magang',
+                    'dims',
+                    'statusPengajuan.name',
+                ],
+            ]) ?>
+        <?php }?>
+    <?php 
+        if($model->status_pengajuan_id == 2){?>
+            <?= DetailView::widget([
+                'model' => $model,
+                'formatter' => [
+                    'class' => 'yii\i18n\Formatter',
+                    'nullDisplay' => '-',
+                ],
+                'attributes' => [
+                    'nama_perusahaan',
+                    'alamat_perusahaan',
+                    'waktu_awal_magang',
+                    'waktu_akhir_magang',
+                    'dims',
+                    'statusPengajuan.name',
+                    'pegawai.nama',
+                ],
+            ]) ?>
+        <?php }?>
+    <?php 
+        if($model->status_pengajuan_id == 3){?>
+            <?= DetailView::widget([
+                'model' => $model,
+                'formatter' => [
+                    'class' => 'yii\i18n\Formatter',
+                    'nullDisplay' => '-',
+                ],
+                'attributes' => [
+                    'nama_perusahaan',
+                    'alamat_perusahaan',
+                    'waktu_awal_magang',
+                    'waktu_akhir_magang',
+                    'dims',
+                    'statusPengajuan.name',
+                    'pegawai.nama',
+                    'alasan_penolakan',
+                ],
+            ]) ?>
+        <?php }?>
+    <?php 
+        if($model->status_pengajuan_id == 4 || $model->status_pengajuan_id == 5){?>
+            <?= DetailView::widget([
+                'model' => $model,
+                'formatter' => [
+                    'class' => 'yii\i18n\Formatter',
+                    'nullDisplay' => '-',
+                ],
+                'attributes' => [
+                    'nama_perusahaan',
+                    'alamat_perusahaan',
+                    'waktu_awal_magang',
+                    'waktu_akhir_magang',
+                    'dims',
+                    'statusPengajuan.name',
+                    'pegawai.nama',
+                    'waktu_pengambilan',
+                ],
+            ]) ?>
+        <?php }?>
+            
 
 </div>

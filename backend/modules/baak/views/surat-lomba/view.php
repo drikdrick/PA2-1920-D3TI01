@@ -36,21 +36,69 @@ $this->params['breadcrumbs'][] = ['label' => 'Surat Kompetisi', 'url' => ['index
         ?>
     </p>
 
-    <?= DetailView::widget([
-        'model' => $model,
-        'formatter' => [
-            'class' => 'yii\i18n\Formatter',
-            'nullDisplay' => '-',
-        ],
-        'attributes' => [            
-            'nama_lomba',
-            'dims',
-            'statusPengajuan.name',
-            'pegawai.nama',
-            'waktu_pengambilan',
-        ],
-    ]) ?>
+    <?php
+        if($model->status_pengajuan_id == 1)
+        {
+    ?>
+        <?= DetailView::widget([
+            'model' => $model,
+            'formatter' => [
+                'class' => 'yii\i18n\Formatter',
+                'nullDisplay' => '-',
+            ],
+            'attributes' => [            
+                'nama_lomba',
+                'alamat_tujuan',
+                'dims',
+                'statusPengajuan.name',
+            ],
+        ]) ?>
 
+    <?php
+        }
+        if($model->status_pengajuan_id == 3)
+        {
+    ?>
+        <?= DetailView::widget([
+            'model' => $model,
+            'formatter' => [
+                'class' => 'yii\i18n\Formatter',
+                'nullDisplay' => '-',
+            ],
+            'attributes' => [            
+                'nama_lomba',
+                'alamat_tujuan',
+                'dims',
+                'statusPengajuan.name',
+                'pegawai.nama',
+                'alasan_penolakan',
+            ],
+        ]) ?>
+    <?php
+        }
+        if($model->status_pengajuan_id != 3 && $model->status_pengajuan_id != 1)
+        {
+    ?>
+        
+         <?= DetailView::widget([
+            'model' => $model,
+            'formatter' => [
+                'class' => 'yii\i18n\Formatter',
+                'nullDisplay' => '-',
+            ],
+            'attributes' => [            
+                'nama_lomba',
+                'alamat_tujuan',
+                'dims',
+                'statusPengajuan.name',
+                'pegawai.nama',
+                'waktu_pengambilan'
+            ],
+        ]) ?>
+
+    <?php
+        }
+    ?>
     <!--  -->
 
 </div>

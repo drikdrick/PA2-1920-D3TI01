@@ -1,5 +1,7 @@
 <?php
+
 use yii\helpers\Html;
+
 ?>
 <!doctype html>
 <html>
@@ -15,7 +17,7 @@ use yii\helpers\Html;
         <table 	style ="width:100%">
             <tr>
                 <th>
-					<?= Html::img(Yii::getAlias('@web').'/images/logo.png', ['style' => 'width:90px;']) ?>
+                    <img src="<?=Yii::$app->getRequest()->getHostInfo().'/img/logo.jpg'?>" style="width:90px;">
 				</th>
                 <td style="text-align: center">
                 	<div >

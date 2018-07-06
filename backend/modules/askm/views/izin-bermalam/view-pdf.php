@@ -26,7 +26,7 @@ $date_kembali = date_create($model->rencana_kembali);
                     
                 </td>
                 <td>
-                    <img src="<?=\Yii::$app->getRequest()->getHostInfo().'/img/logo.jpg'?>" alt="logo del" border="0" height="100">
+                    <img src="<?=\Yii::$app->getRequest()->getHostInfo().'/img/logo.jpg'?>" alt="logo del" border="0" height="100" width="100">
                 </td>
                 <td>
                     <p style="text-align: left; font-size: 10px;font-family: sans-serif;">
@@ -49,8 +49,6 @@ $date_kembali = date_create($model->rencana_kembali);
             DIBERIKAN IZIN BERMALAM KEPADA:
             <br>
             Nama : <?php echo $model->dim['nama']; ?>
-            <br>
-            No.HP. Ayah/Ibu/Wali : <?php echo $model->dim['no_hp_ibu']; ?>
             <br>
             <br>
             <b>Rencana IB</b>
@@ -90,7 +88,7 @@ $date_kembali = date_create($model->rencana_kembali);
                 </td>
                 <td style="text-align:center;">
                     <div>
-                        Diketahui orangtua/wali
+                        Diketahui,orangtua/wali
                         <br>
                         <br>
                         <br>
@@ -112,7 +110,7 @@ $date_kembali = date_create($model->rencana_kembali);
         <div style="font-family: sans-serif; font-size: 11">
             <b>Realisasi IB (diisi oleh petugas)</b>
             <br>
-            Tanggal kembali : &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; Pukul : 
+            Tanggal kembali : &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; Pukul : 
             <br>
             <br>
             Petugas

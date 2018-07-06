@@ -10,6 +10,7 @@ use backend\modules\baak\models\Dim;
 use backend\modules\baak\models\Prodi;
 use backend\modules\baak\models\NomorSuratTerakhir;
 use backend\modules\baak\models\Pegawai;
+use backend\modules\baak\models\DataSurat;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -179,6 +180,37 @@ class SuratMahasiswaAktifController extends Controller
     }
 
     /*
+    * action-id: edit-done
+     * action-desc: Memperbaharu status permohonan menjadi done
+    */
+    public function actionEditDone($id)
+    {
+        $model = $this->findModel($id);
+
+        if($model->load(Yii::$app->request->post()))
+        {
+            $user_id = Yii::$app->user->identity->id;
+            $user_pegawai = Pegawai::find()->where(['user_id'=>$user_id])->one();
+            $pegawai = $user_pegawai->pegawai_id;
+            $model->pegawai_id = $pegawai;
+            $model->save();
+
+            return $this->redirect(['view-admin','id' => $model->surat_mahasiswa_aktif_id]);
+        }
+        else{
+            $model->status_pengajuan_id = 5;
+            $user_id = Yii::$app->user->identity->id;
+            $user_pegawai = Pegawai::find()->where(['user_id'=>$user_id])->one();
+            $pegawai = $user_pegawai->pegawai_id;
+            $model->pegawai_id = $pegawai;
+            $model->save();
+
+            return $this->redirect('index-admin');
+
+        }   
+    }
+
+    /*
     * action-id: edit-ready
      * action-desc: Memperbaharu status permohonan menjadi ready
     */
@@ -187,6 +219,11 @@ class SuratMahasiswaAktifController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post())) {
+            if($model->waktu_pengambilan == NULL)
+            {
+                \Yii::$app->messenger->addWarningFlash('Harap Mengisi Waktu Pengambilan.');
+                return $this->redirect(\Yii::$app->request->referrer);
+            }
             $user_id = Yii::$app->user->identity->id;
             $user_pegawai = Pegawai::find()->where(['user_id'=> $user_id])->one();
             $pegawai = $user_pegawai->pegawai_id;
@@ -218,23 +255,33 @@ class SuratMahasiswaAktifController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post())) {
+
+            if($model->alasan_penolakan == NULL)
+            {
+                \Yii::$app->messenger->addWarningFlash('Anda Harus Mengisi Alasan Penolakan');
+                    return $this->redirect(\Yii::$app->request->referrer);
+
+            }
+
             $user_id = Yii::$app->user->identity->id;
             $user_pegawai = Pegawai::find()->where(['user_id'=> $user_id])->one();
             $pegawai = $user_pegawai->pegawai_id;
             $model->pegawai_id = $pegawai;
-
+            $model->status_pengajuan_id=3;
             $model->save();
 
-            return $this->redirect(['view-admin', 'id' => $model->surat_mahasiswa_aktif_id]);
-        } else {
-            $model->status_pengajuan_id = 3;
+            return $this->redirect(['index-admin', 'id' => $model->surat_mahasiswa_aktif_id]);
+        }
+        else {
             $user_id = Yii::$app->user->identity->id;
             $user_pegawai = Pegawai::find()->where(['user_id'=> $user_id])->one();
             $pegawai = $user_pegawai->pegawai_id;
             $model->pegawai_id = $pegawai;
             $model->save();
 
-            return $this->redirect('index-admin');
+            return $this->render('editDecline', [
+                'model' => $model,
+            ]);
         }
     }
 
@@ -247,11 +294,13 @@ class SuratMahasiswaAktifController extends Controller
         $model = SuratMahasiswaAktif::find()->where(['surat_mahasiswa_aktif_id' => $id])->one();
         $dim = Dim::find()->where(['dim_id' => $model->pemohon_id])->one();
         $prodi = Prodi::find()->where(['ref_kbk_id' => $dim->ref_kbk_id])->one();
-        $mPDF = new mPDF('utf-8','A4',10.5,'serif');
+        $header = DataSurat::find()->one();
+        $mPDF = new mPDF('utf-8','A4',12,'serif');
         $mPDF->WriteHTML($this->renderPartial('mpdf',
             ['model' => $model,
             'dim' => $dim,
             'prodi' => $prodi,
+            'header' => $header,
         ]));
         $mPDF->debug = true;
         $mPDF->Output();
@@ -268,6 +317,21 @@ class SuratMahasiswaAktifController extends Controller
         $nomor_surat = NomorSuratTerakhir::find()->one();
 
         if ($model->load(Yii::$app->request->post())) {
+            
+            if($model->nomor_surat == NULL)
+            {
+                \Yii::$app->messenger->addWarningFlash('Ada Form Yang Belum Anda isi');
+                    return $this->redirect(\Yii::$app->request->referrer);
+
+            }
+
+            if($model->nomor_surat_lengkap == NULL)
+            {
+                $nomor_surat->nomor_surat = $model->nomor_surat;
+                $nomor_surat->save();
+            }
+
+
             $dateToday = date('Y-m-d');
             $model->tanggal_surat = $dateToday;
 
@@ -296,8 +360,7 @@ class SuratMahasiswaAktifController extends Controller
             $model->nomor_surat_lengkap = $nomor_surat_lengkap;
             $model->save();
 
-            $nomor_surat->nomor_surat = $model->nomor_surat;
-            $nomor_surat->save();
+          
 
             return $this->redirect(['add-pdf', 'id' => $model->surat_mahasiswa_aktif_id]);
         }

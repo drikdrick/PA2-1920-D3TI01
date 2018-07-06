@@ -1,32 +1,60 @@
 <?php
 
 use yii\helpers\Html;
+use yii\widgets\DetailView;
 use yii\bootstrap\ActiveForm;
-use kartik\datetime\DateTimePicker;
+use dosamigos\datetimepicker\DateTimePicker;
 use yii\helpers\ArrayHelper;
 use backend\modules\baak\models\StatusPengajuan;
 
 /* @var $this yii\web\View */
 /* @var $model backend\modules\baak\models\Ktm */
 /* @var $form yii\widgets\ActiveForm */
+$datetime = new DateTime();
 ?>
 
 <div class="ktm-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?= DetailView::widget([
+            'model' => $model,
+            'formatter' => [
+                'class' => 'yii\i18n\Formatter',
+                'nullDisplay' => '-',
+            ],
+            'attributes' => [
+                'alasan',
+                'pemohon.nama',
+            ],
+        ]) ?>
 
-    <?= $form->field($model, 'waktu_pengambilan',['horizontalCssClasses' => ['wrapper' => 'col-sm-8']])->widget(DateTimePicker::classname(), [
-            'options' => ['placeholder' => 'Tanggal Pengambilan Surat'],
-            'pluginOptions' => [
-                'autoclose' => true,
-                'format' => 'yyyy-mm-dd h:i',
-            ]
-        ])
-        ->label(false);
-    ?>
+    <?php $form = ActiveForm::begin([
+      'layout' => 'horizontal',
+      'fieldConfig' => [
+          'template' => "{label}\n{beginWrapper}\n{input}\n{error}\n{endWrapper}\n{hint}",
+          'horizontalCssClasses' => [
+              'label' => 'col-sm-3',
+              'wrapper' => 'col-sm-6',
+              'error' => '',
+              'hint' => '',
+          ],
+      ],
+    ]) ?>
+
+    <?= $form->field($model, 'waktu_pengambilan')->widget(DateTimePicker::className(), [
+        'language' => 'en',
+        'size' => 'ms',
+        'pickButtonIcon' => 'glyphicon glyphicon-time',
+        'inline' => false,
+        'clientOptions' => [
+            'pickerPosition' => 'bottom-left',
+            'autoclose' => true,
+            'format' => 'yyyy-mm-dd hh:ii:00', 
+            'startDate' => date($datetime->format("Y-m-d")),
+        ]
+    ]);?>
 
     <div class="form-group">
-      <div class="col-md-1 col-md-offset-2">
+      <div class="col-md-1 col-md-offset-3">
         <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Confirm', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div></div>
 

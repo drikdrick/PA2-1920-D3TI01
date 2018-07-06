@@ -23,8 +23,19 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'backend\modules\baak\assets\SerialColumn'],
 
+            
+            'kode_ukuran',  
             'ukuran',
-            'stok',
+            [
+                'attribute'=>'stok',
+                'value'=> function($model,$key,$index){
+                    if($model->stok ==NULL )
+                    {
+                        return '-';
+                    }
+                    return $model->stok;
+                }
+            ],
 
             ['class' => 'common\components\ToolsColumn',
                 'template' => '{view}',

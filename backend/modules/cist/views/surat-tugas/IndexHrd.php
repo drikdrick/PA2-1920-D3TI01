@@ -41,8 +41,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
                 'no_surat',
                 'agenda',
-                // 'tanggal_berangkat',
-                // 'tanggal_kembali',
                 [
                     'attribute' => 'tanggal_berangkat',
                     'value' => function($data){

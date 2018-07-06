@@ -20,12 +20,9 @@ $this->params['breadcrumbs'][] = ['label' => 'Surat Pengantar Proyek Mata Kuliah
                     'data-method' => 'POST',
                 ]);
                 echo "&nbsp";
-                echo Html::a('Reject', ['edit-decline', 'id' => $model->surat_pengantar_proyek_id], [
+                echo Html::a('Decline', ['edit-decline', 'id' => $model->surat_pengantar_proyek_id], [
                     'class' => 'btn btn-danger',
                     'data-method' => 'POST',
-                    'data' => [
-                        'confirm' => 'Reject request surat tugas?',
-                    ],
                 ]);
                 echo "&nbsp";
             }
@@ -47,6 +44,11 @@ $this->params['breadcrumbs'][] = ['label' => 'Surat Pengantar Proyek Mata Kuliah
                     'data-method' => 'POST',
                 ]);
                 echo "&nbsp";
+                echo Html::a('Done', ['edit-done', 'id' => $model->surat_pengantar_proyek_id], [
+                    'class' => 'btn btn-success',
+                    'data-method' => 'POST',
+                ]);
+                echo "&nbsp";
             }
 
             echo Html::a('Back', ['index-admin'], [
@@ -56,18 +58,73 @@ $this->params['breadcrumbs'][] = ['label' => 'Surat Pengantar Proyek Mata Kuliah
         ?>
     </p>
 
-    <?= DetailView::widget([
-        'model' => $model,
-        'formatter' => [
-            'class' => 'yii\i18n\Formatter',
-            'nullDisplay' => '-',
-        ],
-        'attributes' => [
-            'pegawai.nama',
-            'statusPengajuan.name',
-            'waktu_pengambilan',
-            'dims',
-        ],
-    ]) ?>
+    <?php if($model->status_pengajuan_id == 1){ ?>
+        <?= DetailView::widget([
+            'model' => $model,
+            'formatter' => [
+                'class' => 'yii\i18n\Formatter',
+                'nullDisplay' => '-',
+            ],
+            'attributes' => [
+                'alamat_tujuan',
+                'kuliah.nama_kul_ind',
+                'dims',
+                'statusPengajuan.name',
+            ],
+        ]) ?>
+    <?php } ?>
+
+    <?php if($model->status_pengajuan_id == 2){ ?>
+        <?= DetailView::widget([
+            'model' => $model,
+            'formatter' => [
+                'class' => 'yii\i18n\Formatter',
+                'nullDisplay' => '-',
+            ],
+            'attributes' => [
+                'alamat_tujuan',
+                'kuliah.nama_kul_ind',
+                'dims',
+                'statusPengajuan.name',
+                'pegawai.nama',
+            ],
+        ]) ?>
+    <?php } ?>
+
+    <?php if($model->status_pengajuan_id == 3){ ?>
+        <?= DetailView::widget([
+            'model' => $model,
+            'formatter' => [
+                'class' => 'yii\i18n\Formatter',
+                'nullDisplay' => '-',
+            ],
+            'attributes' => [
+                'alamat_tujuan',
+                'kuliah.nama_kul_ind',
+                'dims',
+                'statusPengajuan.name',
+                'pegawai.nama',
+                'alasan_penolakan',
+            ],
+        ]) ?>
+    <?php } ?>
+
+    <?php if($model->status_pengajuan_id == 4 || $model->status_pengajuan_id == 5){ ?>
+        <?= DetailView::widget([
+            'model' => $model,
+            'formatter' => [
+                'class' => 'yii\i18n\Formatter',
+                'nullDisplay' => '-',
+            ],
+            'attributes' => [
+                'alamat_tujuan',
+                'kuliah.nama_kul_ind',
+                'dims',
+                'statusPengajuan.name',
+                'pegawai.nama',
+                'waktu_pengambilan',
+            ],
+        ]) ?>
+    <?php } ?>
 
 </div>

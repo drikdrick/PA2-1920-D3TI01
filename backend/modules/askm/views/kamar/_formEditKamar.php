@@ -19,7 +19,7 @@ use backend\modules\askm\models\Asrama;
 
     <?= $form->field($model, 'nomor_kamar')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'asrama_id')->dropDownList(ArrayHelper::map(Asrama::find()->all(), 'asrama_id', 'name'), ['prompt'=>'Pilih'])?>
+    <?= $form->field($model, 'asrama_id')->hiddenInput(['maxlength' => true, 'value' => $_GET['id_asrama']])->label(false) ?>
 
 		</div>
 	</div>
@@ -27,7 +27,7 @@ use backend\modules\askm\models\Asrama;
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Buat Baru' : 'Selesai Edit', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
 
-        <?= Html::a('Batal', ['view', 'id' => $_GET['id']], ['class' => 'btn btn-danger']) ?>
+        <?= Html::a('Batal', ['kamar/index', 'KamarSearch[asrama_id]' => $model->asrama_id, 'id_asrama' => $model->asrama_id], ['class' => 'btn btn-danger']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

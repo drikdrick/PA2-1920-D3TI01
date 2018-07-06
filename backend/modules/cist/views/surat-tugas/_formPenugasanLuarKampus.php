@@ -108,27 +108,26 @@ use backend\modules\cist\models\Pegawai;
     ], ]) ?>
 
     <!-- FileInput for lampiran -->
-    <!-- <?= $form->field($model, 'files[]')->fileInput(['multiple' => true]) ?> -->
+    <!-- <?php echo $form->field($model, 'files[]')->fileInput(['multiple' => true]) ?> -->
 
     <div class="form-group field-materi-files">
-            <label class="control-label col-sm-2" for="materi-files">Lampiran</label>
-            <div class="col-sm-4">
-              <div id="file_input">
-                  <input type="file" class="form-control" name="files[]">
-              </div>
-              <div>
-                 <a href="#" onclick="addMoreFiles()">Tambah Lampiran</a>
-              </div>
+        <label class="control-label col-sm-2" for="materi-files">Lampiran</label>
+        <div class="col-sm-4">
+            <div id="file_input">
+                <input type="file" class="form-control" name="files[]">
+            </div>
+            <div>
+                <a href="#" onclick="addMoreFiles()">Tambah Lampiran</a>
             </div>
         </div>
-
-        <br />
+    </div>
+    <br/>
 
     <div class="form-group">
         <div class="col-md-1 col-md-offset-2">
             <?= Html::submitButton($model->isNewRecord ? 'Buat' : 'Ubah', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
         </div>
-        <?= Html::a('Kembali', ['index-dosen'], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Kembali', ['index-pegawai'], ['class' => 'btn btn-primary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

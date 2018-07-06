@@ -205,61 +205,243 @@ class AsramaController extends Controller
     }
 
     /*
-    * action-id: excel
+    * action-id: export-excel
     * action-desc: Meng-ekspor data asrama spesifik ke excel
     */
-    public function actionExcel($asrama_id)
+    public function actionExportExcel($asrama_id)
     {
-            $model = new DimKamarSearch();
-          
-                $_PHPExcel = new PHPExcel();
-                $_PHPExcel->setActiveSheetIndex(0)->mergeCells('A1:D1');
-                $_PHPExcel->getActiveSheet()->getStyle('A1:D1')->applyFromArray(array('font' => array('size' => 15,'bold' => true,'color' => array('rgb' => '542109'))));
-                $_PHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0,1,'Data Asrama');
-                $thead = 3;
-                $digit = 1000;
-                $_PHPExcel->getActiveSheet()->getStyle('A3:AP3')->applyFromArray(array('font' => array('size' => 11,'bold' => true,'color' => array('rgb' => '000000'))));
-                
-                $_PHPExcel->getActiveSheet()->getColumnDimension('A')->setAutoSize(false);
-                $_PHPExcel->getActiveSheet()->getColumnDimension('B')->setAutoSize(false);
-                $_PHPExcel->getActiveSheet()->getColumnDimension('C')->setAutoSize(false);
-                $_PHPExcel->getActiveSheet()->getColumnDimension('D')->setAutoSize(false);
-                $_PHPExcel->getActiveSheet()->getColumnDimension('E')->setAutoSize(false);
-                $_PHPExcel->getActiveSheet()->getColumnDimension('F')->setAutoSize(false);
-                $_PHPExcel->getActiveSheet()->getColumnDimension('G')->setAutoSize(false);
-                $_PHPExcel->getActiveSheet()->getColumnDimension('H')->setAutoSize(false);
-                $_PHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth("50");
-                $_PHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth("10");
-                $_PHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth("14");
-                $_PHPExcel->getActiveSheet()->getColumnDimension('D')->setWidth("12");  
-                $_PHPExcel->getActiveSheet()->getColumnDimension('E')->setWidth("8");
-                $_PHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0,$thead,'Nama');
-                $_PHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1,$thead,'Angkatan');
-                $_PHPExcel->getActiveSheet()->setCellValueByColumnAndRow(2,$thead,'Program Studi');
-                $_PHPExcel->getActiveSheet()->setCellValueByColumnAndRow(3,$thead,'Asrama');
-                $_PHPExcel->getActiveSheet()->setCellValueByColumnAndRow(4,$thead,'Kamar');
-                foreach(range('A','AP') as $columnID)
-                    {
-                        $_PHPExcel->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(true);
+        $model = new DimKamarSearch();
+      
+        $_PHPExcel = new PHPExcel();
 
-                    }
-                
-                $data = $model->find()->from('askm_dim_kamar t1')->innerJoin('askm_kamar t2', 't2.kamar_id = t1.kamar_id')->andWhere('t2.asrama_id = '.$asrama_id)->all();
-                $no = 1;
+        $year = date('Y');
 
-                foreach($data as $d){
-                    
-                     
-                    $_PHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0,$thead+$no,$d->dim['nama']);
-                    $_PHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1,$thead+$no,$d->dim['thn_masuk']);
-                    $_PHPExcel->getActiveSheet()->setCellValueByColumnAndRow(2,$thead+$no,$d->dim->refKbk['singkatan_prodi']);
-                    $_PHPExcel->getActiveSheet()->setCellValueByColumnAndRow(3,$thead+$no,$d->kamar->asrama['name']);
-                    $_PHPExcel->getActiveSheet()->setCellValueByColumnAndRow(4,$thead+$no,$d->kamar['nomor_kamar']);
-                    $no++;
-                 }
-                $_objWriter = PHPExcel_IOFactory::createWriter($_PHPExcel,'Excel2007');
-                header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-                header('Content-Disposition: attachment;filename="History Izin Bermalam.xlsx"');
-                $_objWriter->save('php://output');
+        $_PHPExcel->getActiveSheet()->getCell('B1')->setValue('Institut Teknologi Del')->getStyle()->applyFromArray(
+            array(
+                'font' => array(
+                    'size' => 11,'bold' => true,'color' => array(
+                        'rgb' => '000000')
+                ),
+                'alignment' => array(
+                    'horizontal' => 'left',
+                )
+            )
+        );
+
+        $_PHPExcel->getActiveSheet()->getCell('B2')->setValue('Daftar Penghuni Asrama Tahun Ajaran '.$year.'/'.date('Y', strtotime('+ 365 days')))->getStyle()->applyFromArray(
+            array(
+                'font' => array(
+                    'size' => 11,'bold' => true,'color' => array(
+                        'rgb' => '000000')
+                ),
+                'alignment' => array(
+                    'horizontal' => 'left',
+                )
+            )
+        );
+
+        $thead = 5;
+        $digit = 1000;
+
+        $_PHPExcel->getActiveSheet()->setAutoFilter('A5:F5');
+
+        $_PHPExcel->getActiveSheet()->getStyle('A5:AP5')->applyFromArray(
+            array(
+                'font' => array(
+                    'size' => 11,'bold' => true,'color' => array(
+                        'rgb' => '000000')
+                ),
+                'alignment' => array(
+                    'horizontal' => 'left',
+                )
+            )
+        );
+        
+        $_PHPExcel->getActiveSheet()->getColumnDimension('A')->setAutoSize(false);
+        $_PHPExcel->getActiveSheet()->getColumnDimension('B')->setAutoSize(false);
+        $_PHPExcel->getActiveSheet()->getColumnDimension('C')->setAutoSize(false);
+        $_PHPExcel->getActiveSheet()->getColumnDimension('D')->setAutoSize(false);
+        $_PHPExcel->getActiveSheet()->getColumnDimension('E')->setAutoSize(false);
+        $_PHPExcel->getActiveSheet()->getColumnDimension('F')->setAutoSize(false);
+        $_PHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth("6");
+        $_PHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth("45");
+        $_PHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth("14");
+        $_PHPExcel->getActiveSheet()->getColumnDimension('D')->setWidth("12");  
+        $_PHPExcel->getActiveSheet()->getColumnDimension('E')->setWidth("16");
+        $_PHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth("12");
+        $_PHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0,$thead,'No');
+        $_PHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1,$thead,'Nama Mahasiswa');
+        $_PHPExcel->getActiveSheet()->setCellValueByColumnAndRow(2,$thead,'NIM');
+        $_PHPExcel->getActiveSheet()->setCellValueByColumnAndRow(3,$thead,'Angkatan');
+        $_PHPExcel->getActiveSheet()->setCellValueByColumnAndRow(4,$thead,'Program Studi');
+        $_PHPExcel->getActiveSheet()->setCellValueByColumnAndRow(5,$thead,'Kamar');
+
+        foreach(range('A','AP') as $columnID)
+        {
+            $_PHPExcel->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(true);
+        }
+        
+        $data = $model->find()->from('askm_dim_kamar t1')->innerJoin('askm_kamar t2', 't2.kamar_id = t1.kamar_id')->where('t1.deleted!=1')->andWhere('t2.asrama_id = '.$asrama_id)->all();
+        $no = 1;
+        $i = 1;
+
+        foreach($data as $d){
+            
+            $_PHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0,$thead+$no,$i)->getDefaultStyle()->getAlignment()->applyFromArray(
+                array(
+                    'horizontal' => 'center',
+                    'rotation'   => 0,
+                    'wrap'       => TRUE
+                )
+            );
+            $_PHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1,$thead+$no,$d->dim['nama'])->getDefaultStyle()->getAlignment()->applyFromArray(
+                array(
+                    'horizontal' => 'center',
+                    'rotation'   => 0,
+                    'wrap'          => TRUE
+                )
+            );
+            $_PHPExcel->getActiveSheet()->setCellValueByColumnAndRow(2,$thead+$no,$d->dim['nim'])->getDefaultStyle()->getAlignment()->applyFromArray(
+                array(
+                    'horizontal' => 'center',
+                    'rotation'   => 0,
+                    'wrap'          => TRUE
+                )
+            );
+            $_PHPExcel->getActiveSheet()->setCellValueByColumnAndRow(3,$thead+$no,$d->dim['thn_masuk'])->getDefaultStyle()->getAlignment()->applyFromArray(
+            array(
+                    'horizontal' => 'center',
+                    'rotation'   => 0,
+                    'wrap'          => TRUE
+                )
+            );
+            $_PHPExcel->getActiveSheet()->setCellValueByColumnAndRow(4,$thead+$no,$d->dim->refKbk['singkatan_prodi'])->getDefaultStyle()->getAlignment()->applyFromArray(
+            array(
+                    'horizontal' => 'center',
+                    'rotation'   => 0,
+                    'wrap'          => TRUE
+                )
+            );
+            $_PHPExcel->getActiveSheet()->setCellValueByColumnAndRow(5,$thead+$no,$d->kamar['nomor_kamar'])->getDefaultStyle()->getAlignment()->applyFromArray(
+            array(
+                    'horizontal' => 'center',
+                    'rotation'   => 0,
+                    'wrap'          => TRUE
+                )
+            );
+            $no++;
+            $i++;
+
+        }
+
+        $_PHPExcel->getActiveSheet()->getCell('B3')->setValue('Asrama : '.$d->kamar->asrama['name'])->getStyle()->applyFromArray(
+            array(
+                'font' => array(
+                    'size' => 11,'bold' => true,'color' => array(
+                        'rgb' => '000000')
+                ),
+                'alignment' => array(
+                    'horizontal' => 'left',
+                )
+            )
+        );
+
+        $_objWriter = PHPExcel_IOFactory::createWriter($_PHPExcel,'Excel2007');
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="Data_Penghuni_Asrama_'.$d->kamar->asrama['name'].'.xlsx"');
+        $_objWriter->save('php://output');
+
+    }
+
+
+    /*
+    * action-id: template-excel
+    * action-desc: Mengunduh template data penghuni dalam bentuk excel
+    */
+    public function actionTemplateExcel()
+    {
+  
+        $model = new DimKamarSearch();
+      
+        $_PHPExcel = new PHPExcel();
+
+        $year = date('Y');
+
+        $_PHPExcel->getActiveSheet()->getCell('B1')->setValue('Institut Teknologi Del')->getStyle()->applyFromArray(
+            array(
+                'font' => array(
+                    'size' => 11,'bold' => true,'color' => array(
+                        'rgb' => '000000')
+                ),
+                'alignment' => array(
+                    'horizontal' => 'left',
+                )
+            )
+        );
+
+        $_PHPExcel->getActiveSheet()->getCell('B2')->setValue('Daftar Penghuni Asrama Tahun Ajaran '.$year.'/'.date('Y', strtotime('+ 365 days')))->getStyle()->applyFromArray(
+            array(
+                'font' => array(
+                    'size' => 11,'bold' => true,'color' => array(
+                        'rgb' => '000000')
+                ),
+                'alignment' => array(
+                    'horizontal' => 'left',
+                )
+            )
+        );
+
+        $thead = 5;
+        $digit = 1000;
+
+        $_PHPExcel->getActiveSheet()->setAutoFilter('A5:F5');
+
+        $_PHPExcel->getActiveSheet()->getStyle('A5:AP5')->applyFromArray(
+            array(
+                'font' => array(
+                    'size' => 11,'bold' => true,'color' => array(
+                        'rgb' => '000000')
+                ),
+                'alignment' => array(
+                    'horizontal' => 'left',
+                )
+            )
+        );
+        
+        $_PHPExcel->getActiveSheet()->getColumnDimension('A')->setAutoSize(false);
+        $_PHPExcel->getActiveSheet()->getColumnDimension('B')->setAutoSize(false);
+        $_PHPExcel->getActiveSheet()->getColumnDimension('C')->setAutoSize(false);
+        $_PHPExcel->getActiveSheet()->getColumnDimension('D')->setAutoSize(false);
+        $_PHPExcel->getActiveSheet()->getColumnDimension('E')->setAutoSize(false);
+        $_PHPExcel->getActiveSheet()->getColumnDimension('F')->setAutoSize(false);
+        $_PHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth("6");
+        $_PHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth("45");
+        $_PHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth("14");
+        $_PHPExcel->getActiveSheet()->getColumnDimension('D')->setWidth("12");  
+        $_PHPExcel->getActiveSheet()->getColumnDimension('E')->setWidth("16");
+        $_PHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth("12");
+        $_PHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0,$thead,'No');
+        $_PHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1,$thead,'Nama Mahasiswa');
+        $_PHPExcel->getActiveSheet()->setCellValueByColumnAndRow(2,$thead,'NIM');
+        $_PHPExcel->getActiveSheet()->setCellValueByColumnAndRow(3,$thead,'Angkatan');
+        $_PHPExcel->getActiveSheet()->setCellValueByColumnAndRow(4,$thead,'Program Studi');
+        $_PHPExcel->getActiveSheet()->setCellValueByColumnAndRow(5,$thead,'Kamar');
+
+        $_PHPExcel->getActiveSheet()->getCell('B3')->setValue('Asrama : ')->getStyle()->applyFromArray(
+            array(
+                'font' => array(
+                    'size' => 11,'bold' => true,'color' => array(
+                        'rgb' => '000000')
+                ),
+                'alignment' => array(
+                    'horizontal' => 'left',
+                )
+            )
+        );
+
+        $_objWriter = PHPExcel_IOFactory::createWriter($_PHPExcel,'Excel2007');
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="Template_Penghuni_Asrama.xlsx"');
+        $_objWriter->save('php://output');
     }
 }

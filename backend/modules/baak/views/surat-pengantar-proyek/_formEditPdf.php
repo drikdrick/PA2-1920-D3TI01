@@ -12,17 +12,18 @@ use yii\widgets\DetailView;
 ?>
 
 <div class="surat-pengantar-proyek-form">
-
-    <?= DetailView::widget([
-        'model' => $nomor_surat,
-        'formatter' => [
-            'class' => 'yii\i18n\Formatter',
-            'nullDisplay' => '-',
-        ],
-        'attributes' => [
-          'nomor_surat',
-        ],
-    ]) ?>
+    <?php if($model->nomor_surat == null){?>
+      <?= DetailView::widget([
+          'model' => $nomor_surat,
+          'formatter' => [
+              'class' => 'yii\i18n\Formatter',
+              'nullDisplay' => '-',
+          ],
+          'attributes' => [
+            'nomor_surat',
+          ],
+      ]) ?>
+    <?php } ?>
 
     <?php $form = ActiveForm::begin([
       'layout' => 'horizontal',
@@ -37,7 +38,14 @@ use yii\widgets\DetailView;
       ],
     ]) ?>
 
-    <?= $form->field($model, 'nomor_surat',['horizontalCssClasses' => ['wrapper' => 'col-sm-8']])->textInput(['maxlength' => true]) ?>
+    <?php if($model->nomor_surat == NULL){ ?>
+
+      <?= $form->field($model, 'nomor_surat',['horizontalCssClasses' => ['wrapper' => 'col-sm-8']])->textInput(['maxlength' => true]) ?>
+    <?php } 
+
+    else {?>
+        <?= $form->field($model, 'nomor_surat',['horizontalCssClasses' => ['wrapper' => 'col-sm-8']])->textInput(['readonly' => true, 'maxlength' => true]) ?>
+    <?php }?>
 
     <?= $form->field($model, 'perihal_surat',['horizontalCssClasses' => ['wrapper' => 'col-sm-8']])->textarea(['rows' => 3]) ?>
 

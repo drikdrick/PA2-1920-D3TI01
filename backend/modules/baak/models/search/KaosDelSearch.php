@@ -19,7 +19,7 @@ class KaosDelSearch extends KaosDel
     {
         return [
             [['kaos_del_id', 'stok', 'pegawai_id', 'deleted'], 'integer'],
-            [['ukuran', 'created_at', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by'], 'safe'],
+            [['ukuran', 'kode_ukuran','created_at', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by'], 'safe'],
         ];
     }
 
@@ -58,6 +58,7 @@ class KaosDelSearch extends KaosDel
         $query->andFilterWhere([
             'kaos_del_id' => $this->kaos_del_id,
             'stok' => $this->stok,
+            'kode_ukuran' => $this->kode_ukuran,
             'pegawai_id' => $this->pegawai_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
@@ -66,6 +67,7 @@ class KaosDelSearch extends KaosDel
         ]);
 
         $query->andFilterWhere(['like', 'ukuran', $this->ukuran])
+            ->andFilterWhere(['like','kode_ukuran',$this->kode_ukuran])
             ->andFilterWhere(['like', 'created_by', $this->created_by])
             ->andFilterWhere(['like', 'updated_by', $this->updated_by])
             ->andFilterWhere(['like', 'deleted_by', $this->deleted_by]);

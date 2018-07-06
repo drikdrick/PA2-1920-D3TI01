@@ -44,14 +44,16 @@ class KamarController extends Controller
     * action-id: index
     * action-desc: Display all data
     */
-    public function actionIndex()
+    public function actionIndex($id_asrama)
     {
         $searchModel = new KamarSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $asrama = Asrama::find()->where(['asrama_id' => $id_asrama])->one();
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'asrama' => $asrama,
         ]);
     }
 

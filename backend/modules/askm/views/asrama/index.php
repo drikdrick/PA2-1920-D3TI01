@@ -27,6 +27,9 @@ $uiHelper=\Yii::$app->uiHelper;
                 <li>
                     <a href="<?= Url::to(['asrama/add']) ?>"><i class="fa fa-plus"></i>Tambah Asrama</a>
                 </li>
+                <!-- <li>
+                    <a href="<?= Url::to(['asrama/template-excel']) ?>"><i class="fa fa-download"></i>Template Data Penghuni</a>
+                </li> -->
             </ul>
         </div>
     </div>
@@ -48,7 +51,13 @@ $uiHelper=\Yii::$app->uiHelper;
             [
                 'attribute' => 'name',
                 'label' => 'Nama Asrama',
-                'value' => 'name',
+                'format' => 'raw',
+                'value' => function($data){
+                    return LinkHelper::renderLink([
+                            'label' => '<strong>'.$data['name'].'</strong>',
+                            'url' => Url::to(['view-detail-asrama', 'id' => $data['asrama_id']]),
+                        ]);
+                }
             ],
             'lokasi',
             [
@@ -74,12 +83,9 @@ $uiHelper=\Yii::$app->uiHelper;
             // 'updated_by',
 
             ['class' => 'common\components\ToolsColumn',
-                'template' => '{view} {edit} {keasramaan} {kamar} {excel} {delete-asrama}',
+                'template' => '{edit} {keasramaan} {kamar} {export} {delete-asrama}',
                 'header' => 'Aksi',
                 'buttons' => [
-                    'view' => function ($url, $model){
-                        return ToolsColumn::renderCustomButton($url, $model, 'View Detail Asrama', 'fa fa-eye');
-                    },
                     'keasramaan' => function ($url, $model){
                         return ToolsColumn::renderCustomButton($url, $model, 'Tambah Pengurus', 'fa fa-users');
                     },
@@ -89,12 +95,11 @@ $uiHelper=\Yii::$app->uiHelper;
                     'kamar' => function ($url, $model){
                         return ToolsColumn::renderCustomButton($url, $model, 'Daftar Kamar', 'fa fa-list');
                     },
-                                        
-                    'excel' => function ($url, $model){
-                        return ToolsColumn::renderCustomButton($url, $model, 'Export Data Asrama', 'fa fa-print');
+                    'export' => function ($url, $model){
+                        return ToolsColumn::renderCustomButton($url, $model, 'Export Data Penghuni', 'fa fa-upload');
                     },					
 					'delete-asrama' => function ($url, $model){
-                        return ToolsColumn::renderCustomButton($url, $model, 'Hapus Asrama', 'fa fa-times');
+                        return ToolsColumn::renderCustomButton($url, $model, 'Hapus Asrama', 'fa fa-trash');
                     },
                 ],
                 'urlCreator' => function ($action, $model, $key, $index){
@@ -106,10 +111,8 @@ $uiHelper=\Yii::$app->uiHelper;
                         return Url::toRoute(['keasramaan/add-pengurus', 'id_asrama' => $key]);
                     }else if ($action === 'kamar') {
                         return Url::toRoute(['kamar/index', 'KamarSearch[asrama_id]' => $key, 'id_asrama' => $key]);
-                       // return Url::toRoute(['asrama/view-kamar', 'asrama_id' => $key]);
-					   
-                    }else if($action==='excel'){
-                        return Url::toRoute(['excel', 'asrama_id' => $key]);
+                    }else if($action==='export'){
+                        return Url::toRoute(['export-excel', 'asrama_id' => $key]);
                     }else if($action==='delete-asrama'){
 						return Url::toRoute(['del', 'asrama_id' => $key]);
 					}

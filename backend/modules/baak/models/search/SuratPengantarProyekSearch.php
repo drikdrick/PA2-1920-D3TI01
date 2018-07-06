@@ -18,8 +18,8 @@ class SuratPengantarProyekSearch extends SuratPengantarProyek
     public function rules()
     {
         return [
-            [['surat_pengantar_proyek_id', 'nomor_surat', 'kuliah_id', 'pemohon_id', 'pegawai_id', 'deleted'], 'integer'],
-            [['nomor_surat_lengkap', 'status_pengajuan_id', 'perihal_surat', 'alamat_tujuan', 'banyak_lampiran', 'salam_pembuka', 'tanggal_surat', 'waktu_pengambilan', 'created_at', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by'], 'safe'],
+            [['surat_pengantar_proyek_id', 'nomor_surat', 'kuliah_id', 'pegawai_id', 'deleted'], 'integer'],
+            [['nomor_surat_lengkap', 'pemohon_id', 'status_pengajuan_id', 'perihal_surat', 'alamat_tujuan', 'banyak_lampiran', 'salam_pembuka', 'tanggal_surat', 'waktu_pengambilan', 'created_at', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by', 'alasan_penolakan'], 'safe'],
         ];
     }
 
@@ -45,6 +45,9 @@ class SuratPengantarProyekSearch extends SuratPengantarProyek
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => 15,
+            ],
             'sort' => ['defaultOrder' => ['status_pengajuan_id' => SORT_ASC, 'nomor_surat' => SORT_DESC, 'updated_at' => SORT_DESC, 'created_at' => SORT_DESC]],
         ]);
 
@@ -56,21 +59,23 @@ class SuratPengantarProyekSearch extends SuratPengantarProyek
             return $dataProvider;
         }
 
-        $query->joinWith('statusPengajuan');
+        // $query->joinWith('statusPengajuan');
+        $query->joinWith('pemohon');
 
         $query->andFilterWhere([
             'surat_pengantar_proyek_id' => $this->surat_pengantar_proyek_id,
             'nomor_surat' => $this->nomor_surat,
             'kuliah_id' => $this->kuliah_id,
             'tanggal_surat' => $this->tanggal_surat,
-            'pemohon_id' => $this->pemohon_id,
+            // 'pemohon_id' => $this->pemohon_id,
             'pegawai_id' => $this->pegawai_id,
-            // 'status_pengajuan_id' => $this->status_pengajuan_id,
+            'status_pengajuan_id' => $this->status_pengajuan_id,
             'waktu_pengambilan' => $this->waktu_pengambilan,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'deleted' => $this->deleted,
             'deleted_at' => $this->deleted_at,
+            'alasan_penolakan' => $this->alasan_penolakan,
         ]);
 
         $query->andFilterWhere(['like', 'nomor_surat_lengkap', $this->nomor_surat_lengkap])
@@ -81,7 +86,8 @@ class SuratPengantarProyekSearch extends SuratPengantarProyek
             ->andFilterWhere(['like', 'created_by', $this->created_by])
             ->andFilterWhere(['like', 'updated_by', $this->updated_by])
             ->andFilterWhere(['like', 'deleted_by', $this->deleted_by])
-            ->andFilterWhere(['like', 'baak_r_status_pengajuan.name', $this->status_pengajuan_id])
+            ->andFilterWhere(['like', 'dimx_dim.nama', $this->pemohon_id])
+            // ->andFilterWhere(['like', 'baak_r_status_pengajuan.name', $this->status_pengajuan_id])
             ->andFilterWhere(['not', ['baak_surat_pengantar_proyek.deleted' => 1]]);
 
         return $dataProvider;

@@ -9,6 +9,7 @@ use yii\helpers\ArrayHelper;
 use backend\modules\baak\models\StatusPengajuan;
 use backend\modules\baak\models\Dim;
 use common\widgets\Typeahead;
+use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
 /* @var $model backend\modules\baak\models\SuratMagang */
@@ -16,6 +17,20 @@ use common\widgets\Typeahead;
 ?>
 
 <div class="surat-proyek-form">
+
+    <?= DetailView::widget([
+            'model' => $model,
+            'formatter' => [
+                'class' => 'yii\i18n\Formatter',
+                'nullDisplay' => '-',
+            ],
+            'attributes' => [
+                'alamat_tujuan',
+                'kuliah.nama_kul_ind',
+                'dims',
+                'statusPengajuan.name',
+            ],
+        ]) ?>
 
     <?php $form = ActiveForm::begin([
       'layout' => 'horizontal',
@@ -30,23 +45,27 @@ use common\widgets\Typeahead;
       ],
     ]) ?>
 
-    <?= Typeahead::widget([
-	   'model' => $dim,
-	   'attribute' => 'dim_id',
-	   'withSubmitButton' => true,
-	   'template' => "<p style='padding:4px'>{{data}} <i>({{thn_masuk}})</i></p>",
-	   'htmlOptions' => ['class' => 'typeahead', 'placeholder' => 'NIM atau Nama'],
-	   'options' => [
-	        'hint' => false,
-	        'highlight' => true,
-	        'minLength' => 1
-	   ], 
-	   'sourceApiBaseUrl' => Url::toRoute(['/baak/surat-lomba/add-mahasiswa']),
-	   'sourceName' => 'mhslulus1',
-	]) ?>
+    <div class="row">      
+      <label class="control-label col-sm-3">NIM atau Nama Mahasiswa</label>
+      <div class="col-sm-8"><?= Typeahead::widget([
+           'model' => $dim,
+            'attribute' => 'dim_id',
+           'template' => "<p style='padding:5px'>{{data}}</p>",
+           'htmlOptions' => ['class' => 'form-control', 'required' => true, 'style' => 'width: 300px'],
+           'options' => [
+                'hint' => false,
+                'highlight' => true,
+                'minLength' => 1
+           ], 
+           'sourceApiBaseUrl' => Url::toRoute(['/baak/surat-pengantar-proyek/add-mahasiswa']),
+           'sourceName' => 'mhslulus1',
+        ]) ?>
+      </div>
+    </div> 
 
     <div class="form-group">
-      <div class="col-md-1 col-md-offset-2">
+      <br>
+      <div class="col-md-1 col-md-offset-3">
         <?= Html::submitButton($dim->isNewRecord ? 'Add Student' : 'Update', ['class' => $dim->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div></div>
 

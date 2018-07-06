@@ -145,19 +145,6 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]) ?>
 
-    <!-- Untuk list lampiran -->
-    <?php
-        if($modelFile != null){
-            $idx = 1;
-            echo "<b>Lampiran</b>:<br/>"; 
-            foreach($modelFile as $data){
-                echo $idx . ". " . LinkHelper::renderLink(['options'=>'target = _blank', 'label'=>$data->nama_file, 'url'=>\Yii::$app->fileManager->generateUri($data->kode_file)]) . "<br/>";
-
-            }
-            echo "<br/>";
-        }
-    ?>
-
     <?php
         if($modelLaporan != null){  //If there are Laporan in this Surat Tugas
             foreach($modelLaporan as $data){

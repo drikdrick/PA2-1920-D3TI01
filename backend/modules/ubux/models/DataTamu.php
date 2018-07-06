@@ -75,11 +75,12 @@ class DataTamu extends \yii\db\ActiveRecord
     {
         return [
             'data_tamu_id' => 'Data Tamu ID',
-            'nik' => 'NIK',
+            'nik' => 'Nik',
             'nama' => 'Nama',
             'waktu_kedatangan' => 'Waktu Kedatangan',
             'desc' => 'Desc',
             'waktu_kembali' => 'Waktu Kembali',
+            'kendaraan'=>'Kendaraan',
             'deleted' => 'Deleted',
             'deleted_at' => 'Deleted At',
             'deleted_by' => 'Deleted By',

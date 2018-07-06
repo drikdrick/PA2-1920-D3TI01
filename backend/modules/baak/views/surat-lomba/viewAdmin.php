@@ -20,12 +20,9 @@ $this->params['breadcrumbs'][] = ['label' => 'Surat Kompetisi', 'url' => ['index
                     'data-method' => 'POST',
                 ]);
                 echo "&nbsp";
-                echo Html::a('Reject', ['edit-decline', 'id' => $model->surat_lomba_id], [
+                echo Html::a('Decline', ['edit-decline', 'id' => $model->surat_lomba_id], [
                     'class' => 'btn btn-danger',
                     'data-method' => 'POST',
-                    'data' => [
-                        'confirm' => 'Reject request surat tugas?',
-                    ],
                 ]);
                 echo "&nbsp";
             }
@@ -47,6 +44,11 @@ $this->params['breadcrumbs'][] = ['label' => 'Surat Kompetisi', 'url' => ['index
                     'data-method' => 'POST',
                 ]);
                 echo "&nbsp";
+                echo Html::a('Done', ['edit-done', 'id' => $model->surat_lomba_id], [
+                    'class' => 'btn btn-success',
+                    'data-method' => 'POST',
+                ]);
+                echo "&nbsp";
             }
 
             echo Html::a('Back', ['index-admin'], [
@@ -55,20 +57,71 @@ $this->params['breadcrumbs'][] = ['label' => 'Surat Kompetisi', 'url' => ['index
                 ]);
         ?>
 
-    <?= DetailView::widget([
-        'model' => $model,
-        'formatter' => [
-            'class' => 'yii\i18n\Formatter',
-            'nullDisplay' => '-',
-        ],
-        'attributes' => [
-            'pemohon.nama',
-            'nama_lomba',
-            'pegawai.nama',
-            'statusPengajuan.name',
-            'waktu_pengambilan',
-            'dims',
-        ],
-    ]) ?>
+
+      <?php
+        if($model->status_pengajuan_id == 1)
+        {
+    ?>
+        <?= DetailView::widget([
+            'model' => $model,
+            'formatter' => [
+                'class' => 'yii\i18n\Formatter',
+                'nullDisplay' => '-',
+            ],
+            'attributes' => [            
+                'nama_lomba',
+                'alamat_tujuan',
+                'dims',
+                'statusPengajuan.name',
+            ],
+        ]) ?>
+
+    <?php
+        }
+        if($model->status_pengajuan_id == 3)
+        {
+    ?>
+        <?= DetailView::widget([
+            'model' => $model,
+            'formatter' => [
+                'class' => 'yii\i18n\Formatter',
+                'nullDisplay' => '-',
+            ],
+            'attributes' => [            
+                'nama_lomba',
+                'alamat_tujuan',
+                'dims',
+                'statusPengajuan.name',
+                'pegawai.nama',
+                'alasan_penolakan',
+            ],
+        ]) ?>
+    <?php
+        }
+        if($model->status_pengajuan_id != 3 && $model->status_pengajuan_id != 1)
+        {
+    ?>
+        
+         <?= DetailView::widget([
+            'model' => $model,
+            'formatter' => [
+                'class' => 'yii\i18n\Formatter',
+                'nullDisplay' => '-',
+            ],
+            'attributes' => [            
+                'nama_lomba',
+                'alamat_tujuan',
+                'dims',
+                'statusPengajuan.name',
+                'pegawai.nama',
+                'waktu_pengambilan'
+            ],
+        ]) ?>
+
+    <?php
+        }
+    ?>
+
+    
 
 </div>

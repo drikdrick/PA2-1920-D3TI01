@@ -56,7 +56,7 @@ class SuratMahasiswaAktifSearch extends SuratMahasiswaAktif
             return $dataProvider;
         }
 
-        $query->joinWith('statusPengajuan');        
+        //$query->joinWith('statusPengajuan');        
         $query->joinWith('pemohon');
 
         $query->andFilterWhere([
@@ -68,7 +68,7 @@ class SuratMahasiswaAktifSearch extends SuratMahasiswaAktif
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'pegawai_id' => $this->pegawai_id,
-            //'status' => $this->status,
+            'status_pengajuan_id' => $this->status_pengajuan_id,
             'waktu_pengambilan' => $this->waktu_pengambilan,
         ]);
 
@@ -77,7 +77,7 @@ class SuratMahasiswaAktifSearch extends SuratMahasiswaAktif
             ->andFilterWhere(['like', 'deleted_by', $this->deleted_by])
             ->andFilterWhere(['like', 'created_by', $this->created_by])
             ->andFilterWhere(['like', 'updated_by', $this->updated_by])
-            ->andFilterWhere(['like', 'baak_r_status_pengajuan.name', $this->status_pengajuan_id])
+            //->andFilterWhere(['like', 'baak_r_status_pengajuan.name', $this->status_pengajuan_id])
             ->andFilterWhere(['like', 'dimx_dim.nama', $this->pemohon_id])
             ->andFilterWhere(['not', ['baak_surat_mahasiswa_aktif.deleted' => 1]]);
 

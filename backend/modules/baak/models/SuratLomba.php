@@ -71,7 +71,8 @@ class SuratLomba extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['dims', 'tanggal_surat', 'deleted_at', 'created_at', 'updated_at', 'waktu_pengambilan', 'nomor_surat_lengkap', 'alamat_tujuan', 'salam_pembuka'], 'safe'],
+            [['nama_lomba','alamat_tujuan'],'required'],
+            [['dims', 'tanggal_surat', 'deleted_at', 'created_at', 'updated_at', 'waktu_pengambilan', 'nomor_surat_lengkap', 'alasan_penolakan', 'nomor_surat','salam_pembuka','perihal','banyak_lampiran'], 'safe'],
             [['pemohon_id', 'deleted', 'pegawai_id', 'status_pengajuan_id', 'nomor_surat'], 'integer'],
             [['banyak_lampiran', 'nama_lomba', 'nomor_surat_lengkap'], 'string', 'max' => 45],
             [['perihal', 'alamat_tujuan', 'salam_pembuka'], 'string'],
@@ -107,7 +108,8 @@ class SuratLomba extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
             'updated_by' => 'Updated By',
             'pegawai_id' => 'Hrdx Pegawai Pegawai ID',
-            'status_pengajuan_id' => 'Status',
+            'status_pengajuan_id' => 'Status Pengajuan',
+            'alasan_penolakan' => 'Alasan Penolakan',
             'waktu_pengambilan' => 'Waktu Pengambilan',
         ];
     }

@@ -32,20 +32,74 @@ $this->params['breadcrumbs'][] = ['label' => 'Surat Pengantar Proyek', 'url' => 
         ?>
     </p>
 
-    <?= DetailView::widget([
-        'model' => $model,
-        'formatter' => [
-            'class' => 'yii\i18n\Formatter',
-            'nullDisplay' => '-',
-        ],
-        'attributes' => [
-            'alamat_tujuan',
-            'kuliah.nama_kul_ind',
-            'pegawai.nama',
-            'statusPengajuan.name',
-            'waktu_pengambilan',
-            'dims',
-        ],
-    ]) ?>
+    <?php if($model->status_pengajuan_id == 1){ ?>
+        <?= DetailView::widget([
+            'model' => $model,
+            'formatter' => [
+                'class' => 'yii\i18n\Formatter',
+                'nullDisplay' => '-',
+            ],
+            'attributes' => [
+                'alamat_tujuan',
+                'kuliah.nama_kul_ind',
+                'dims',
+                'statusPengajuan.name',
+            ],
+        ]) ?>
+    <?php } ?>
+
+    <?php if($model->status_pengajuan_id == 2){ ?>
+        <?= DetailView::widget([
+            'model' => $model,
+            'formatter' => [
+                'class' => 'yii\i18n\Formatter',
+                'nullDisplay' => '-',
+            ],
+            'attributes' => [
+                'alamat_tujuan',
+                'kuliah.nama_kul_ind',
+                'dims',
+                'statusPengajuan.name',
+                'pegawai.nama',
+            ],
+        ]) ?>
+    <?php } ?>
+
+    <?php if($model->status_pengajuan_id == 3){ ?>
+        <?= DetailView::widget([
+            'model' => $model,
+            'formatter' => [
+                'class' => 'yii\i18n\Formatter',
+                'nullDisplay' => '-',
+            ],
+            'attributes' => [
+                'alamat_tujuan',
+                'kuliah.nama_kul_ind',
+                'dims',
+                'statusPengajuan.name',
+                'pegawai.nama',
+                'alasan_penolakan',
+            ],
+        ]) ?>
+    <?php } ?>
+
+    <?php if($model->status_pengajuan_id == 4 || $model->status_pengajuan_id == 5){ ?>
+        <?= DetailView::widget([
+            'model' => $model,
+            'formatter' => [
+                'class' => 'yii\i18n\Formatter',
+                'nullDisplay' => '-',
+            ],
+            'attributes' => [
+                'alamat_tujuan',
+                'kuliah.nama_kul_ind',
+                'dims',
+                'statusPengajuan.name',
+                'pegawai.nama',
+                'waktu_pengambilan',
+            ],
+        ]) ?>
+    <?php } ?>
+        
 
 </div>

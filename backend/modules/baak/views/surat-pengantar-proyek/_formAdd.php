@@ -29,20 +29,23 @@ use common\widgets\Typeahead;
 
     <?= $form->field($model, 'alamat_tujuan',['horizontalCssClasses' => ['wrapper' => 'col-sm-8']])->textInput(['maxlength' => true]) ?>
 
-    <?= Typeahead::widget([
-     'model' => $model,
-     'attribute' => 'kuliah_id',
-     'withSubmitButton' => true,
-     'template' => "<p style='padding:8px'>{{data}} <i>({{thn_masuk}})</i></p>",
-     'htmlOptions' => ['class' => 'typeahead', 'placeholder' => 'Mata Kuliah'],
-     'options' => [
-          'hint' => false,
-          'highlight' => true,
-          'minLength' => 1
-     ], 
-     'sourceApiBaseUrl' => Url::toRoute(['/baak/surat-lomba/add-kuliah']),
-     'sourceName' => 'mhslulus1',
-  ]) ?>
+    <div class="row">      
+        <label class="control-label col-sm-2">Mata Kuliah</label>
+        <div class="col-sm-8"><?= Typeahead::widget([
+             'model' => $model,
+             'attribute' => 'kuliah_id',
+             'template' => "<p style='padding:5px'>{{data}}</p>",
+             'htmlOptions' => ['class' => 'form-control', 'required' => true, 'style' => 'width: 300px'],
+             'options' => [
+                  'hint' => false,
+                  'highlight' => true,
+                  'minLength' => 1
+             ], 
+             'sourceApiBaseUrl' => Url::toRoute(['/baak/surat-pengantar-proyek/add-kuliah']),
+             'sourceName' => 'mhslulus1',
+          ]) ?></div>
+        
+      </div>   
 
     <div class="form-group">
       <br>

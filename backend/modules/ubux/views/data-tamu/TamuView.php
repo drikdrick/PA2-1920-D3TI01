@@ -16,7 +16,17 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'nik',
+            [
+                'attribute'=>'nik',                
+                'value'=>function($model){
+                    if($model->nik==NULL){
+                        return '-';
+                    }
+                    else{
+                       return $model->nik;
+                    }
+                }
+            ],
             'nama',
             [
                 'attribute'=>'waktu_kedatangan',

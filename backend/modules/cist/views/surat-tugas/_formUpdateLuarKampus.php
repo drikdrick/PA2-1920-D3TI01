@@ -137,8 +137,7 @@ use backend\modules\cist\models\Pegawai;
         }
         echo("</div>");
     ?>
-    
-    <br />
+    <br/>
 
     <div class="form-group field-materi-files">
         <label class="control-label col-sm-2" for="materi-files">Lampiran</label>
@@ -214,7 +213,6 @@ use backend\modules\cist\models\Pegawai;
             }
 
             function addMoreFiles(){
-
                $('#file_input').append('<input type=file class=form-control name=files[]>');
            }
         ",
