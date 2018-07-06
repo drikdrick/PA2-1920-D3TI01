@@ -16,9 +16,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
+    
     <p>
-        <?= Html::a('Tambah Ukuran', ['add'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?= GridView::widget([
@@ -27,8 +26,19 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
+            'kode_ukuran',
             'ukuran',
-            'stok',
+            [
+                'attribute' => 'stok',
+                'value' => function($model,$key,$index)
+                {
+                    if($model->stok ==NULL)
+                    {
+                        return '-';
+                    }
+                    return $model->stok;
+                }
+            ],
 
             ['class' => 'common\components\ToolsColumn',
                 'template' => '{view} {edit}',

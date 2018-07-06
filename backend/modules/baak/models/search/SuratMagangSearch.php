@@ -19,7 +19,7 @@ class SuratMagangSearch extends SuratMagang
     {
         return [
             [['surat_magang_id', 'deleted'], 'integer'],
-            [['nomor_surat', 'status_pengajuan_id', 'pemohon_id', 'perihal_surat', 'tanggal_surat', 'nama_perusahaan', 'alamat_perusahaan', 'waktu_awal_magang', 'waktu_akhir_magang', 'deleted_at', 'deleted_by', 'created_at', 'created_by', 'updated_at', 'updated_by', 'waktu_pengambilan'], 'safe'],
+            [['nomor_surat', 'status_pengajuan_id', 'pemohon_id', 'perihal_surat', 'tanggal_surat', 'nama_perusahaan', 'alamat_perusahaan', 'waktu_awal_magang', 'waktu_akhir_magang', 'deleted_at', 'deleted_by', 'created_at', 'created_by', 'updated_at', 'updated_by', 'waktu_pengambilan', 'alasan_penolakan'], 'safe'],
         ];
     }
 
@@ -45,6 +45,9 @@ class SuratMagangSearch extends SuratMagang
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => 15,
+            ],
             'sort' => ['defaultOrder' => ['status_pengajuan_id' => SORT_ASC, 'nomor_surat' => SORT_DESC, 'updated_at' => SORT_DESC, 'created_at' => SORT_DESC]],
         ]);
 
@@ -57,7 +60,7 @@ class SuratMagangSearch extends SuratMagang
         }
 
         //search for status, join dengan method get
-        $query->joinWith('statusPengajuan');
+        // $query->joinWith('statusPengajuan');
         $query->joinWith('pemohon');
 
 
@@ -71,7 +74,8 @@ class SuratMagangSearch extends SuratMagang
             'deleted_at' => $this->deleted_at,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            //'status' => $this->status,
+            'status_pengajuan_id' => $this->status_pengajuan_id,
+            'alasan_penolakan' => $this->alasan_penolakan,
             'waktu_pengambilan' => $this->waktu_pengambilan,
         ]);
 
@@ -82,7 +86,7 @@ class SuratMagangSearch extends SuratMagang
             ->andFilterWhere(['like', 'deleted_by', $this->deleted_by])
             ->andFilterWhere(['like', 'created_by', $this->created_by])
             ->andFilterWhere(['like', 'updated_by', $this->updated_by])
-            ->andFilterWhere(['like', 'baak_r_status_pengajuan.name', $this->status_pengajuan_id])
+            // ->andFilterWhere(['like', 'baak_r_status_pengajuan.name', $this->status_pengajuan_id])
             ->andFilterWhere(['like', 'dimx_dim.nama', $this->pemohon_id])
             ->andFilterWhere(['not', ['baak_surat_magang.deleted' => 1]]);
 

@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\data\ArrayDataProvider;
+use yii\bootstrap\ActiveForm;
 use common\components\ToolsColumn;
 use backend\modules\cist\models\SuratTugas;
 use yii\helpers\ArrayHelper;
@@ -39,8 +40,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'perequest0.nama',
             'no_surat',
             'agenda',
-            // 'tanggal_berangkat',
-            // 'tanggal_kembali',
             [
                 'attribute' => 'tanggal_berangkat',
                 'value' => function($data){
@@ -59,11 +58,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter' => '',
 
             ],
-            // [
-            //     'label' => 'Status Surat Tugas',
-            //     'attribute' => 'name',
-            //     'value' => 'statusName.name',
-            // ],
             [
                     'label' => 'Status Surat Tugas',
                     'attribute' => 'status_id',

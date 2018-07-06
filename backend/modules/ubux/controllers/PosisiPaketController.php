@@ -20,10 +20,11 @@ class PosisiPaketController extends Controller
     {
         return [
             //TODO: crud controller actions are bypassed by default, set the appropriate privilege
-          'privilege' => [
+            'privilege' => [
                 'class' => \Yii::$app->privilegeControl->getAppPrivilegeControlClass(),
                 'skipActions' => [],
                ],
+            
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -50,6 +51,7 @@ class PosisiPaketController extends Controller
         ]);
     }
 
+
     /**
     * action-id: posisi-paket-add
      * action-desc: Menambahkan data posisi paket
@@ -60,9 +62,14 @@ class PosisiPaketController extends Controller
     public function actionPosisiPaketAdd()
     {
         $model = new PosisiPaket();
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            \Yii::$app->messenger->addSuccessFlash("Posisi Paket Berhasil ditambahkan");
+            return $this->redirect(['index']);
+        } else {
             return $this->render('PosisiPaketAdd', [
                 'model' => $model,
             ]);
+        }
     }
 
     /**
@@ -75,11 +82,15 @@ class PosisiPaketController extends Controller
      */
     public function actionPosisiPaketEdit($id)
     {
-        $model = $this->findModel($id);
-
-            return $this->render('PosisiPaketEdit', [
+         $model = $this->findModel($id);
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            \Yii::$app->messenger->addSuccessFlash("Posisi Paket Berhasil diedit");
+            return $this->redirect(['index']);
+        } else {
+            return $this->render('PosisiPaketAdd', [
                 'model' => $model,
             ]);
+        }
     }
 
     /**
@@ -93,7 +104,7 @@ class PosisiPaketController extends Controller
     public function actionPosisiPaketDel($id)
     {
         $this->findModel($id)->softDelete();
-
+        \Yii::$app->messenger->addSuccessFlash("Posisi Paket Berhasil dihapus");
         return $this->redirect(['index']);
     }
 

@@ -75,7 +75,8 @@ class SuratMagang extends \yii\db\ActiveRecord
     {
         return [
             [['pemohon_id', 'deleted', 'status_pengajuan_id', 'nomor_surat'], 'integer'],
-            [['dims', 'nim', 'jk', 'tanggal_surat', 'waktu_awal_magang', 'waktu_akhir_magang', 'deleted_at', 'created_at', 'updated_at', 'waktu_pengambilan', 'nama_perusahaan', 'alamat_perusahaan'], 'safe'],
+            [['waktu_awal_magang', 'waktu_akhir_magang','nama_perusahaan', 'alamat_perusahaan'], 'required'],
+            [['dims', 'nim', 'jk', 'tanggal_surat', 'deleted_at', 'created_at', 'updated_at', 'waktu_pengambilan', 'alasan_penolakan',], 'safe'],
             [['nomor_surat_lengkap', 'nama_perusahaan'], 'string', 'max' => 45],
             [['perihal_surat', 'alamat_perusahaan'], 'string'],
             [['deleted_by', 'created_by', 'updated_by'], 'string', 'max' => 32],
@@ -108,6 +109,7 @@ class SuratMagang extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
             'updated_by' => 'Updated By',
             'status_pengajuan_id' => 'Status',
+            'alasan_penolakan' =>'Alasan Penolakan',
             'waktu_pengambilan' => 'Waktu Pengambilan',
         ];
     }

@@ -254,4 +254,29 @@ class SuratTugas extends \yii\db\ActiveRecord
         return $pegawais;
     }
 
+    public function getTotLayanan(){
+        $total = SuratTugas::find()->all();
+        return count($total);
+    }
+
+    public function getTotRequest(){
+        $requested = SuratTugas::find()->where(['name' => 1])->all();
+        return count($requested);
+    }
+
+    public function getTotDiterima(){
+        $accepted = SuratTugas::find()->where(['name' => 6])->all();
+        return count($accepted);
+    }
+
+    public function getTotDitolak(){
+        $rejected = SuratTugas::find()->where(['name' => 4])->all();
+        return count($rejected);
+    }
+
+    public function getTotDiterbitkan(){
+        $published = SuratTugas::find()->where(['name' => 3])->all();
+        return count($published);
+    }
+
 }

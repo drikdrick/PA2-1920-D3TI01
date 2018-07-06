@@ -3,6 +3,7 @@
     use yii\widgets\DetailView;
     use backend\modules\baak\models\Dim;
     use backend\modules\baak\models\Prodi;
+    
 ?>
 <head>
     <style>
@@ -31,25 +32,25 @@
 </head>
 <body>
     <div class="surat-lomba">
+       <div class="surat-lomba">
         <table>
             <tr>
                 <td rowspan="2">
-                    <img src="E:\xampp\htdocs\cis-lite\backend\modules\baak\views\surat-lomba\gambar\logo.jpg" style="width: 100px; width: 100px;">
+                    <img src="<?=Yii::$app->getRequest()->getHostInfo().'/img/logo.jpg'?>" style="width: 100px; width: 100px;">
                 </td>
                 <td style="width: 600px;" class="tengah">
-                    <h2>INSTITUT TEKNOLOGI DEL</h2>
+                    <h2><?=strtoupper($header->nama_institut) ?></h2>
                 </td>
             </tr>
             <tr>
                 <td class="tengah">
-                    <p>JL. Sisingamangaraja, Laguboti 22381<br>
-                        Toba Samosir, Sumatera Utara , Laguboti,22381<br>
-                        Telp.: (0632) 331234, Fax.: (0632) 331116<br>
-                        <u>info@del.ac.id,</u><u> www.del.ac.id</u>
+                    <p><?=$header->alamat ?>
+                        Telp.: <?=$header->nomor_telepon ?>, Fax.: <?=$header->nomor_fax ?><br>
+                        <u><?=$header->email ?></u>, <u><?=$header->alamat_web ?></u>
                     </p>
                 </td>
             </tr>
-        </table>
+        </table>    
         <hr> 
         <p style="text-align:right">
             Laguboti, <?=$tgl_surat?>
@@ -77,7 +78,7 @@
             <?=$model->alamat_tujuan?>
         </p>
         <p style="text-align: justify;">
-            Dengan Hormat,<br>
+            Dengan Hormat,
             <?=$model->salam_pembuka?>
         </p>
         <table border="1" align="center">
@@ -102,7 +103,7 @@
             }?>
         </table>
         <p style="text-align: justify;">
-            Adalah benar mahasiswa yang masih aktif pada Semester Genap, Tahun Akademik 2017/2018 di Institut Teknologi Del, Sitoluama, Laguboti, Toba Samosir, Sumatera Utara yang akan mewakili Institut Teknologi Del dalam kompetisi <?=$model->nama_lomba?> tersebut.
+            Adalah benar mahasiswa yang masih aktif pada Semester <?= Yii::$app->appConfig->get('semester_tahun_ajaran', true) ?>, Tahun Akademik <?= Yii::$app->appConfig->get('tahun_ajaran', true) ?> di Institut Teknologi Del, Sitoluama, Laguboti, Toba Samosir, Sumatera Utara yang akan mewakili Institut Teknologi Del dalam kompetisi <?=$model->nama_lomba?> tersebut.
         </p>
         <p style="text-align: justify;">
             Demikian Surat pengantar  ini dibuat untuk dipergunakan sebagaimana semestinya.

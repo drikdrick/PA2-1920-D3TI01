@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model backend\modules\baak\models\SuratMagang */
 
-$this->title = 'Konfirmasi Pengambilan Surat Magang';
+$this->title = 'Konfirmasi Pengambilan Kartu Tanda Mahasiswa';
 $this->params['breadcrumbs'][] = ['label' => 'Surat Magang', 'url' => ['index']];
 $this->params['breadcrumbs'][] = 'Update';
 ?>

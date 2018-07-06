@@ -13,9 +13,10 @@ use backend\modules\askm\models\Asrama;
 /* @var $searchModel backend\modules\askm\models\search\KamarSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Manajemen Kamar';
+$this->title = 'Asrama '.$asrama->name;
 $this->params['breadcrumbs'][] = ['label' => 'Asrama', 'url' => ['asrama/index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['asrama/view-detail-asrama', 'id' => $asrama->asrama_id]];
+$this->params['breadcrumbs'][] = ['label' => 'Daftar Kamar'];
 $uiHelper=\Yii::$app->uiHelper;
 ?>
 <div class="kamar-index">
@@ -25,7 +26,7 @@ $uiHelper=\Yii::$app->uiHelper;
         <?= $uiHelper->renderButtonSet([
                 'template' => ['addKamar', 'reset'],
                 'buttons' => [
-                    'addKamar' => ['url' => Url::toRoute(['add-kamar']), 'label'=> 'Tambah Kamar', 'icon'=>'fa fa-plus'],
+                    'addKamar' => ['url' => Url::toRoute(['add-kamar', 'id_asrama' => $_GET['id_asrama']]), 'label'=> 'Tambah Kamar', 'icon'=>'fa fa-plus'],
                     'reset' => ['url' => Url::toRoute(['reset-all-kamar', 'asrama_id' => $_GET['KamarSearch']['asrama_id']]), 'label'=> 'Reset Semua Kamar', 'icon'=>'fa fa-refresh'],
                 ],
                 
@@ -57,19 +58,19 @@ $uiHelper=\Yii::$app->uiHelper;
                         ]);
                 }
             ],
-            [
-                'attribute' => 'asrama_id',
-                'label' => 'Asrama',
-                'format' => 'raw',
-                'filter'=>ArrayHelper::map(Asrama::find()->asArray()->all(), 'asrama_id', 'name'),
-                'filterInputOptions' => ['class' => 'form-control', 'id' => null, 'prompt' => 'ALL'],
-                'value' => function($data){
-                    return LinkHelper::renderLink([
-                            'label' => '<strong>'.$data['asrama']->name.'</strong>',
-                            'url' => Url::to(['asrama/view-detail-asrama', 'id' => $data['asrama_id']]),
-                        ]);
-                }
-            ],
+            // [
+            //     'attribute' => 'asrama_id',
+            //     'label' => 'Asrama',
+            //     'format' => 'raw',
+            //     'filter'=>ArrayHelper::map(Asrama::find()->asArray()->all(), 'asrama_id', 'name'),
+            //     'filterInputOptions' => ['class' => 'form-control', 'id' => null, 'prompt' => 'ALL'],
+            //     'value' => function($data){
+            //         return LinkHelper::renderLink([
+            //                 'label' => '<strong>'.$data['asrama']->name.'</strong>',
+            //                 'url' => Url::to(['asrama/view-detail-asrama', 'id' => $data['asrama_id']]),
+            //             ]);
+            //     }
+            // ],
             // [
             //     'attribute' => 'keasramaan_nama',
             //     'label' => 'Penanggung Jawab',
@@ -85,7 +86,7 @@ $uiHelper=\Yii::$app->uiHelper;
             // 'updated_by',
 
             ['class' => 'common\components\ToolsColumn',
-                'template' => '{view} {edit}',/* {reset}*/
+                'template' => '{view} {edit} {reset} {del}',
                 'header' => 'Aksi',
                 'buttons' => [
                     'view' => function ($url, $model){
@@ -103,18 +104,24 @@ $uiHelper=\Yii::$app->uiHelper;
                     'edit' => function ($url, $model){
                         return ToolsColumn::renderCustomButton($url, $model, 'Edit Kamar', 'fa fa-pencil');
                     },
+                    'del'=>function ($url, $model) {
+                        return ToolsColumn::renderCustomButton($url, $model, 'Hapus Kamar', 'fa fa-trash');
+                    },
                 ],
                 'urlCreator' => function ($action, $model, $key, $index){
                     if ($action === 'view') {
                         return Url::toRoute(['view', 'id' => $key]);
                     }else if ($action === 'edit') {
-                        return Url::toRoute(['edit-kamar', 'id' => $key]);
+                        return Url::toRoute(['edit-kamar', 'id' => $key, 'id_asrama' => $_GET['id_asrama']]);
                     }else if ($action === 'reset') {
                         return Url::to(['reset-kamar', 'id' => $key]);
                     }else if ($action === 'addMhs') {
                         return Url::toRoute(['dim-kamar/add-penghuni-kamar', 'id' => $key]);
                     }else if ($action === 'editMhs') {
                         return Url::to(['dim-kamar/edit-penghuni-kamar', 'id' => $key]);
+                    }
+                    else if ($action === 'del') {
+                        return Url::to(['kamar/del-kamar', 'id' => $key, 'id_asrama' => $_GET['id_asrama']]);
                     }
                 }
             ],

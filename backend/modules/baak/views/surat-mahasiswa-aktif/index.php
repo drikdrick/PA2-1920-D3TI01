@@ -5,7 +5,8 @@ use yii\helpers\Url;
 use yii\grid\GridView;
 use kartik\datetime\DateTimePicker;
 use common\components\ToolsColumn;
-
+use yii\helpers\ArrayHelper;
+use backend\modules\baak\models\StatusPengajuan;
 /* @var $this yii\web\View */
 /* @var $searchModel backend\modules\baak\models\SuratMahasiswaAktifSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -29,15 +30,34 @@ $this->params['breadcrumbs'][] = $this->title;
             'nullDisplay' => '-',
         ],
         'filterModel' => $searchModel,
+        'rowOptions' => function($model){
+            if($model->status_pengajuan_id == 5 ){
+                return ['class' => 'success'];
+            } else if($model->status_pengajuan_id == 3 ){
+                return ['class' => 'danger'];
+            } else if($model->status_pengajuan_id == 4){
+                return ['class' => 'warning'];
+            } else if($model->status_pengajuan_id == 2){
+                return ['class' => 'info'];
+            }
+              else if($model->status_pengajuan_id == 1)
+              {
+                  return ['class'=>'default'];
+              }
+        },
         'columns' => [
             ['class' => 'backend\modules\baak\assets\SerialColumn'],
 
             // 'id_surat',
             // 'nomor_surat',
             'tujuan',
-            [
+
+           [
                 'attribute'=>'status_pengajuan_id',
-                'value'=>'statusPengajuan.name',
+                'label' => 'Status',
+                'filter'=>ArrayHelper::map(StatusPengajuan::find()->asArray()->all(), 'status_pengajuan_id', 'name'),
+                'filterInputOptions' => ['class' => 'form-control', 'id' => null, 'prompt' => 'ALL'],
+                'value' => 'statusPengajuan.name',
             ],
 
             [

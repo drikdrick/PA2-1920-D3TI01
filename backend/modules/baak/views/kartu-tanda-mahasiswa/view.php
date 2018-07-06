@@ -30,19 +30,68 @@ $this->params['breadcrumbs'][] = ['label' => 'Kartu Tanda Mahasiswa', 'url' => [
         ?>
     </p>
 
-    <?= DetailView::widget([
-        'model' => $model,
-        'formatter' => [
-            'class' => 'yii\i18n\Formatter',
-            'nullDisplay' => '-',
-        ],
-        'attributes' => [
-            'alasan',
-            'dim.nama',
-            'pegawai.nama',
-            'statusPengajuan.name',
-            'waktu_pengambilan',
-        ],
-    ]) ?>
+    <?php if($model->status_pengajuan_id == 1){ ?>
+        <?= DetailView::widget([
+            'model' => $model,
+            'formatter' => [
+                'class' => 'yii\i18n\Formatter',
+                'nullDisplay' => '-',
+            ],
+            'attributes' => [
+                'alasan',
+                'pemohon.nama',
+                'statusPengajuan.name',
+            ],
+        ]) ?>
+    <?php } ?>
 
+    <?php if($model->status_pengajuan_id == 2){ ?>
+        <?= DetailView::widget([
+            'model' => $model,
+            'formatter' => [
+                'class' => 'yii\i18n\Formatter',
+                'nullDisplay' => '-',
+            ],
+            'attributes' => [
+                'alasan',
+                'pemohon.nama',
+                'statusPengajuan.name',
+                'pegawai.nama',
+            ],
+        ]) ?>
+    <?php } ?>
+
+    <?php if($model->status_pengajuan_id == 3){ ?>
+        <?= DetailView::widget([
+            'model' => $model,
+            'formatter' => [
+                'class' => 'yii\i18n\Formatter',
+                'nullDisplay' => '-',
+            ],
+            'attributes' => [
+                'alasan',
+                'pemohon.nama',
+                'statusPengajuan.name',
+                'pegawai.nama',
+                'alasan_penolakan',
+            ],
+        ]) ?>
+    <?php } ?>
+
+    <?php if($model->status_pengajuan_id == 4 || $model->status_pengajuan_id == 5){ ?>
+        <?= DetailView::widget([
+            'model' => $model,
+            'formatter' => [
+                'class' => 'yii\i18n\Formatter',
+                'nullDisplay' => '-',
+            ],
+            'attributes' => [
+                'alasan',
+                'pemohon.nama',
+                'statusPengajuan.name',
+                'pegawai.nama',
+                'waktu_pengambilan',
+            ],
+        ]) ?>
+    <?php } ?>
 </div>

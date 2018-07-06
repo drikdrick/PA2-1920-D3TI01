@@ -11,6 +11,7 @@ use backend\modules\baak\models\Dim;
 use backend\modules\baak\models\Kuliah;
 use backend\modules\baak\models\NomorSuratTerakhir;
 use backend\modules\baak\models\Pegawai;
+use backend\modules\baak\models\DataSurat;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -157,7 +158,6 @@ class SuratLombaController extends Controller
                     ->where('nim LIKE :query')
                     ->orWhere('nama LIKE :query')
                     ->andWhere('deleted!=1')
-                    ->andWhere(['status_akhir'=>'Aktif'])
                     ->addParams([':query' => '%'.$query.'%'])
                     ->limit(10)
                     ->asArray()
@@ -229,8 +229,21 @@ class SuratLombaController extends Controller
     {
         $model = $this->findModel($id);
         $dim = new DimHasSuratLomba();
+        $model->dims = '';
+        foreach($model->dimHasSuratLomba as $s){
+            $model->dims .= $s->dim->nama.', ';
+        }
 
         if ($dim->load(Yii::$app->request->post())) {
+            if(DimHasSuratLomba::find()->where(['surat_lomba_id' => $model->surat_lomba_id])->andWhere(['dim_id' => $dim->dim_id])->exists()){
+                \Yii::$app->messenger->addWarningFlash('Mahasiswa telah terdaftar.');
+                return $this->redirect(\Yii::$app->request->referrer);
+            }
+            else if($dim->dim_id == null)
+            {
+                \Yii::$app->messenger->addWarningFlash('Data Mahasiswa tidak sesuai.');
+                return $this->redirect(\Yii::$app->request->referrer);
+            }
             $model->save();
             $dim->surat_lomba_id = $id;
             $dim->save();
@@ -275,6 +288,35 @@ class SuratLombaController extends Controller
     }
 
     /*
+    * action-id: edit-done
+     * action-desc: Mengubah status permohonan menjadi done
+    */
+    public function actionEditDone($id)
+    {
+        $model = $this->findModel($id);
+
+        if($model->load(Yii::$app->request->post())){
+            $user_id = Yii::$app->user->identity->id;
+            $user_pegawai = Pegawai::find()->where(['user_id'=>$user_id])->one();
+            $pegawai = $user_pegawai->pegawai_id;
+            $model->pegawai_id = $pegawai;
+            $model->save();
+
+            return $this->redirect(['view-admin','id'=>$model->surat_lomba_id]);
+        }
+        else{
+            $model->status_pengajuan_id = 5;
+            $user_id = Yii::$app->user->identity->id;
+            $user_pegawai = Pegawai::find()->where(['user_id'=>$user_id])->one();
+            $pegawai = $user_pegawai->pegawai_id;
+            $model->pegawai_id = $pegawai;
+            $model->save();
+
+            return $this->redirect('index-admin');
+        }
+    }
+
+    /*
     * action-id: edit-ready
      * action-desc: Mengubah status permohonan menjadi ready
     */
@@ -283,6 +325,11 @@ class SuratLombaController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post())) {
+            if($model->waktu_pengambilan == NULL)
+            {
+                \Yii::$app->messenger->addWarningFlash('Harap Mengisi Waktu Pengambilan.');
+                return $this->redirect(\Yii::$app->request->referrer);
+            }
             $user_id = Yii::$app->user->identity->id;
             $user_pegawai = Pegawai::find()->where(['user_id'=> $user_id])->one();
             $pegawai = $user_pegawai->pegawai_id;
@@ -311,26 +358,33 @@ class SuratLombaController extends Controller
     */
     public function actionEditDecline($id)
     {
-        $model = $this->findModel($id);
+         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post())) {
+            if($model->alasan_penolakan == NULL)
+            {
+                \Yii::$app->messenger->addWarningFlash('Harap Mengisi Alasan Penolakan.');
+                return $this->redirect(\Yii::$app->request->referrer);
+            }
             $user_id = Yii::$app->user->identity->id;
             $user_pegawai = Pegawai::find()->where(['user_id'=> $user_id])->one();
             $pegawai = $user_pegawai->pegawai_id;
             $model->pegawai_id = $pegawai;
-
+            $model->status_pengajuan_id=3;
             $model->save();
 
-            return $this->redirect(['view-admin', 'id' => $model->surat_lomba_id]);
-        } else {
-            $model->status_pengajuan_id = 3;
+            return $this->redirect(['index-admin', 'id' => $model->surat_lomba_id]);
+        }
+        else {
             $user_id = Yii::$app->user->identity->id;
             $user_pegawai = Pegawai::find()->where(['user_id'=> $user_id])->one();
             $pegawai = $user_pegawai->pegawai_id;
             $model->pegawai_id = $pegawai;
             $model->save();
 
-            return $this->redirect('index-admin');
+            return $this->render('editDecline', [
+                'model' => $model,
+            ]);
         }
     }
 
@@ -341,15 +395,18 @@ class SuratLombaController extends Controller
     public function actionAddPdf($id)
     {
         $idx = 1;
-        $query = DimHasSuratLomba::find()->where(['surat_lomba_id' => $id])->all();        
+        $query = DimHasSuratLomba::find()->where(['surat_lomba_id' => $id])->all();
+        $header = DataSurat::find()->one();        
         $mPDF = new mPDF('utf-8','A4',12,'serif');
         $mPDF->WriteHTML($this->renderPartial('mpdf',
             ['model' => $this->findModel($id), 
             'idx' => $idx,
-            'query' => $query,]));
+            'query' => $query,
+            'header' => $header,
+            ]));
         $mPDF->debug = true;
         $mPDF->Output();
-        exit;
+        exit;        
     }
 
     /*
@@ -362,6 +419,20 @@ class SuratLombaController extends Controller
         $nomor_surat = NomorSuratTerakhir::find()->one();
 
         if ($model->load(Yii::$app->request->post())) {
+            
+            if($model->nomor_surat == NULL || $model->perihal == NULL || $model->banyak_lampiran == NULL || $model->salam_pembuka == NULL)
+            {
+                \Yii::$app->messenger->addWarningFlash('Ada Form Yang belum anda isi ');
+                    return $this->redirect(\Yii::$app->request->referrer);
+            }
+            if($model->nomor_surat_lengkap == NULL)
+            {
+                $nomor_surat->nomor_surat = $model->nomor_surat;
+                $nomor_surat->save();
+            }
+
+            
+
             $dateToday = date('Y-m-d');
             $model->tanggal_surat = $dateToday;
 
@@ -390,8 +461,7 @@ class SuratLombaController extends Controller
             $model->nomor_surat_lengkap = $nomor_surat_lengkap;
             $model->save();
 
-            $nomor_surat->nomor_surat = $model->nomor_surat;
-            $nomor_surat->save();
+            
 
             return $this->redirect(['add-pdf', 'id' => $model->surat_lomba_id]);
         }

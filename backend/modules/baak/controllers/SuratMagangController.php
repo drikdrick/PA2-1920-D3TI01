@@ -10,6 +10,7 @@ use backend\modules\baak\models\DimHasSuratMagang;
 use backend\modules\baak\models\Dim;
 use backend\modules\baak\models\NomorSuratTerakhir;
 use backend\modules\baak\models\Pegawai;
+use backend\modules\baak\models\DataSurat;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -38,40 +39,6 @@ class SuratMagangController extends Controller
                 ],
             ],
         ];
-    }
-
-    /**
-     * Lists all SuratMagang models.
-     * action-id: print
-     * action-desc: Mencetak Surat
-     * @return mixed
-     */
-
-    public function actionPrint($id)
-    {
-        $model = $this->findModel($id);
-        $new = DimHasSuratMagang::find()->where(['surat_magang_id'=> $id])->all();
-        $dim_id = $new->dim_id;
-        $mhs = Dim::find()->where(['dim_id'=>$dim_id])->all();
-        $model->dims = '';
-        $model->nim = '';
-        $model->jk = '';
-        foreach($model->dimHasSuratMagang as $s){
-            $model->dims .= $s->dim->nama;
-            $model->nim .= $s->dim->nim;
-            $model->jk .= $s->dim->jenis_kelamin;
-        }
-        $pdf_content = $this->renderPartial('test', [
-            'model' => $model,
-            'new' => $new,
-            'mhs' => $mhs,
-        ]);
-
-        $mpdf = new mPDF();
-        $mpdf->showImageErrors = true;
-        $mpdf->WriteHTML($pdf_content);
-        $mpdf->Output();
-        exit;
     }
 
     /*
@@ -158,15 +125,23 @@ class SuratMagangController extends Controller
         $dim = new DimHasSuratMagang();
 
         if ($model->load(Yii::$app->request->post())) {
+            $today = time();
+            $validDate =strtotime("+1 days", $today);
+
+            if(strtotime($model->waktu_awal_magang) < $validDate || strtotime($model->waktu_akhir_magang) < $validDate){
+                \Yii::$app->messenger->addWarningFlash('Tanggal sudah lewat.');
+                return $this->redirect(\Yii::$app->request->referrer);
+            }
+
+            else if(strtotime($model->waktu_akhir_magang) < strtotime($model->waktu_awal_magang)){
+                \Yii::$app->messenger->addWarningFlash('Waktu awal dan waktu akhir tidak sesuai.');
+                return $this->redirect(\Yii::$app->request->referrer);
+            }
+
             $user_id = Yii::$app->user->identity->id;
             $user_dim = Dim::find()->where(['user_id'=> $user_id])->one();
             $pemohon = $user_dim->dim_id;
             $model->pemohon_id = $pemohon;
-            $model->save();
-
-            $dim->surat_magang_id = $model->surat_magang_id;
-            $dim->dim_id = $pemohon;
-            $dim->save();
 
             return $this->redirect(['view', 'id' => $model->surat_magang_id]);
         } else {
@@ -218,6 +193,18 @@ class SuratMagangController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $today = time();
+            $validDate =strtotime("+1 days", $today);
+
+            if(strtotime($model->waktu_awal_magang) < $validDate || strtotime($model->waktu_akhir_magang) < $validDate){
+                \Yii::$app->messenger->addWarningFlash('Tanggal sudah lewat.');
+                return $this->redirect(\Yii::$app->request->referrer);
+            }
+
+            else if(strtotime($model->waktu_akhir_magang) < strtotime($model->waktu_awal_magang)){
+                \Yii::$app->messenger->addWarningFlash('Waktu awal dan waktu akhir tidak sesuai.');
+                return $this->redirect(\Yii::$app->request->referrer);
+            }
             return $this->redirect(['view', 'id' => $model->surat_magang_id]);
         } else {
             return $this->render('edit', [
@@ -240,6 +227,15 @@ class SuratMagangController extends Controller
         }
 
         if ($dim->load(Yii::$app->request->post())) {
+            if(DimHasSuratMagang::find()->where(['surat_magang_id' => $model->surat_magang_id])->andWhere(['dim_id' => $dim->dim_id])->exists()){
+                \Yii::$app->messenger->addWarningFlash('Mahasiswa telah terdaftar.');
+                return $this->redirect(\Yii::$app->request->referrer);
+            }            
+            else if($dim->dim_id == null)
+            {
+                \Yii::$app->messenger->addWarningFlash('Data Mahasiswa tidak sesuai.');
+                return $this->redirect(\Yii::$app->request->referrer);
+            }
             $model->save();
             $dim->surat_magang_id = $id;
             $dim->save();
@@ -279,7 +275,7 @@ class SuratMagangController extends Controller
             $model->pegawai_id = $pegawai;
             $model->save();
 
-            return $this->redirect('index-admin');
+            return $this->redirect(\Yii::$app->request->referrer);
         }
     }
 
@@ -292,6 +288,11 @@ class SuratMagangController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post())) {
+            if($model->waktu_pengambilan == NULL)
+            {
+                \Yii::$app->messenger->addWarningFlash('Harap Mengisi Waktu Pengambilan.');
+                return $this->redirect(\Yii::$app->request->referrer);
+            }
             $user_id = Yii::$app->user->identity->id;
             $user_pegawai = Pegawai::find()->where(['user_id'=> $user_id])->one();
             $pegawai = $user_pegawai->pegawai_id;
@@ -299,7 +300,7 @@ class SuratMagangController extends Controller
             $model->status_pengajuan_id=4;
             $model->save();
 
-            return $this->redirect(['index-admin', 'id' => $model->surat_magang_id]);
+            return $this->redirect(['view-admin', 'id' => $model->surat_magang_id]);
         }
         else {
             $user_id = Yii::$app->user->identity->id;
@@ -323,6 +324,42 @@ class SuratMagangController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post())) {
+            if($model->alasan_penolakan == NULL)
+            {
+                \Yii::$app->messenger->addWarningFlash('Harap Mengisi Alasan Penolakan.');
+                return $this->redirect(\Yii::$app->request->referrer);
+            }
+            $user_id = Yii::$app->user->identity->id;
+            $user_pegawai = Pegawai::find()->where(['user_id'=> $user_id])->one();
+            $pegawai = $user_pegawai->pegawai_id;
+            $model->pegawai_id = $pegawai;
+            $model->status_pengajuan_id=3;
+            $model->save();
+
+            return $this->redirect(['view-admin', 'id' => $model->surat_magang_id]);
+        }
+        else {
+            $user_id = Yii::$app->user->identity->id;
+            $user_pegawai = Pegawai::find()->where(['user_id'=> $user_id])->one();
+            $pegawai = $user_pegawai->pegawai_id;
+            $model->pegawai_id = $pegawai;
+            $model->save();
+
+            return $this->render('editDecline', [
+                'model' => $model,
+            ]);
+        }
+    }
+
+    /*
+    * action-id: edit-done
+     * action-desc: Mengubah status menjadi done
+    */
+    public function actionEditDone($id)
+    {
+        $model = $this->findModel($id);
+
+        if ($model->load(Yii::$app->request->post())) {
             $user_id = Yii::$app->user->identity->id;
             $user_pegawai = Pegawai::find()->where(['user_id'=> $user_id])->one();
             $pegawai = $user_pegawai->pegawai_id;
@@ -331,15 +368,16 @@ class SuratMagangController extends Controller
             $model->save();
 
             return $this->redirect(['view-admin', 'id' => $model->surat_magang_id]);
-        } else {
-            $model->status_pengajuan_id = 3;
+        }
+        else {
+            $model->status_pengajuan_id = 5;
             $user_id = Yii::$app->user->identity->id;
             $user_pegawai = Pegawai::find()->where(['user_id'=> $user_id])->one();
             $pegawai = $user_pegawai->pegawai_id;
             $model->pegawai_id = $pegawai;
             $model->save();
 
-            return $this->redirect('index-admin');
+            return $this->redirect(\Yii::$app->request->referrer);
         }
     }
 
@@ -350,12 +388,14 @@ class SuratMagangController extends Controller
     public function actionAddPdf($id)
     {
         $idx = 1;
-        $query = DimHasSuratMagang::find()->where(['surat_magang_id' => $id])->all();      
+        $query = DimHasSuratMagang::find()->where(['surat_magang_id' => $id])->all();
+        $header = DataSurat::find()->one();
         $mPDF = new mPDF('utf-8','A4',11,'serif');
         $mPDF->WriteHTML($this->renderPartial('mpdf',
             ['model' => $this->findModel($id), 
             'idx' => $idx,
-            'query' => $query,]));
+            'query' => $query,
+            'header' => $header,]));
         $mPDF->debug = true;
         $mPDF->Output();
         exit;
@@ -371,6 +411,10 @@ class SuratMagangController extends Controller
         $nomor_surat = NomorSuratTerakhir::find()->one();
 
         if ($model->load(Yii::$app->request->post())) {
+            if($model->nomor_surat_lengkap == null){
+                $nomor_surat->nomor_surat = $model->nomor_surat;
+                $nomor_surat->save();
+            }
             $dateToday = date('Y-m-d');
             $model->tanggal_surat = $dateToday;
 
@@ -398,9 +442,6 @@ class SuratMagangController extends Controller
             $model->pegawai_id = $pegawai;
             $model->nomor_surat_lengkap = $nomor_surat_lengkap;
             $model->save();
-
-            $nomor_surat->nomor_surat = $model->nomor_surat;
-            $nomor_surat->save();
 
             return $this->redirect(['add-pdf', 'id' => $model->surat_magang_id]);
         }

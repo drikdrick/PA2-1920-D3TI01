@@ -14,17 +14,14 @@ use common\widgets\Typeahead;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <div class="row">
-        <div class="col-md-6">
-            <?= $form->field($model, 'kamar_id')->hiddenInput(['value' => $_GET['id']])->label(false) ?>
-        </div>
-    </div>
+    <?= $form->field($model, 'kamar_id')->hiddenInput(['value' => $_GET['id']])->label(false) ?>
     
     <div class="row">
         <div class="col-md-6">
+            <label>Mahasiswa/i</label>
             <?= $form->field($model, 'dim_id')->widget(Typeahead::classname(),[
                 'attribute' => 'dim_id',
-               'withSubmitButton' => false,
+                'withSubmitButton' => false,
                
                'template' => "<p style='padding:4px'>{{data}}</p>",
                'htmlOptions' => ['class' => 'typeahead', 'placeholder' => 'NIM atau Nama','required'=>true],
@@ -43,7 +40,9 @@ use common\widgets\Typeahead;
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Tambahkan' : 'Selesai Edit', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
 
-        <?= Html::a('Batal', ['kamar/view', 'id' => $_GET['id']], ['class' => 'btn btn-danger']) ?>
+        <?php // echo Html::a('Batal', ['/askm/kamar/view', 'id' => $_GET['id']], ['class' => 'btn btn-danger']) ?>
+
+        <?= Html::a('Selesai', ['/askm/kamar/view', 'id' => $_GET['id']], ['class' => 'btn btn-info']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

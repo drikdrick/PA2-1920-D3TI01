@@ -114,7 +114,6 @@ class KartuTandaMahasiswaController extends Controller
             $user_dim = Dim::find()->where(['user_id'=> $user_id])->one();
             $pemohon = $user_dim->dim_id;
             $model->pemohon_id = $pemohon;
-            $model->dim_id = $pemohon;
             $model->save();
 
             return $this->redirect(['view', 'id' => $model->kartu_tanda_mahasiswa_id]);
@@ -172,7 +171,7 @@ class KartuTandaMahasiswaController extends Controller
             $model->pegawai_id = $pegawai;
             $model->save();
 
-            return $this->redirect('index-admin');
+            return $this->redirect(\Yii::$app->request->referrer);
         }
     }
 
@@ -185,6 +184,11 @@ class KartuTandaMahasiswaController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post())) {            
+            if($model->waktu_pengambilan == NULL)
+            {
+                \Yii::$app->messenger->addWarningFlash('Harap Mengisi Waktu Pengambilan !');
+                return $this->redirect(\Yii::$app->request->referrer);
+            }
             $user_id = Yii::$app->user->identity->id;
             $user_pegawai = Pegawai::find()->where(['user_id'=> $user_id])->one();
             $pegawai = $user_pegawai->pegawai_id;
@@ -192,7 +196,7 @@ class KartuTandaMahasiswaController extends Controller
             $model->status_pengajuan_id=4;
             $model->save();
 
-            return $this->redirect(['index-admin', 'id' => $model->kartu_tanda_mahasiswa_id]);
+            return $this->redirect(['view-admin', 'id' => $model->kartu_tanda_mahasiswa_id]);
         }
         else {
             $user_id = Yii::$app->user->identity->id;
@@ -216,6 +220,41 @@ class KartuTandaMahasiswaController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post())) {
+            if($model->alasan_penolakan == NULL)
+            {
+                \Yii::$app->messenger->addWarningFlash('Harap Mengisi Alasan Penolakan !');
+                return $this->redirect(\Yii::$app->request->referrer);
+            }
+            $user_id = Yii::$app->user->identity->id;
+            $user_pegawai = Pegawai::find()->where(['user_id'=> $user_id])->one();
+            $pegawai = $user_pegawai->pegawai_id;
+            $model->pegawai_id = $pegawai;
+            $model->status_pengajuan_id = 3;
+            $model->save();
+
+            return $this->redirect(['view-admin', 'id' => $model->kartu_tanda_mahasiswa_id]);
+        } else {
+            $user_id = Yii::$app->user->identity->id;
+            $user_pegawai = Pegawai::find()->where(['user_id'=> $user_id])->one();
+            $pegawai = $user_pegawai->pegawai_id;
+            $model->pegawai_id = $pegawai;
+            $model->save();
+
+            return $this->render('editDecline', [
+                'model' => $model,
+            ]);
+        }
+    }
+
+    /*
+    * action-id: edit-done
+     * action-desc: Memperbaharui status menjadi done
+    */
+    public function actionEditDone($id)
+    {
+        $model = $this->findModel($id);
+
+        if ($model->load(Yii::$app->request->post())) {
             $user_id = Yii::$app->user->identity->id;
             $user_pegawai = Pegawai::find()->where(['user_id'=> $user_id])->one();
             $pegawai = $user_pegawai->pegawai_id;
@@ -224,15 +263,16 @@ class KartuTandaMahasiswaController extends Controller
             $model->save();
 
             return $this->redirect(['view-admin', 'id' => $model->kartu_tanda_mahasiswa_id]);
-        } else {
-            $model->status_pengajuan_id = 3;
+        }
+        else {
+            $model->status_pengajuan_id = 5;
             $user_id = Yii::$app->user->identity->id;
             $user_pegawai = Pegawai::find()->where(['user_id'=> $user_id])->one();
             $pegawai = $user_pegawai->pegawai_id;
             $model->pegawai_id = $pegawai;
             $model->save();
 
-            return $this->redirect('index-admin');
+            return $this->redirect(\Yii::$app->request->referrer);
         }
     }
 

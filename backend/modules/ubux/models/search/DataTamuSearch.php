@@ -19,7 +19,7 @@ class DataTamuSearch extends DataTamu
     {
         return [
             [['data_tamu_id', 'deleted'], 'integer'],
-            [['nik', 'nama', 'waktu_kedatangan', 'desc', 'waktu_kembali', 'deleted_at', 'deleted_by', 'created_by', 'created_at', 'updated_at', 'updated_by'], 'safe'],
+            [['nik', 'nama', 'waktu_kedatangan','kendaraan', 'desc', 'waktu_kembali', 'deleted_at', 'deleted_by', 'created_by', 'created_at', 'updated_at', 'updated_by'], 'safe'],
         ];
     }
 
@@ -58,7 +58,6 @@ class DataTamuSearch extends DataTamu
 
         $query->andFilterWhere([
             'data_tamu_id' => $this->data_tamu_id,
-            'waktu_kedatangan' => $this->waktu_kedatangan,
             'waktu_kembali' => $this->waktu_kembali,
             'deleted' => $this->deleted,
             'deleted_at' => $this->deleted_at,
@@ -69,6 +68,8 @@ class DataTamuSearch extends DataTamu
         $query->andFilterWhere(['like', 'nik', $this->nik])
             ->andFilterWhere(['like', 'nama', $this->nama])
             ->andFilterWhere(['like', 'desc', $this->desc])
+            ->andFilterWhere(['like', 'kendaraan', $this->kendaraan])
+            ->andFilterWhere(['like', 'waktu_kedatangan',SUBSTR($this->waktu_kedatangan,1,10)])
             ->andFilterWhere(['like', 'deleted_by', $this->deleted_by])
             ->andFilterWhere(['like', 'created_by', $this->created_by])
             ->andFilterWhere(['like', 'updated_by', $this->updated_by])

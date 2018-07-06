@@ -68,7 +68,8 @@ class SuratMahasiswaAktif extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['tanggal_surat', 'deleted_at', 'created_at', 'updated_at', 'waktu_pengambilan'], 'safe'],
+            [['tujuan',],'required'],
+            [['tanggal_surat', 'deleted_at', 'created_at', 'updated_at', 'waktu_pengambilan','alasan_penolakan'], 'safe'],
             [['pemohon_id', 'deleted', 'pegawai_id', 'status_pengajuan_id', 'nomor_surat'], 'integer'],
             [['nomor_surat_lengkap'], 'string', 'max' => 45],
             [['tujuan'], 'string'],
@@ -100,6 +101,7 @@ class SuratMahasiswaAktif extends \yii\db\ActiveRecord
             'pegawai_id' => 'Hrdx Pegawai Pegawai ID',
             'status_pengajuan_id' => 'Status',
             'waktu_pengambilan' => 'Waktu Pengambilan',
+            'alasan_penolakan' => 'Alasan Penolakan',
         ];
     }
 

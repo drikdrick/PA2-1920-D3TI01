@@ -32,7 +32,7 @@ use backend\modules\baak\models\Dim;
 
     <?= $form->field($model, 'waktu_awal_magang',['horizontalCssClasses' => ['wrapper' => 'col-sm-8']])->widget(DatePicker::className(),
         [
-           'options' => ['class' => 'form-control','placeholder' => 'Waktu Awal Magang'],
+           'options' => ['class' => 'form-control'],
            'dateFormat' => 'yyyy-MM-dd',
            'clientOptions'=>[
                'minDate' => '+2d',
@@ -46,7 +46,7 @@ use backend\modules\baak\models\Dim;
 
     <?= $form->field($model, 'waktu_akhir_magang',['horizontalCssClasses' => ['wrapper' => 'col-sm-8']])->widget(DatePicker::className(),
         [
-           'options' => ['class' => 'form-control','placeholder' => 'Waktu Akhir Magang'],
+           'options' => ['class' => 'form-control'],
 
            'dateFormat' => 'yyyy-MM-dd',
            'clientOptions'=>[

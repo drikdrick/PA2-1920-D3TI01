@@ -24,8 +24,8 @@ use yii\bootstrap\ActiveForm;
             ],
         ]) 
         ?>
-           <?= $form->field($model, 'name') ?>
-         
+        <?= $form->field($model, 'name')->textInput() ?>
+
         <div class="form-group">
             <div class="col-md-1 col-md-offset-2">
                 <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

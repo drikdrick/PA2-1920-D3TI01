@@ -8,7 +8,7 @@ use yii\grid\GridView;
 /* @var $this yii\web\View */
 /* @var $model backend\modules\askm\models\Asrama */
 
-$this->title = $model->name;
+$this->title = 'Asrama '.$model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Asrama', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 $uiHelper=\Yii::$app->uiHelper;
@@ -22,22 +22,26 @@ $uiHelper=\Yii::$app->uiHelper;
         <?php 
         if ($model->jumlah_mahasiswa == 0) {
             echo $uiHelper->renderButtonSet([
-                'template' => ['edit', 'keasramaan', 'kamar', 'del'],
+                'template' => ['edit', 'keasramaan', 'kamar', 'del' /* ,'import' */, 'export'],
                 'buttons' => [
                     'edit' => ['url' => Url::toRoute(['edit', 'id' => $model->asrama_id]), 'label'=> 'Edit Asrama', 'icon'=>'fa fa-pencil'],
                     'keasramaan' => ['url' => Url::toRoute(['keasramaan/add-pengurus', 'id_asrama' => $model->asrama_id]), 'label'=> 'Tambah Pengurus', 'icon'=>'fa fa-users'],
                     'kamar' => ['url' => Url::toRoute(['kamar/index', 'KamarSearch[asrama_id]' => $model->asrama_id]), 'label'=> 'Daftar Kamar', 'icon'=>'fa fa-list'],
                     'del' => ['url' => Url::toRoute(['del', 'asrama_id' => $model->asrama_id]), 'label'=> 'Hapus Asrama', 'icon'=>'fa fa-times'],
+                    // 'import' => ['url' => Url::toRoute(['dim-kamar/import-excel', 'asrama_id' => $model->asrama_id]), 'label'=> 'Import Data Penghuni', 'icon'=>'fa fa-download'],
+                    'export' => ['url' => Url::toRoute(['export-excel', 'asrama_id' => $model->asrama_id]), 'label'=> 'Export Data Penghuni', 'icon'=>'fa fa-upload'],
                 ],
                 
             ]);
         } else {
             echo $uiHelper->renderButtonSet([
-                'template' => ['edit', 'keasramaan', 'kamar'],
+                'template' => ['edit', 'keasramaan', 'kamar' /* ,'import' */, 'export'],
                 'buttons' => [
                     'edit' => ['url' => Url::toRoute(['edit', 'id' => $model->asrama_id]), 'label'=> 'Edit Asrama', 'icon'=>'fa fa-pencil'],
                     'keasramaan' => ['url' => Url::toRoute(['keasramaan/add-pengurus', 'id_asrama' => $model->asrama_id]), 'label'=> 'Tambah Pengurus', 'icon'=>'fa fa-users'],
-                    'kamar' => ['url' => Url::toRoute(['kamar/index', 'KamarSearch[asrama_id]' => $model->asrama_id]), 'label'=> 'Daftar Kamar', 'icon'=>'fa fa-list'],
+                    'kamar' => ['url' => Url::toRoute(['kamar/index', 'KamarSearch[asrama_id]' => $model->asrama_id, 'id_asrama' => $model->asrama_id]), 'label'=> 'Daftar Kamar', 'icon'=>'fa fa-list'],
+                    // 'import' => ['url' => Url::toRoute(['dim-kamar/import-excel', 'asrama_id' => $model->asrama_id]), 'label'=> 'Import Data Penghuni', 'icon'=>'fa fa-download'],
+                    'export' => ['url' => Url::toRoute(['export-excel', 'asrama_id' => $model->asrama_id]), 'label'=> 'Export Data Penghuni', 'icon'=>'fa fa-upload'],
                 ],
                 
             ]);
@@ -45,7 +49,7 @@ $uiHelper=\Yii::$app->uiHelper;
         ?>
     </div>
 
-    <h1>Asrama <?= $this->title ?></h1>
+    <h1><?= $this->title ?></h1>
     <hr/>
 
     <?= DetailView::widget([

@@ -53,7 +53,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => 'Peserta',
                 'value' => function($model){
                     $pegawais = SuratTugas::getAssignee($model->surat_tugas_id);
-                    return implode('<br/>', array_column($pegawais, 'nama'));
+                    $result = '';
+                    foreach($pegawais as $pegawai){
+                        $result .= "<a href='view-profil-pegawai?id=". $pegawai['pegawai_id'] ."&suratId=". $model->surat_tugas_id ."'>". $pegawai['nama'] ."</a><br/>";
+                    }
+                    return $result;
                 },
                 'format' => 'html',
             ],
@@ -142,18 +146,6 @@ $this->params['breadcrumbs'][] = $this->title;
             ]
         ],
     ]) ?>
-
-    <!-- Untuk list lampiran -->
-    <?php
-        if($modelFile != null){
-            $idx = 1;
-            echo "<b>Lampiran</b>:<br/>"; 
-            foreach($modelFile as $data){
-                echo $idx . ". " . LinkHelper::renderLink(['options'=>'target = _blank', 'label'=>$data->nama_file, 'url'=>\Yii::$app->fileManager->generateUri($data->kode_file)]) . "<br/>";
-            }
-            echo "<br/>";
-        }
-    ?>
 
     <?php
         if($model->status_id != 3 && $model->status_id != 5 ){

@@ -12,9 +12,11 @@ use backend\modules\baak\models\Prodi;
 use backend\modules\baak\models\NomorSuratTerakhir;
 use backend\modules\baak\models\Pegawai;
 use backend\modules\baak\models\DimHasSuratPengantarProyek;
+use backend\modules\baak\models\DataSurat;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\Json;
 
 /**
  * SuratPengantarProyekController implements the CRUD actions for SuratPengantarProyek model.
@@ -39,35 +41,6 @@ class SuratPengantarProyekController extends Controller
                 ],
             ],
         ];
-    }
-
-    /**
-     * Lists all SuratPengantarProyek models.
-     * action-id: print
-     * action-desc: Mencetak surat
-     * @return mixed
-     */
-
-    public function actionPrint($id)
-    {
-        $model = $this->findModel($id);
-        $model->dims = '';
-        $model->nim = '';
-        $model->jk = '';
-        foreach($model->dimHasSuratPengantarProyek as $s){
-            $model->dims .= $s->dim->nama.', ';
-            $model->nim .= $s->dim->nim.', ';
-            $model->jk .= $s->dim->jenis_kelamin.', ';
-        }
-        $pdf_content = $this->renderPartial('test', [
-            'model' => $model,
-        ]);
-
-        $mpdf = new mPDF();
-        $mpdf->showImageErrors = true;
-        $mpdf->WriteHTML($pdf_content);
-        $mpdf->Output();
-        exit;
     }
 
     /*
@@ -153,11 +126,19 @@ class SuratPengantarProyekController extends Controller
         $dim = new DimHasSuratPengantarProyek();
 
         if ($model->load(Yii::$app->request->post())) {
+            if($model->kuliah_id == null)
+            {
+                \Yii::$app->messenger->addWarningFlash('Mata Kuliah tidak terdaftar.');
+                return $this->redirect(\Yii::$app->request->referrer);
+            }
+
             $user_id = Yii::$app->user->identity->id;
             $user_dim = Dim::find()->where(['user_id'=> $user_id])->one();
             $pemohon = $user_dim->dim_id;
             $model->pemohon_id = $pemohon;
             $model->save();
+
+
 
             $dim->surat_pengantar_proyek_id = $model->surat_pengantar_proyek_id;
             $dim->dim_id = $pemohon;
@@ -173,18 +154,44 @@ class SuratPengantarProyekController extends Controller
     }
 
     /*
+    * action-id: add-kuliah
+     * action-desc: Tambah data mata kuliah pada surat
+    */
+    public function actionAddKuliah($query)
+    {
+        $data = [];
+        $dims = Kuliah::find()
+                    ->select('kuliah_id, kode_mk, nama_kul_ind')
+                    ->where('kode_mk LIKE :query')
+                    ->orWhere('nama_kul_ind LIKE :query')
+                    ->andWhere('deleted!=1')
+                    ->addParams([':query' => '%'.$query.'%'])
+                    ->limit(10)
+                    ->asArray()
+                    ->all();
+        foreach ($dims as $dim) {
+            $dataValue = $dim['kode_mk'] .' '. $dim['nama_kul_ind'];
+            $data []  = [
+                            'value' => $dim['kuliah_id'],
+                            'data' => $dataValue
+                        ];
+        }
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        echo Json::encode($data);
+    }
+
+    /*
     * action-id: add-mahasiswa
      * action-desc: Tambah data mahasiswa pada surat
     */
     public function actionAddMahasiswa($query)
-    {
+    {        
         $data = [];
         $dims = Dim::find()
                     ->select('dim_id, nim, nama')
                     ->where('nim LIKE :query')
                     ->orWhere('nama LIKE :query')
                     ->andWhere('deleted!=1')
-                    ->andWhere(['status_akhir'=>'Aktif'])
                     ->addParams([':query' => '%'.$query.'%'])
                     ->limit(10)
                     ->asArray()
@@ -229,8 +236,21 @@ class SuratPengantarProyekController extends Controller
     {
         $model = $this->findModel($id);
         $dim = new DimHasSuratPengantarProyek();
+        $model->dims = '';
+        foreach($model->dimHasSuratPengantarProyek as $s){
+            $model->dims .= $s->dim->nama.', ';
+        }
 
         if ($dim->load(Yii::$app->request->post())) {
+            if(DimHasSuratPengantarProyek::find()->where(['surat_pengantar_proyek_id' => $model->surat_pengantar_proyek_id])->andWhere(['dim_id' => $dim->dim_id])->exists()){
+                \Yii::$app->messenger->addWarningFlash('Mahasiswa telah terdaftar.');
+                return $this->redirect(\Yii::$app->request->referrer);
+            }
+            else if($dim->dim_id == null)
+            {
+                \Yii::$app->messenger->addWarningFlash('Data Mahasiswa tidak sesuai.');
+                return $this->redirect(\Yii::$app->request->referrer);
+            }
             $model->save();
             $dim->surat_pengantar_proyek_id = $id;
             $dim->save();
@@ -270,7 +290,7 @@ class SuratPengantarProyekController extends Controller
             $model->pegawai_id = $pegawai;
             $model->save();
 
-            return $this->redirect('index-admin');
+            return $this->redirect(\Yii::$app->request->referrer);
         }
     }
 
@@ -283,6 +303,11 @@ class SuratPengantarProyekController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post())) {
+            if($model->waktu_pengambilan == NULL)
+            {
+                \Yii::$app->messenger->addWarningFlash('Harap Mengisi Waktu Pengambilan.');
+                return $this->redirect(\Yii::$app->request->referrer);
+            }
             $user_id = Yii::$app->user->identity->id;
             $user_pegawai = Pegawai::find()->where(['user_id'=> $user_id])->one();
             $pegawai = $user_pegawai->pegawai_id;
@@ -290,7 +315,7 @@ class SuratPengantarProyekController extends Controller
             $model->status_pengajuan_id=4;
             $model->save();
 
-            return $this->redirect(['index-admin', 'id' => $model->surat_pengantar_proyek_id]);
+            return $this->redirect(['view-admin', 'id' => $model->surat_pengantar_proyek_id]);
         }
         else {
             $user_id = Yii::$app->user->identity->id;
@@ -314,6 +339,42 @@ class SuratPengantarProyekController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post())) {
+            if($model->alasan_penolakan == NULL)
+            {
+                \Yii::$app->messenger->addWarningFlash('Harap Mengisi Alasan Penolakan.');
+                return $this->redirect(\Yii::$app->request->referrer);
+            }
+            $user_id = Yii::$app->user->identity->id;
+            $user_pegawai = Pegawai::find()->where(['user_id'=> $user_id])->one();
+            $pegawai = $user_pegawai->pegawai_id;
+            $model->pegawai_id = $pegawai;
+            $model->status_pengajuan_id = 3;
+            $model->save();
+
+            return $this->redirect(['view-admin', 'id' => $model->surat_pengantar_proyek_id]);
+        } else {
+            $user_id = Yii::$app->user->identity->id;
+            $user_pegawai = Pegawai::find()->where(['user_id'=> $user_id])->one();
+            $pegawai = $user_pegawai->pegawai_id;
+            $model->pegawai_id = $pegawai;
+            $model->save();
+
+            return $this->render('editDecline', [
+                'model' => $model,
+            ]);
+        }
+    }
+
+    
+    /*
+    * action-id: edit-done
+     * action-desc: Memperbaharui status menjadi done
+    */
+    public function actionEditDone($id)
+    {
+        $model = $this->findModel($id);
+
+        if ($model->load(Yii::$app->request->post())) {
             $user_id = Yii::$app->user->identity->id;
             $user_pegawai = Pegawai::find()->where(['user_id'=> $user_id])->one();
             $pegawai = $user_pegawai->pegawai_id;
@@ -322,15 +383,16 @@ class SuratPengantarProyekController extends Controller
             $model->save();
 
             return $this->redirect(['view-admin', 'id' => $model->surat_pengantar_proyek_id]);
-        } else {
-            $model->status_pengajuan_id = 3;
+        }
+        else {
+            $model->status_pengajuan_id = 5;
             $user_id = Yii::$app->user->identity->id;
             $user_pegawai = Pegawai::find()->where(['user_id'=> $user_id])->one();
             $pegawai = $user_pegawai->pegawai_id;
             $model->pegawai_id = $pegawai;
             $model->save();
 
-            return $this->redirect('index-admin');
+            return $this->redirect(\Yii::$app->request->referrer);
         }
     }
 
@@ -345,7 +407,8 @@ class SuratPengantarProyekController extends Controller
         $model = SuratPengantarProyek::find()->where(['surat_pengantar_proyek_id' => $id])->one();
         $dim = Dim::find()->where(['dim_id' => $model->pemohon_id])->one();
         $kuliah = Kuliah::find()->where(['kuliah_id' => $model->kuliah_id])->one();
-        $prodi = Prodi::find()->where(['ref_kbk_id' => $dim->ref_kbk_id])->one();    
+        $prodi = Prodi::find()->where(['ref_kbk_id' => $dim->ref_kbk_id])->one();   
+        $header = DataSurat::find()->one();
         $mPDF = new mPDF('utf-8','A4',12,'serif');
         $mPDF->WriteHTML($this->renderPartial('mpdf',
             ['model' => $model, 
@@ -353,11 +416,13 @@ class SuratPengantarProyekController extends Controller
             'query' => $query,
             'prodi' => $prodi,
             'kuliah' => $kuliah,
+            'header' => $header,
         ]));
         $mPDF->debug = true;
         $mPDF->Output();
         exit;
     }
+
 
     /*
     * action-id: edit-pdf
@@ -369,6 +434,11 @@ class SuratPengantarProyekController extends Controller
         $nomor_surat = NomorSuratTerakhir::find()->one();
 
         if ($model->load(Yii::$app->request->post())) {
+            if($model->nomor_surat_lengkap == null){
+                $nomor_surat->nomor_surat = $model->nomor_surat;
+                $nomor_surat->save();
+            }
+
             $dateToday = date('Y-m-d');
             $model->tanggal_surat = $dateToday;
 
@@ -395,10 +465,7 @@ class SuratPengantarProyekController extends Controller
             $pegawai = $user_pegawai->pegawai_id;
             $model->pegawai_id = $pegawai;
             $model->nomor_surat_lengkap = $nomor_surat_lengkap;
-            $model->save();
-
-            $nomor_surat->nomor_surat = $model->nomor_surat;
-            $nomor_surat->save();
+            $model->save();            
 
             return $this->redirect(['add-pdf', 'id' => $model->surat_pengantar_proyek_id]);
         }

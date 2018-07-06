@@ -210,7 +210,6 @@ class IzinKeluarController extends Controller
             $model->status_request_keasramaan = 4;
             $model->status_request_dosen_wali = 4;
             $model->status_request_baak = 4;
-            // $model->keasramaan_id = $id_keasramaan;
             $model->save();
 
             \Yii::$app->messenger->addSuccessFlash("Izin keluar telah dibatalkan");
@@ -233,7 +232,7 @@ class IzinKeluarController extends Controller
 
         if ($model->status_request_keasramaan = 1) {
             $model->status_request_keasramaan = 2;
-            // $model->keasramaan_id = $id_keasramaan;
+            $model->keasramaan_id = $id_kemahasiswaan;
             $model->save();
 
             \Yii::$app->messenger->addSuccessFlash("Izin keluar telah disetujui");
@@ -256,7 +255,7 @@ class IzinKeluarController extends Controller
 
         if ($model->status_request_dosen_wali = 1) {
             $model->status_request_dosen_wali = 2;
-            // $model->keasramaan_id = $id_keasramaan;
+            $model->dosen_id = $id_kemahasiswaan;
             $model->save();
 
             \Yii::$app->messenger->addSuccessFlash("Izin keluar telah disetujui");
@@ -279,7 +278,7 @@ class IzinKeluarController extends Controller
 
         if ($model->status_request_keasramaan = 1) {
             $model->status_request_keasramaan = 2;
-            // $model->keasramaan_id = $id_keasramaan;
+            $model->keasramaan_id = $id_keasramaan;
             $model->save();
 
             \Yii::$app->messenger->addSuccessFlash("Izin keluar telah disetujui");
@@ -302,7 +301,7 @@ class IzinKeluarController extends Controller
 
         if ($model->status_request_dosen_wali = 1) {
             $model->status_request_dosen_wali = 2;
-            // $model->keasramaan_id = $id_keasramaan;
+            $model->dosen_id = $id_dosen;
             $model->save();
 
             \Yii::$app->messenger->addSuccessFlash("Izin keluar telah disetujui");
@@ -325,7 +324,7 @@ class IzinKeluarController extends Controller
 
         if ($model->status_request_baak = 1) {
             $model->status_request_baak = 2;
-            // $model->keasramaan_id = $id_keasramaan;
+            $model->baak_id = $id_baak;
             $model->save();
 
             \Yii::$app->messenger->addSuccessFlash("Izin keluar telah disetujui");
@@ -349,7 +348,7 @@ class IzinKeluarController extends Controller
         if ($model->status_request_keasramaan = 1) {
             $model->status_request_keasramaan = 3;
             $model->status_request_baak = 3;
-            // $model->keasramaan_id = $id_keasramaan;
+            $model->keasramaan_id = $id_keasramaan;
             $model->save();
 
             \Yii::$app->messenger->addSuccessFlash("Izin keluar telah ditolak");
@@ -374,7 +373,7 @@ class IzinKeluarController extends Controller
             $model->status_request_dosen_wali = 3;
             $model->status_request_keasramaan = 3;
             $model->status_request_baak = 3;
-            // $model->keasramaan_id = $id_keasramaan;
+            $model->dosen_id = $id_dosen;
             $model->save();
 
             \Yii::$app->messenger->addSuccessFlash("Izin keluar telah ditolak");
@@ -397,7 +396,7 @@ class IzinKeluarController extends Controller
 
         if ($model->status_request_baak = 1) {
             $model->status_request_baak = 3;
-            // $model->keasramaan_id = $id_keasramaan;
+            $model->baak_id = $id_baak;
             $model->save();
 
             \Yii::$app->messenger->addSuccessFlash("Izin keluar telah ditolak");
@@ -422,7 +421,7 @@ class IzinKeluarController extends Controller
             $model->status_request_dosen_wali = 3;
             $model->status_request_baak = 3;
             $model->status_request_keasramaan = 3;
-            // $model->keasramaan_id = $id_keasramaan;
+            $model->dosen_id = $id_kemahasiswaan;
             $model->save();
 
             \Yii::$app->messenger->addSuccessFlash("Izin keluar telah ditolak");
@@ -446,7 +445,7 @@ class IzinKeluarController extends Controller
         if ($model->status_request_keasramaan = 1) {
             $model->status_request_keasramaan = 3;
             $model->status_request_baak = 3;
-            // $model->keasramaan_id = $id_keasramaan;
+            $model->keasramaan_id = $id_kemahasiswaan;
             $model->save();
 
             \Yii::$app->messenger->addSuccessFlash("Izin keluar telah ditolak");

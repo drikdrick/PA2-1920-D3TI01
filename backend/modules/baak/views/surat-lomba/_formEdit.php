@@ -26,6 +26,8 @@ use yii\helpers\ArrayHelper;
 
     <?= $form->field($model, 'nama_lomba',['horizontalCssClasses' => ['wrapper' => 'col-sm-8']])->textInput(['maxlength' => true]) ?>
 
+    <?= $form->field($model, 'alamat_tujuan',['horizontalCssClasses' => ['wrapper' => 'col-sm-8']])->textarea(['rows' => 3]) ?>
+
     <div class="form-group">
       <div class="col-md-1 col-md-offset-2">
         <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

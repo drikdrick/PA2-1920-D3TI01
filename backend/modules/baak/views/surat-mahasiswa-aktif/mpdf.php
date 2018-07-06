@@ -62,27 +62,26 @@
         <table>
             <tr>
                 <td rowspan="2">
-                    <img src="E:\xampp\htdocs\cis-lite\backend\modules\baak\views\surat-lomba\gambar\logo.jpg" style="width: 100px; width: 100px;">
+                    <img src="<?=Yii::$app->getRequest()->getHostInfo().'/img/logo.jpg'?>" style="width: 100px; width: 100px;">
                 </td>
                 <td style="width: 600px;" class="tengah">
-                    <h2>INSTITUT TEKNOLOGI DEL</h2>
+                    <h2><?=strtoupper($header->nama_institut) ?></h2>
                 </td>
             </tr>
             <tr>
                 <td class="tengah">
-                    <p>Jl. Sisingamangaraja, Laguboti 22381<br>
-                        Toba Samosir, Sumatera Utara , Laguboti,22381<br>
-                        Telp.: (0632) 331234, Fax.: (0632) 331116<br>
-                        <u>info@del.ac.id,</u><u> www.del.ac.id</u>
+                    <p><?=$header->alamat ?>
+                        Telp.: <?=$header->nomor_telepon ?>, Fax.: <?=$header->nomor_fax ?><br>
+                        <u><?=$header->email ?></u>, <u><?=$header->alamat_web ?></u>
                     </p>
                 </td>
             </tr>
-        </table><p style="text-align: center">
+        </table>
+        </table><hr><p style="text-align: center">
             <b><u>SURAT KETERANGAN</u><br>
             Mahasiswa Aktif Institut Teknologi Del<br>
             No. <?=$model->nomor_surat_lengkap?><b>
         </p>
-        <br>
         <p>Direktur Pendidikan Institut Teknologi Del dengan ini menerangkan, bahwa mahasiswa yang tersebut di bawah ini : </p>
         <table border='0'>
             <tr>
@@ -99,11 +98,12 @@
                 <td>Program Studi</td>
                 <td>:</td>
                 <td><?=$prodi->kbk_ind?></td> 
-            </tr><tr>
+            </tr>
+            <!-- <tr>
                 <td>Fakultas</td>
                 <td>:</td>
                 <td></td> 
-            </tr>
+            </tr> -->
             <tr>
                 <td>Tempat/Tanggal Lahir</td>
                 <td>:</td>
@@ -139,11 +139,11 @@
             </tr>
         </table>
 
-        <p>adalah benar mahasiswa yang masih aktif pada Semester Genap, Tahun Akademik <?=$new_date = date('Y', strtotime($tgl_surat))?>/2019 di Institut Teknologi Del, Sitoluama, Laguboti, Toba Samosir, Sumatera Utara.</p>
+        <p>adalah benar mahasiswa yang masih aktif pada Semester <?= Yii::$app->appConfig->get('semester_tahun_ajaran', true) ?>, Tahun Akademik <?= Yii::$app->appConfig->get('tahun_ajaran', true) ?> di Institut Teknologi Del, Sitoluama, Laguboti, Toba Samosir, Sumatera Utara.</p>
 
         <p>Mahasiswa Institut Teknologi Del diwajibkan untuk tinggal di dalam asrama mahasiswa selama menjalani masa perkuliahannya.</p>
 
-        <p>Demikian Surat Keterangan ini dibuat untuk digunakan dalam <b><?=$model->tujuan?></b>.</p>
+        <p>Demikian Surat Keterangan ini dibuat untuk digunakan dalam <b><?=$model->tujuan?></b>.</p><br>
 
         <p>Sitoluama, <?=$tgl_surat?></p>
         <p>Institut Teknologi Del<br>Direktur Pendidikan<br><br><br><br>Mariana Simanjuntak, M.Sc.</p>

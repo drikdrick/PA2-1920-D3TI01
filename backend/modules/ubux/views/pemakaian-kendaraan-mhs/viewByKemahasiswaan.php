@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 use yii\base\Model;
+use common\helpers\LinkHelper;
 
 /* @var $this yii\web\View */
 /* @var $model backend\modules\ubux\models\PemakaianKendaraanMhs */

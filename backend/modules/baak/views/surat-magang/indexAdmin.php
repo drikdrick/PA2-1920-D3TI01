@@ -6,6 +6,8 @@ use yii\grid\GridView;
 use yii\jui\DatePicker;
 use kartik\datetime\DateTimePicker;
 use common\components\ToolsColumn;
+use yii\helpers\ArrayHelper;
+use backend\modules\baak\models\StatusPengajuan;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\modules\baak\models\SuratMagangSearch */
@@ -26,6 +28,17 @@ $this->params['breadcrumbs'][] = $this->title;
             'nullDisplay' => '-',
         ],
         'filterModel' => $searchModel,
+        'rowOptions' => function($model){
+            if($model->status_pengajuan_id == 2){
+                return ['class' => 'info'];
+            } else if($model->status_pengajuan_id == 3){
+                return ['class' => 'danger'];
+            } else if($model->status_pengajuan_id == 4){
+                return ['class' => 'warning'];
+            }else if($model->status_pengajuan_id == 5){
+                return ['class' => 'success'];
+            }
+        },
         'columns' => [
             ['class' => 'backend\modules\baak\assets\SerialColumn'],
 
@@ -37,7 +50,10 @@ $this->params['breadcrumbs'][] = $this->title;
             'nama_perusahaan',
             [
                 'attribute'=>'status_pengajuan_id',
-                'value'=>'statusPengajuan.name',
+                'label' => 'Status',
+                'filter'=>ArrayHelper::map(StatusPengajuan::find()->asArray()->all(), 'status_pengajuan_id', 'name'),
+                'filterInputOptions' => ['class' => 'form-control', 'id' => null, 'prompt' => 'Semua Status'],
+                'value' => 'statusPengajuan.name',
             ],
 
             [
@@ -55,7 +71,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
 
             ['class' => 'common\components\ToolsColumn',
-                'template' => '{view} {accept} {decline} {ready} {print}',
+                'template' => '{view} {accept} {decline} {ready} {print} {done}',
                 'header' => 'Action',
                 'buttons' => [
                     'accept' => function ($url, $model){
@@ -78,6 +94,11 @@ $this->params['breadcrumbs'][] = $this->title;
                             return "<li>".Html::a('<span class="fa fa-print"></span> Print', $url)."</li>";
                         }
                     },
+                    'done' => function ($url, $model){
+                        if($model->status_pengajuan_id == 4){
+                            return "<li>".Html::a('<span class="fa fa-check"></span> Done', $url)."</li>";
+                        }
+                    },
                 ],
                 'urlCreator' => function ($action, $model, $key, $index){
                     if ($action === 'view') {
@@ -94,6 +115,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                     if ($action === 'print') {
                         return Url::toRoute(['edit-pdf', 'id' => $key]);
+                    }
+                    if ($action === 'done') {
+                        return Url::toRoute(['edit-done', 'id' => $key]);
                     }
                 }
             ],

@@ -66,11 +66,11 @@ class KartuTandaMahasiswa extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['pemohon_id', 'deleted', 'dim_id', 'pegawai_id', 'status_pengajuan_id'], 'integer'],
+            [['pemohon_id', 'deleted', 'pegawai_id', 'status_pengajuan_id'], 'integer'],
+            [['alasan'], 'required'],
             [['deleted_at', 'created_at', 'updated_at', 'waktu_pengambilan'], 'safe'],
-            [['alasan'], 'string'],
+            [['alasan', 'alasan_penolakan'], 'string'],
             [['deleted_by', 'created_by', 'updated_by'], 'string', 'max' => 32],
-            [['dim_id'], 'exist', 'skipOnError' => true, 'targetClass' => Dim::className(), 'targetAttribute' => ['dim_id' => 'dim_id']],
             [['pegawai_id'], 'exist', 'skipOnError' => true, 'targetClass' => Pegawai::className(), 'targetAttribute' => ['pegawai_id' => 'pegawai_id']],
             [['status_pengajuan_id'], 'exist', 'skipOnError' => true, 'targetClass' => StatusPengajuan::className(), 'targetAttribute' => ['status_pengajuan_id' => 'status_pengajuan_id']],
             [['pemohon_id'], 'exist', 'skipOnError' => true, 'targetClass' => Dim::className(), 'targetAttribute' => ['pemohon_id' => 'dim_id']]
@@ -93,21 +93,14 @@ class KartuTandaMahasiswa extends \yii\db\ActiveRecord
             'created_by' => 'Created By',
             'updated_at' => 'Updated At',
             'updated_by' => 'Updated By',
-            'dim_id' => 'Nama Mahasiswa',
-            'pegawai_id' => 'Hrdx Pegawai Pegawai ID',
+            'pegawai_id' => 'Pegawai',
             'status_pengajuan_id' => 'Status',
+            'alasan_penolakan' => 'Alasan Penolakan',
             'waktu_pengambilan' => 'Waktu Pengambilan',
         ];
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getDim()
-    {
-        return $this->hasOne(Dim::className(), ['dim_id' => 'dim_id']);
-    }
-
+    
     /**
      * @return \yii\db\ActiveQuery
      */

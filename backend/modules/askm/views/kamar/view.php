@@ -10,7 +10,8 @@ use yii\grid\GridView;
 
 $this->title = $model->nomor_kamar.' - '.$model->asrama['name'];
 $this->params['breadcrumbs'][] = ['label' => 'Asrama', 'url' => ['asrama/index']];
-$this->params['breadcrumbs'][] = ['label' => 'Kamar', 'url' => ['kamar/index', 'KamarSearch[asrama_id]' => $model->asrama_id, 'id_asrama' => $model->asrama_id]];
+$this->params['breadcrumbs'][] = ['label' => 'Asrama '.$model->asrama['name'], 'url' => ['asrama/view-detail-asrama', 'id' => $model->asrama_id]];
+$this->params['breadcrumbs'][] = ['label' => 'Daftar Kamar', 'url' => ['kamar/index', 'KamarSearch[asrama_id]' => $model->asrama_id, 'id_asrama' => $model->asrama_id]];
 $this->params['breadcrumbs'][] = $this->title;
 $uiHelper=\Yii::$app->uiHelper;
 ?>
@@ -21,15 +22,15 @@ $uiHelper=\Yii::$app->uiHelper;
         <?= $uiHelper->renderButtonSet([
                 'template' => ['addMhs', 'reset', 'edit'],
                 'buttons' => [
-                    'addMhs' => ['url' => Url::toRoute(['dim-kamar/add-penghuni-kamar', 'id' => $model->kamar_id]), 'label'=> 'Tambah Penghuni', 'icon'=>'fa fa-users'],
+                    'addMhs' => ['url' => Url::toRoute(['dim-kamar/add-penghuni-kamar', 'id' => $model->kamar_id, 'id_asrama' => $model->asrama_id]), 'label'=> 'Tambah Penghuni', 'icon'=>'fa fa-users'],
                     'reset' => ['url' => Url::toRoute(['reset-kamar', 'id' => $model->kamar_id]), 'label'=> 'Reset Kamar', 'icon'=>'fa fa-refresh'],
-                    'edit' => ['url' => Url::toRoute(['edit-kamar', 'id' => $model->kamar_id]), 'label'=> 'Edit Kamar', 'icon'=>'fa fa-pencil'],
+                    'edit' => ['url' => Url::toRoute(['edit-kamar', 'id' => $model->kamar_id, 'id_asrama' => $model->asrama_id]), 'label'=> 'Edit Kamar', 'icon'=>'fa fa-pencil'],
                 ],
                 
             ]) ?>
     </div>
 
-    <h1>Kamar <?= $this->title ?></h1>
+    <h1><?= $this->title ?></h1>
     <?= $uiHelper->renderLine(); ?>
 
     <h2>Penghuni : </h2>

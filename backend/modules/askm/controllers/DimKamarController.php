@@ -76,20 +76,29 @@ class DimKamarController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionAddPenghuniKamar()
+    public function actionAddPenghuniKamar($id, $id_asrama)
     {
         $model = new DimKamar();
+        $asrama = Asrama::find()->where(['asrama_id' => $id_asrama])->one();
+        $kamar = Kamar::find()->where(['kamar_id' => $id])->one();
+        $penghuni = DimKamar::find()->where('kamar_id='.$id)->andWhere('deleted!=1')->all();
+        $count = 0;
+        foreach ($penghuni as $p) {
+            $count++;
+        }
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $kamar = Kamar::find()->where(['kamar_id' => $model->kamar_id])->one();
             $asrama = Asrama::find()->where(['asrama_id' => $kamar->asrama_id])->one();
             $asrama->jumlah_mahasiswa +=1;
             $asrama->save();
             \Yii::$app->messenger->addSuccessFlash("Penghuni telah ditambahkan");
-            return $this->redirect(['kamar/view', 'id' => $_GET['id']]);
+            return $this->redirect(['add-penghuni-kamar', 'id' => $id, 'id_asrama' => $id_asrama]);
         } else {
             return $this->render('addPenghuniKamar', [
                 'model' => $model,
+                'asrama' => $asrama,
+                'kamar' => $kamar,
+                'count' => $count
             ]);
         }
     }

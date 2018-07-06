@@ -19,17 +19,21 @@ $this->params['breadcrumbs'][] = ['label' => 'Kartu Tanda Mahasiswa', 'url' => [
                     'data-method' => 'POST',
                 ]);
                 echo "&nbsp";
-                echo Html::a('Reject', ['edit-decline', 'id' => $model->kartu_tanda_mahasiswa_id], [
+                echo Html::a('Decline', ['edit-decline', 'id' => $model->kartu_tanda_mahasiswa_id], [
                     'class' => 'btn btn-danger',
                     'data-method' => 'POST',
-                    'data' => [
-                        'confirm' => 'Reject request surat tugas?',
-                    ],
                 ]);
                 echo "&nbsp";
             }
             else if($model->status_pengajuan_id == 2){
                 echo Html::a('Ready to Take', ['edit-ready', 'id' => $model->kartu_tanda_mahasiswa_id], [ 
+                    'class' => 'btn btn-success',
+                    'data-method' => 'POST',
+                ]);
+                echo "&nbsp";
+            }
+            else if($model->status_pengajuan_id == 4){
+                echo Html::a('Done', ['edit-done', 'id' => $model->kartu_tanda_mahasiswa_id], [
                     'class' => 'btn btn-success',
                     'data-method' => 'POST',
                 ]);
@@ -43,19 +47,69 @@ $this->params['breadcrumbs'][] = ['label' => 'Kartu Tanda Mahasiswa', 'url' => [
         ?>
     </p>
 
-    <?= DetailView::widget([
-        'model' => $model,
-        'formatter' => [
-            'class' => 'yii\i18n\Formatter',
-            'nullDisplay' => '-',
-        ],
-        'attributes' => [
-            'alasan',
-            'dim.nama',
-            'pegawai.nama',
-            'statusPengajuan.name',
-            'waktu_pengambilan',
-        ],
-    ]) ?>
+    <?php if($model->status_pengajuan_id == 1){ ?>
+        <?= DetailView::widget([
+            'model' => $model,
+            'formatter' => [
+                'class' => 'yii\i18n\Formatter',
+                'nullDisplay' => '-',
+            ],
+            'attributes' => [
+                'alasan',
+                'pemohon.nama',
+                'statusPengajuan.name',
+            ],
+        ]) ?>
+    <?php } ?>
+
+    <?php if($model->status_pengajuan_id == 2){ ?>
+        <?= DetailView::widget([
+            'model' => $model,
+            'formatter' => [
+                'class' => 'yii\i18n\Formatter',
+                'nullDisplay' => '-',
+            ],
+            'attributes' => [
+                'alasan',
+                'pemohon.nama',
+                'statusPengajuan.name',
+                'pegawai.nama',
+            ],
+        ]) ?>
+    <?php } ?>
+
+    <?php if($model->status_pengajuan_id == 3){ ?>
+        <?= DetailView::widget([
+            'model' => $model,
+            'formatter' => [
+                'class' => 'yii\i18n\Formatter',
+                'nullDisplay' => '-',
+            ],
+            'attributes' => [
+                'alasan',
+                'pemohon.nama',
+                'statusPengajuan.name',
+                'pegawai.nama',
+                'alasan_penolakan',
+            ],
+        ]) ?>
+    <?php } ?>
+
+    <?php if($model->status_pengajuan_id == 4 || $model->status_pengajuan_id == 5){ ?>
+        <?= DetailView::widget([
+            'model' => $model,
+            'formatter' => [
+                'class' => 'yii\i18n\Formatter',
+                'nullDisplay' => '-',
+            ],
+            'attributes' => [
+                'alasan',
+                'pemohon.nama',
+                'statusPengajuan.name',
+                'pegawai.nama',
+                'waktu_pengambilan',
+            ],
+        ]) ?>
+    <?php } ?>
 
 </div>

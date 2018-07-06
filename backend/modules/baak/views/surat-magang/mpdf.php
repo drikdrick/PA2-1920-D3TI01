@@ -41,22 +41,21 @@
         <table>
             <tr>
                 <td rowspan="2">
-                    <img src="E:\xampp\htdocs\cis-lite\backend\modules\baak\views\surat-lomba\gambar\logo.jpg" style="width: 100px; width: 100px;">
+                    <img src="<?=Yii::$app->getRequest()->getHostInfo().'/img/logo.jpg'?>" style="width: 100px; width: 100px;">
                 </td>
                 <td style="width: 600px;" class="tengah">
-                    <h2>INSTITUT TEKNOLOGI DEL</h2>
+                    <h2><?=strtoupper($header->nama_institut) ?></h2>
                 </td>
             </tr>
             <tr>
                 <td class="tengah">
-                    <p>Jl. Sisingamangaraja, Laguboti 22381<br>
-                        Toba Samosir, Sumatera Utara , Laguboti,22381<br>
-                        Telp.: (0632) 331234, Fax.: (0632) 331116<br>
-                        <u>info@del.ac.id,</u><u> www.del.ac.id</u>
+                    <p><?=$header->alamat ?>
+                        Telp.: <?=$header->nomor_telepon ?>, Fax.: <?=$header->nomor_fax ?><br>
+                        <u><?=$header->email ?></u>, <u><?=$header->alamat_web ?></u>
                     </p>
                 </td>
             </tr>
-        </table>
+        </table> 
         <hr>
         <p style="text-align:right">
             Laguboti, <?=$tgl_surat?>
@@ -126,11 +125,11 @@
             <tr>
         </table>
 
-        <p style="text-align: justify;">Sesuai kalender akademik IT Del, mahasiswa pada program studi tersebut melaksanakan libur akhir tahun akademik semester genap
+        <p style="text-align: justify;">Sesuai kalender akademik IT Del, mahasiswa pada program studi tersebut melaksanakan libur akhir tahun akademik semester genap.
             Pada masa libur mahasiswa atas inisiasi sendiri dapat melaksanakan magang sebagai bagian dari proses belajar menggunakan masa libur untuk menambah pengalaman dan pengetahuan.</p>
 
         <p style="text-align: justify;">Terkait dengan hal tersebut terdapat mahasiswa IT Del yaitu:</p>
-        <table border="1" align="center">
+        <table border="1" align="center" style="width: 100%">
             <tr>
                 <b>
                     <td>No</td>

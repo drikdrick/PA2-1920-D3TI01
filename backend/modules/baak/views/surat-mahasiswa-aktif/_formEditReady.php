@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
-use kartik\datetime\DateTimePicker;
+use dosamigos\datetimepicker\DateTimePicker;
 use yii\helpers\ArrayHelper;
 use backend\modules\baak\models\StatusPengajuan;
 use yii\widgets\DetailView;
@@ -10,6 +10,7 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model backend\modules\baak\models\SuratMahasiswaAktif */
 /* @var $form yii\widgets\ActiveForm */
+$datetime = new DateTime();
 ?>
 
 <div class="surat-mahasiswa-aktif-form">
@@ -34,15 +35,18 @@ use yii\widgets\DetailView;
       ],
     ]) ?>
 
-    <?= $form->field($model, 'waktu_pengambilan',['horizontalCssClasses' => ['wrapper' => 'col-sm-8']])->widget(DateTimePicker::classname(), [
-            'options' => ['placeholder' => 'Tanggal Pengambilan Surat'],
-            'pluginOptions' => [
-                'autoclose' => true,
-                'format' => 'yyyy-mm-dd h:i',
-            ]
-        ])
-        ->label(false);
-    ?>
+    <?= $form->field($model, 'waktu_pengambilan')->widget(DateTimePicker::className(), [
+        'language' => 'en',
+        'size' => 'ms',
+        'pickButtonIcon' => 'glyphicon glyphicon-time',
+        'inline' => false,
+        'clientOptions' => [
+            'pickerPosition' => 'bottom-left',
+            'autoclose' => true,
+            'format' => 'yyyy-mm-dd hh:ii:00', 
+            'startDate' => date($datetime->format("Y-m-d")),
+        ]
+    ]);?>
 
     <div class="form-group">
       <div class="col-md-1 col-md-offset-2">

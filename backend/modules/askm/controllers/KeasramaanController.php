@@ -6,6 +6,7 @@ use Yii;
 use backend\modules\askm\models\Keasramaan;
 use backend\modules\askm\models\search\KeasramaanSearch;
 use backend\modules\askm\models\Pegawai;
+use backend\modules\askm\models\Asrama;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -43,14 +44,16 @@ class KeasramaanController extends Controller
     * action-id: index
     * action-desc: Display All Data
     */
-    public function actionIndex()
+    public function actionIndex($id_asrama)
     {
-        $searchModel = new KeasramaanSearch();
+        $searchModel = new KamarSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $asrama = Asrama::find()->where(['asrama_id' => $id_asrama])->one();
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'asrama' => $asrama,
         ]);
     }
 
@@ -79,10 +82,11 @@ class KeasramaanController extends Controller
     * action-id: add-pengurus
     * action-desc: Menambahkan pengurus keasramaan
     */
-    public function actionAddPengurus()
+    public function actionAddPengurus($id_asrama)
     {
     
         $model = new Keasramaan();
+        $asrama = Asrama::find()->where(['asrama_id' => $id_asrama])->one();
         
         if ($model->load(Yii::$app->request->post())) {
             
@@ -91,6 +95,7 @@ class KeasramaanController extends Controller
         } else {
             return $this->render('addPengurus', [
                 'model' => $model, 
+                'asrama' => $asrama,
             ]);
         }
     }

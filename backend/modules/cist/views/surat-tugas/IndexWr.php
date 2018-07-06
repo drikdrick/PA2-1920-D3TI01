@@ -82,10 +82,20 @@ $this->params['breadcrumbs'][] = $this->title;
                             return ToolsColumn::renderCustomButton($url, $model, 'Lihat Surat Tugas', 'fa fa-eye');
                         },
                         'confirm' => function($url, $model){
-                            return ToolsColumn::renderCustomButton($url, $model, 'Terima Laporan', 'fa fa-check');
+                            return "<li>".Html::a('<span class="fa fa-check"></span> Terima Laporan', $url, [
+                                'title' => Yii::t('yii', 'Terima Laporan'),
+                                'data-confirm' => Yii::t('yii', 'Terima laporan surat tugas?'),
+                                'data-method' => 'post',
+                                 'data-pjax' => '0',
+                            ])."</li>";
                         },
                         'reject' => function($url, $model){
-                            return ToolsColumn::renderCustomButton($url, $model, 'Tolak Laporan', 'fa fa-times');
+                            return "<li>".Html::a('<span class="fa fa-times"></span> Tolak Laporan', $url, [
+                                'title' => Yii::t('yii', 'Tolak Laporan'),
+                                'data-confirm' => Yii::t('yii', 'Tolak laporan surat tugas?'),
+                                'data-method' => 'post',
+                                 'data-pjax' => '0',
+                            ])."</li>";
                         },
                     ],
                     'urlCreator' => function($action, $model, $key, $index){

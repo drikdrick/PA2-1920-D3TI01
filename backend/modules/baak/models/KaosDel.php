@@ -12,6 +12,7 @@ use common\behaviors\DeleteBehavior;
  * This is the model class for table "baak_kaos_del".
  *
  * @property integer $kaos_del_id
+ * @property string $kode_ukuran
  * @property string $ukuran
  * @property integer $stok
  * @property integer $pegawai_id
@@ -62,9 +63,10 @@ class KaosDel extends \yii\db\ActiveRecord
         return [
             [['stok', 'pegawai_id', 'deleted'], 'integer'],
             [['created_at', 'updated_at', 'deleted_at'], 'safe'],
-            [['ukuran'], 'string', 'max' => 10],
+            [['kode_ukuran'], 'string', 'max' => 5],
+            [['ukuran'], 'string', 'max' => 20],
             [['created_by', 'updated_by', 'deleted_by'], 'string', 'max' => 32],
-            [['pegawai_id'], 'exist', 'skipOnError' => true, 'targetClass' => Pegawai::className(), 'targetAttribute' => ['pegawai_id' => 'pegawai_id']]
+            [['pegawai_id'], 'exist', 'skipOnError' => true, 'targetClass' => Pegawai::className(), 'targetAttribute' => ['pegawai_id' => 'pegawai_id']],
         ];
     }
 
@@ -75,6 +77,7 @@ class KaosDel extends \yii\db\ActiveRecord
     {
         return [
             'kaos_del_id' => 'Kaos Del ID',
+            'kode_ukuran' => 'Kode Ukuran',
             'ukuran' => 'Ukuran',
             'stok' => 'Stok',
             'pegawai_id' => 'Pegawai ID',
@@ -93,6 +96,6 @@ class KaosDel extends \yii\db\ActiveRecord
      */
     public function getPegawai()
     {
-        return $this->hasOne(Pegawai::className(), ['pegawai_id' => 'pegawai_id']);
+        return $this->hasOne(HrdxPegawai::className(), ['pegawai_id' => 'pegawai_id']);
     }
 }

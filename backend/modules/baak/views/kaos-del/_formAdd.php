@@ -23,9 +23,11 @@ use yii\bootstrap\ActiveForm;
       ],
     ]) ?>
 
+    <?= $form->field($model, 'kode_ukuran',['horizontalCssClasses' => ['wrapper' => 'col-sm-8']])->textInput(['maxlength' => true]) ?>    
+
     <?= $form->field($model, 'ukuran',['horizontalCssClasses' => ['wrapper' => 'col-sm-8']])->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'stok',['horizontalCssClasses' => ['wrapper' => 'col-sm-8']])->textInput(['maxLength' => true]) ?>
+    <?= $form->field($model, 'stok',['horizontalCssClasses' => ['wrapper' => 'col-sm-8']])->textInput(['type'=>'number','maxLength' => true]) ?>
 
     <div class="form-group">
       <div class="col-md-1 col-md-offset-2">
