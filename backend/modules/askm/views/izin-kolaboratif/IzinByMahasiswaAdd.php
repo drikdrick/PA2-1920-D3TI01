@@ -7,7 +7,7 @@ use yii\helpers\Html;
 /* @var $model backend\modules\askm\models\IzinTambahanJamKolaboratif */
 
 $this->title = 'Request Izin Tambahan Jam Kolaboratif';
-$this->params['breadcrumbs'][] = ['label' => 'Izin Tambahan Jam Kolaboratif', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Izin Tambahan Jam Kolaboratif', 'url' => ['izin-by-mahasiswa-index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="izin-kolaboratif-create">

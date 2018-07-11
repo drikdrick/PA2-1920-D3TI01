@@ -26,8 +26,8 @@ $pegawai = Pegawai::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$
         <?= $uiHelper->renderButtonSet([
                 'template' => ['approve', 'reject'],
                 'buttons' => [
-                    'approve' => ['url' => Url::toRoute(['approve-by-keasramaan', 'id_ib' => $model->izin_bermalam_id, 'id_keasramaan' => $pegawai->pegawai_id]), 'label'=> 'Setujui Request', 'icon'=>'fa fa-check'], // id keasramaan diambil saat sudah login
-                    'reject' => ['url' => Url::toRoute(['reject-by-keasramaan', 'id_ib' => $model->izin_bermalam_id, 'id_keasramaan' => $pegawai->pegawai_id]), 'label'=> 'Tolak Request', 'icon'=>'fa fa-times'],
+                    'approve' => ['url' => Url::toRoute(['approve-by-keasramaan-index', 'id_ib' => $model->izin_bermalam_id, 'id_keasramaan' => $pegawai->pegawai_id]), 'label'=> 'Setujui Request', 'icon'=>'fa fa-check'], // id keasramaan diambil saat sudah login
+                    'reject' => ['url' => Url::toRoute(['reject-by-keasramaan-index', 'id_ib' => $model->izin_bermalam_id, 'id_keasramaan' => $pegawai->pegawai_id]), 'label'=> 'Tolak Request', 'icon'=>'fa fa-times'],
                 ],
                 
             ]) ?>

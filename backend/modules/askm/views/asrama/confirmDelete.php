@@ -3,9 +3,10 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 
 $this->title = 'Hapus Asrama';
-$this->params['header'] = 'Hapus Asrama';
-
-$this->params['breadcrumbs'][] = "Delete";
+$this->params['breadcrumbs'][] = ['label' => 'Asrama', 'url' => ['asrama/index']];
+$this->params['breadcrumbs'][] = ['label' => 'Asrama '.$model->asrama['name'], 'url' => ['asrama/view-detail-asrama', 'id' => $model->asrama_id]];
+$this->params['breadcrumbs'][] = ['label' => 'Daftar Kamar', 'url' => ['kamar/index', 'KamarSearch[asrama_id]' => $model->asrama_id, 'id_asrama' => $model->asrama_id]];
+$this->params['breadcrumbs'][] = $this->title;
 
 //TODO: buat ui helper untuk menampilkan form konfirmasi
 

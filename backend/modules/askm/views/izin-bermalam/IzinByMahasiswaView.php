@@ -9,7 +9,6 @@ use yii\widgets\DetailView;
 
 $this->title = 'Data Izin Bermalam';
 $this->params['breadcrumbs'][] = ['label' => 'Izin Bermalam', 'url' => ['index-mahasiswa']];
-$this->params['breadcrumbs'][] = ['label' => 'List Izin Bermalam', 'url' => ['izin-by-mahasiswa-index']];
 $this->params['breadcrumbs'][] = $this->title;
 $uiHelper=\Yii::$app->uiHelper;
 ?>
