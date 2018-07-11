@@ -12,6 +12,8 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\Json;
+use common\helpers\LinkHelper;
+use yii\helpers\Url;
 
 
 /**
@@ -87,7 +89,17 @@ class DimKamarController extends Controller
             $count++;
         }
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
+            $dim_penghuni = DimKamar::find()->where('dim_id='.$model->dim_id)->andWhere('deleted!=1')->one();
+            if (!empty($dim_penghuni)) {
+                \Yii::$app->messenger->addWarningFlash("Penghuni telah di-assign ke ".
+                    LinkHelper::renderLink([
+                            'label' => "Asrama ".$dim_penghuni->kamar->asrama->name." Kamar ".$dim_penghuni->kamar->nomor_kamar,
+                            'url' => Url::to(['kamar/view', 'id' => $dim_penghuni->kamar->kamar_id]),
+                        ])
+                );
+                return $this->redirect(['add-penghuni-kamar', 'id' => $id, 'id_asrama' => $id_asrama]);
+            }
             $asrama = Asrama::find()->where(['asrama_id' => $kamar->asrama_id])->one();
             $asrama->jumlah_mahasiswa +=1;
             $asrama->save();

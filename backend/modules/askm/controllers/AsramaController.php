@@ -5,6 +5,8 @@ namespace backend\modules\askm\controllers;
 use Yii;
 use backend\modules\askm\models\Asrama;
 use backend\modules\askm\models\Kamar;
+use backend\modules\dimx\models\Dim;
+use backend\modules\askm\models\DimKamar;
 use backend\modules\askm\models\search\AsramaSearch;
 use backend\modules\askm\models\search\KamarSearch;
 use backend\modules\askm\models\search\DimKamarSearch;
@@ -39,6 +41,86 @@ class AsramaController extends Controller
                 ],
             ],
         ];
+    }
+
+    public function actionImportExcel()
+    {
+        $modelImport = new \yii\base\DynamicModel([
+                    'fileImport'=>'File Import',
+                ]);
+        $modelImport->addRule(['fileImport'],'required');
+        $modelImport->addRule(['fileImport'],'file',['extensions'=>'xls,xlsx']);
+
+        if(Yii::$app->request->post()){
+            ini_set('max_execution_time', 1500);
+
+            $modelImport->fileImport = \yii\web\UploadedFile::getInstance($modelImport,'fileImport');
+            if($modelImport->fileImport && $modelImport->validate()){
+                $inputFileType = \PHPExcel_IOFactory::identify($modelImport->fileImport->tempName);
+                $objReader = \PHPExcel_IOFactory::createReader($inputFileType);
+                $objReader->setLoadAllSheets();
+                $objPHPExcel = $objReader->load($modelImport->fileImport->tempName);
+                $count = 0;
+                $temp_novalid = array();
+                do{
+                    //echo $objPHPExcel->getSheetNames()[$count];
+                    //print_r($objPHPExcel->getSheetNames()[$count]);
+                    $sheetData = $objPHPExcel->getSheet($count)->toArray(null,true,true,true);
+                    $temp_asrama = $objPHPExcel->getSheetNames()[$count];
+                    $baseRow = 3;
+                    $temp_kamar = 1;
+                    while(!empty($sheetData[$baseRow]['A']) && $sheetData[$baseRow]['A']!=''){
+                        if(!is_null($sheetData[$baseRow]['B']))
+                            $temp_kamar = $sheetData[$baseRow]['B'];
+                        $temp_name = $sheetData[$baseRow]['C'];
+                        $temp_dim = Dim::find()->where('deleted!=1');
+                        $temp_name_explode = explode(' ', $temp_name);
+                        foreach($temp_name_explode as $tne){
+                            $temp_dim = $temp_dim->andWhere(['like', 'nama', $tne]);
+                        }
+                        $temp_dim = $temp_dim->one();
+                        if(empty($temp_dim)){
+                            $temp_novalid[] = [$objPHPExcel->getSheetNames()[$count], $temp_kamar, $temp_name];
+                        }else{
+                            $dim_kamar = new DimKamar();
+                            $dim = Dim::find()->where(['like', 'nama', $tne])->one();
+                            $asrama = Asrama::find()->where(['name' => $temp_asrama])->one();
+                            $kamar = Kamar::find()->where(['asrama_id' => $asrama->asrama_id])->andWhere(['nomor_kamar' => $temp_kamar, 'deleted' => 0])->one();
+                            if (empty($kamar)) {
+                                $new_kamar = new Kamar();
+                                $new_kamar->asrama_id = $asrama->asrama_id;
+                                $new_kamar->nomor_kamar = (string) $temp_kamar;
+                                if ($new_kamar->save()) {
+                                    $kamar = $new_kamar;
+                                }
+                                else{
+                                    echo "<pre>";
+                                    print_r($new_kamar->errors);
+                                    die();
+                                }
+                            }
+
+                            $dim_kamar->kamar_id = $kamar->kamar_id;
+                            $dim_kamar->dim_id = $dim->dim_id;
+                            $dim_kamar->save();
+                        }
+                        // echo $temp_dim->nama;
+                        // die;
+                        $baseRow++;
+                    }
+                    $count++;
+                }while($count<$objPHPExcel->getSheetCount());
+                ini_set('max_execution_time', 30);
+                \Yii::$app->messenger->addSuccessFlash("Data Mahasiswa berhasil ditambahkan");
+                echo '<pre>';
+                print_r($temp_novalid);
+                die;
+            }
+        }
+
+        return $this->render('ImportExcel',[
+                'modelImport' => $modelImport,
+            ]);
     }
 
     /**
@@ -211,6 +293,7 @@ class AsramaController extends Controller
     public function actionExportExcel($asrama_id)
     {
         $model = new DimKamarSearch();
+        $asrama = Asrama::find()->where(['asrama_id' => $id_asrama])->one();
       
         $_PHPExcel = new PHPExcel();
 
@@ -334,7 +417,7 @@ class AsramaController extends Controller
 
         }
 
-        $_PHPExcel->getActiveSheet()->getCell('B3')->setValue('Asrama : '.$d->kamar->asrama['name'])->getStyle()->applyFromArray(
+        $_PHPExcel->getActiveSheet()->getCell('B3')->setValue('Asrama : '.$asrama->name)->getStyle()->applyFromArray(
             array(
                 'font' => array(
                     'size' => 11,'bold' => true,'color' => array(
@@ -348,7 +431,7 @@ class AsramaController extends Controller
 
         $_objWriter = PHPExcel_IOFactory::createWriter($_PHPExcel,'Excel2007');
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="Data_Penghuni_Asrama_'.$d->kamar->asrama['name'].'.xlsx"');
+        header('Content-Disposition: attachment;filename="Data_Penghuni_Asrama_'.$asrama->name.'.xlsx"');
         $_objWriter->save('php://output');
 
     }

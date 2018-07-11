@@ -14,6 +14,26 @@ $uiHelper=\Yii::$app->uiHelper;
 
 $date_berangkat = date_create($model->rencana_berangkat);
 $date_kembali = date_create($model->rencana_kembali);
+
+function tgl_indo($tanggal){
+    $bulan = array(
+        1 => 'Januari',
+        'Februari',
+        'Maret',
+        'April',
+        'Mei',
+        'Juni',
+        'Juli',
+        'Agustus',
+        'September',
+        'Oktober',
+        'November',
+        'Desember'
+    );
+    $pecahkan = explode('-', $tanggal);
+
+    return $pecahkan[2]. ' ' . $bulan[(int)$pecahkan[1]]. ' ' . $pecahkan[0];
+}
 ?>
     <div class="izin-bermalam-view" style="font-family: sans-serif; font-size: 11">
 
@@ -53,11 +73,11 @@ $date_kembali = date_create($model->rencana_kembali);
             <br>
             <b>Rencana IB</b>
             <br>
-            Tanggal Berangkat : <?php echo date_format($date_berangkat, "Y-m-d"); ?> &emsp; Pukul : <?php echo date_format($date_berangkat, "H:i:s"); ?>
+            Tanggal Berangkat : <?php echo tgl_indo(date_format($date_berangkat, "Y-m-d")); ?> &emsp; Pukul : <?php echo date_format($date_berangkat, "H:i:s"); ?>
             <br>
             Keperluan : <?php echo $model->desc; ?>
             <br>
-            Tanggal Kembali : <?php echo date_format($date_kembali, "Y-m-d"); ?> &emsp;&emsp;  Pukul : <?php echo date_format($date_kembali, "H:i:s"); ?>
+            Tanggal Kembali : <?php echo tgl_indo(date_format($date_kembali, "Y-m-d")); ?> &emsp;&emsp;  Pukul : <?php echo date_format($date_kembali, "H:i:s"); ?>
             <br>
             </p>
         </div>

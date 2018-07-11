@@ -114,7 +114,7 @@ $uiHelper=\Yii::$app->uiHelper;
                     }else if ($action === 'edit') {
                         return Url::toRoute(['edit-kamar', 'id' => $key, 'id_asrama' => $_GET['id_asrama']]);
                     }else if ($action === 'reset') {
-                        return Url::to(['reset-kamar', 'id' => $key]);
+                        return Url::to(['reset-kamar', 'id' => $key, 'id_asrama' => $_GET['id_asrama']]);
                     }else if ($action === 'addMhs') {
                         return Url::toRoute(['dim-kamar/add-penghuni-kamar', 'id' => $key]);
                     }else if ($action === 'editMhs') {

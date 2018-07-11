@@ -360,11 +360,7 @@ class IzinBermalamController extends Controller
 
         if ($m->save()) {
             \Yii::$app->messenger->addSuccessFlash("Semua izin bermalam telah disetujui");
-            return $this->render('IzinByAdminIndex', [
-                'searchModel' => $searchModel,
-                'dataProvider' => $dataProvider,
-                'status_request_id' => $status_request,
-            ]);
+            return $this->redirect(['izin-by-admin-index']);
         } else {
             return $this->render('IzinByAdminIndex', [
                 'searchModel' => $searchModel,
@@ -450,11 +446,7 @@ class IzinBermalamController extends Controller
 
         if ($m->save()) {
             \Yii::$app->messenger->addSuccessFlash("Semua izin bermalam telah ditolak");
-            return $this->render('IzinByAdminIndex', [
-                'searchModel' => $searchModel,
-                'dataProvider' => $dataProvider,
-                'status_request_id' => $status_request,
-            ]);
+            return $this->redirect(['izin-by-admin-index']);
         } else {
             return $this->render('IzinByAdminIndex', [
                 'searchModel' => $searchModel,

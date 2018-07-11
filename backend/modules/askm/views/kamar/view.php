@@ -23,7 +23,7 @@ $uiHelper=\Yii::$app->uiHelper;
                 'template' => ['addMhs', 'reset', 'edit'],
                 'buttons' => [
                     'addMhs' => ['url' => Url::toRoute(['dim-kamar/add-penghuni-kamar', 'id' => $model->kamar_id, 'id_asrama' => $model->asrama_id]), 'label'=> 'Tambah Penghuni', 'icon'=>'fa fa-users'],
-                    'reset' => ['url' => Url::toRoute(['reset-kamar', 'id' => $model->kamar_id]), 'label'=> 'Reset Kamar', 'icon'=>'fa fa-refresh'],
+                    'reset' => ['url' => Url::toRoute(['reset-kamar', 'id' => $model->kamar_id, 'id_asrama' => $model->asrama_id]), 'label'=> 'Reset Kamar', 'icon'=>'fa fa-refresh'],
                     'edit' => ['url' => Url::toRoute(['edit-kamar', 'id' => $model->kamar_id, 'id_asrama' => $model->asrama_id]), 'label'=> 'Edit Kamar', 'icon'=>'fa fa-pencil'],
                 ],
                 

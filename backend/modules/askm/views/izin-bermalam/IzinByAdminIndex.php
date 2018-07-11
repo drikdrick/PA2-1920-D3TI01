@@ -118,7 +118,9 @@ $pegawai = Pegawai::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$
             [
                 'attribute'=>'dim_prodi',
                 'label' => 'Prodi',
-                'filter'=>ArrayHelper::map(Prodi::find()->where('deleted!=1')->andWhere(['is_hidden' => 0])->asArray()->all(), 'ref_kbk_id', 'singkatan_prodi'),
+                'filter'=>ArrayHelper::map(Prodi::find()->where('deleted!=1')->andWhere(['is_hidden' => 0])->asArray()->all(), 'ref_kbk_id', function($data){ 
+                    return $data->jenjang->nama.' - '. $data->singkatan_prodi;
+                }),
                 'filterInputOptions' => ['class' => 'form-control', 'id' => null, 'prompt' => 'ALL'],
                 'value' => 'dim.refKbk.singkatan_prodi',
             ],

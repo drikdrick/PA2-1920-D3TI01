@@ -26,7 +26,7 @@ $uiHelper=\Yii::$app->uiHelper;
 
         $toolbarItemStatusRequest =  
             "<a href='".Url::to(['index'])."' class='btn btn-default '><i class='fa fa-list'></i> <span class='toolbar-label'>All</span></a>
-            <a href='".Url::to(['index-luar'])."' class='btn btn-warning'><i class='fa fa-sign-out'></i> <span class='toolbar-label'>Di Luar</span></a>"
+            <a href='".Url::to(['index-luar'])."' class='btn btn-warning'><i class='fa fa-sign-out'></i> <span class='toolbar-label'>Diluar</span></a>"
             /*<a href='".Url::to(['index'])."' class='btn btn-info'><i class='fa fa-road'></i> <span class='toolbar-label'>Izin Keluar</span></a>
             <a href='".Url::to(['index'])."' class='btn btn-success '><i class='fa fa-home'></i> <span class='toolbar-label'>Izin Bermalam</span></a>
             "*/
