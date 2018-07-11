@@ -17,6 +17,10 @@ use backend\modules\baak\models\StatusPengajuan;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
+            [
+                'label' => 'Pemohon',
+                'value' => $model->pemohon->nama,
+            ],
             'nama_lomba',
             'alamat_tujuan',
         ],

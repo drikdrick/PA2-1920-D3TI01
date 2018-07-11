@@ -17,7 +17,10 @@ use yii\widgets\DetailView;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'pemohon.nama'
+            [
+                'label' => 'Pemohon',
+                'value' => $model->pemohon->nama,
+            ],
             'alasan',
         ],
     ]) ?>

@@ -192,6 +192,7 @@ class SuratPengantarProyekController extends Controller
                     ->where('nim LIKE :query')
                     ->orWhere('nama LIKE :query')
                     ->andWhere('deleted!=1')
+                    ->andWhere(['status_akhir' => 'Aktif'])
                     ->addParams([':query' => '%'.$query.'%'])
                     ->limit(10)
                     ->asArray()
@@ -431,10 +432,12 @@ class SuratPengantarProyekController extends Controller
     public function actionEditPdf($id)
     {
         $model = $this->findModel($id);
-        $nomor_surat = NomorSuratTerakhir::find()->one();
+        $model_nomor_surat = NomorSuratTerakhir::find()->one();
 
         if ($model->load(Yii::$app->request->post())) {
             if($model->nomor_surat_lengkap == null){
+                $model_nomor_surat->nomor_surat = $model->nomor_surat;
+                $model_nomor_surat->save();
                 $nomor_surat->nomor_surat = $model->nomor_surat;
                 $nomor_surat->save();
             }
@@ -478,7 +481,7 @@ class SuratPengantarProyekController extends Controller
 
             return $this->render('editPdf', [
                 'model' => $model,
-                'nomor_surat' => $nomor_surat,
+                'model_nomor_surat' => $model_nomor_surat,
             ]);
         }
     }

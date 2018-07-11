@@ -120,7 +120,7 @@ class SuratMahasiswaAktifController extends Controller
             $model->pemohon_id = $pemohon;
             $model->save();
 
-            return $this->redirect(['index', 'id' => $model->surat_mahasiswa_aktif_id]);
+            return $this->redirect(['index']);
         } else {
             return $this->render('add', [
                 'model' => $model,
@@ -175,7 +175,7 @@ class SuratMahasiswaAktifController extends Controller
             $model->pegawai_id = $pegawai;
             $model->save();
 
-            return $this->redirect('index-admin');
+            return $this->redirect(\Yii::$app->request->referrer);
         }
     }
 
@@ -231,7 +231,7 @@ class SuratMahasiswaAktifController extends Controller
             $model->status_pengajuan_id=4;
             $model->save();
 
-            return $this->redirect(['index-admin', 'id' => $model->surat_mahasiswa_aktif_id]);
+            return $this->redirect(['view-admin', 'id' => $model->surat_mahasiswa_aktif_id]);
         }
         else {
             $user_id = Yii::$app->user->identity->id;
@@ -270,7 +270,7 @@ class SuratMahasiswaAktifController extends Controller
             $model->status_pengajuan_id=3;
             $model->save();
 
-            return $this->redirect(['index-admin', 'id' => $model->surat_mahasiswa_aktif_id]);
+            return $this->redirect(['view-admin', 'id' => $model->surat_mahasiswa_aktif_id]);
         }
         else {
             $user_id = Yii::$app->user->identity->id;
@@ -314,7 +314,7 @@ class SuratMahasiswaAktifController extends Controller
     public function actionEditPdf($id)
     {
         $model = $this->findModel($id);
-        $nomor_surat = NomorSuratTerakhir::find()->one();
+        $model_nomor_surat = NomorSuratTerakhir::find()->one();
 
         if ($model->load(Yii::$app->request->post())) {
             
@@ -327,6 +327,8 @@ class SuratMahasiswaAktifController extends Controller
 
             if($model->nomor_surat_lengkap == NULL)
             {
+                $model_nomor_surat->nomor_surat = $model->nomor_surat;
+                $model_nomor_surat->save();
                 $nomor_surat->nomor_surat = $model->nomor_surat;
                 $nomor_surat->save();
             }
@@ -373,7 +375,7 @@ class SuratMahasiswaAktifController extends Controller
 
             return $this->render('editPdf', [
                 'model' => $model,
-                'nomor_surat' => $nomor_surat,
+                'model_nomor_surat' => $model_nomor_surat,
             ]);
         }
     }

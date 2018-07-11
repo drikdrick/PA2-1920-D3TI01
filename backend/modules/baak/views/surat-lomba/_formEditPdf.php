@@ -16,12 +16,9 @@ use common\widgets\Redactor;
 
 
      <?php
-        if($model->nomor_surat == NULL)
-        {
-    ?>
-      
+        if($model->nomor_surat == NULL){?>      
     <?= DetailView::widget([
-        'model' => $nomor_surat,
+        'model' => $model_nomor_surat,
         'formatter' => [
             'class' => 'yii\i18n\Formatter',
             'nullDisplay' => '-',

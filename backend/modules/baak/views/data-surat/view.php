@@ -5,8 +5,8 @@ use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
 /* @var $model backend\modules\baak\models\DataSurat */
-
-$this->params['breadcrumbs'][] = ['label' => 'Manajemen Data Surat', 'url' => ['index']];
+$this->title = 'Manajemen Data Surat';
+$this->params['breadcrumbs'][] = ['label' => 'Manajemen Data Surat'];
 ?>
 <div class="data-surat-view">
 

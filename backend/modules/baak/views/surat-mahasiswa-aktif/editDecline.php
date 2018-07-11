@@ -7,6 +7,7 @@ use yii\helpers\Html;
 
 $this->title = 'Penolakan Surat Mahasiswa Aktif';
 $this->params['breadcrumbs'][] = ['label' => 'Surat Mahasiswa Aktif', 'url' => ['index-admin']];
+$this->params['breadcrumbs'][] = ['label' => 'Detail Surat', 'url' => ['view-admin', 'id' => $model->surat_mahasiswa_aktif_id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
 <div class="surat-magang-update">

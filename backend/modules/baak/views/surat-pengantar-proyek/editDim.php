@@ -7,6 +7,8 @@ use yii\helpers\Html;
 
 $this->title = 'Tambah Mahasiswa';
 $this->params['breadcrumbs'][] = ['label' => 'Surat Pengantar Proyek', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Detail Surat', 'url' => ['view', 'id' => $model->surat_pengantar_proyek_id]];
+$this->params['breadcrumbs'][] = ['label' => 'Tambah Mahasiswa'];
 ?>
 <div class="surat-magang-update">
 

@@ -8,7 +8,8 @@ use yii\widgets\DetailView;
 
 $this->title = 'Tambah Mahasiswa';
 $this->params['breadcrumbs'][] = ['label' => 'Surat Kompetisi', 'url' => ['index']];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = ['label' => 'Detail Surat', 'url' => ['view', 'id' => $model->surat_lomba_id]];
+$this->params['breadcrumbs'][] = 'Tambah Mahasiswa';
 ?>
 <div class="surat-magang-update">
 

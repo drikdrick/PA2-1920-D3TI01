@@ -14,7 +14,7 @@ use yii\widgets\DetailView;
 <div class="surat-pengantar-ta-form">
     <?php if($model->nomor_surat == null){ ?>
       <?= DetailView::widget([
-          'model' => $nomor_surat,
+          'model' => $model_nomor_surat,
           'formatter' => [
               'class' => 'yii\i18n\Formatter',
               'nullDisplay' => '-',

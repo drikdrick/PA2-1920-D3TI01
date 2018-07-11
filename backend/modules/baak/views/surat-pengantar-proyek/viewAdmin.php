@@ -6,7 +6,9 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model backend\modules\baak\models\SuratPengantarPa */
 
+$this->title = 'Detail Surat';
 $this->params['breadcrumbs'][] = ['label' => 'Surat Pengantar Proyek Mata Kuliah', 'url' => ['index-admin']];
+$this->params['breadcrumbs'][] = ['label' => 'Detail Surat'];
 ?>
 <div class="surat-pengantar-proyek-view">
 
@@ -66,6 +68,10 @@ $this->params['breadcrumbs'][] = ['label' => 'Surat Pengantar Proyek Mata Kuliah
                 'nullDisplay' => '-',
             ],
             'attributes' => [
+                [
+                    'label' => 'Pemohon',
+                    'value' => $model->pemohon->nama,
+                ],
                 'alamat_tujuan',
                 'kuliah.nama_kul_ind',
                 'dims',
@@ -82,6 +88,10 @@ $this->params['breadcrumbs'][] = ['label' => 'Surat Pengantar Proyek Mata Kuliah
                 'nullDisplay' => '-',
             ],
             'attributes' => [
+                [
+                    'label' => 'Pemohon',
+                    'value' => $model->pemohon->nama,
+                ],
                 'alamat_tujuan',
                 'kuliah.nama_kul_ind',
                 'dims',
@@ -99,6 +109,10 @@ $this->params['breadcrumbs'][] = ['label' => 'Surat Pengantar Proyek Mata Kuliah
                 'nullDisplay' => '-',
             ],
             'attributes' => [
+                [
+                    'label' => 'Pemohon',
+                    'value' => $model->pemohon->nama,
+                ],
                 'alamat_tujuan',
                 'kuliah.nama_kul_ind',
                 'dims',
@@ -117,6 +131,10 @@ $this->params['breadcrumbs'][] = ['label' => 'Surat Pengantar Proyek Mata Kuliah
                 'nullDisplay' => '-',
             ],
             'attributes' => [
+                [
+                    'label' => 'Pemohon',
+                    'value' => $model->pemohon->nama,
+                ],
                 'alamat_tujuan',
                 'kuliah.nama_kul_ind',
                 'dims',

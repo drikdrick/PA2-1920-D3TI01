@@ -7,8 +7,9 @@ use yii\grid\GridView;
 /* @var $this yii\web\View */
 /* @var $model backend\modules\baak\models\SuratLomba */
 
-
+$this->title = 'Detail Surat';
 $this->params['breadcrumbs'][] = ['label' => 'Surat Kompetisi', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Detail Surat'];
 ?>
 <div class="surat-lomba-view">
 

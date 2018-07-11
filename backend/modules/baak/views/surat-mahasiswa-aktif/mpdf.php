@@ -139,7 +139,7 @@
             </tr>
         </table>
 
-        <p>adalah benar mahasiswa yang masih aktif pada Semester <?= Yii::$app->appConfig->get('semester_tahun_ajaran', true) ?>, Tahun Akademik <?= Yii::$app->appConfig->get('tahun_ajaran', true) ?> di Institut Teknologi Del, Sitoluama, Laguboti, Toba Samosir, Sumatera Utara.</p>
+        <p>adalah benar mahasiswa yang masih aktif pada Semester <?= Yii::$app->appConfig->get('semester_tahun_ajaran', true)==1?'Ganjil':'Genap' ?>, Tahun Akademik <?= Yii::$app->appConfig->get('tahun_ajaran', true) ?> di Institut Teknologi Del, Sitoluama, Laguboti, Toba Samosir, Sumatera Utara.</p>
 
         <p>Mahasiswa Institut Teknologi Del diwajibkan untuk tinggal di dalam asrama mahasiswa selama menjalani masa perkuliahannya.</p>
 

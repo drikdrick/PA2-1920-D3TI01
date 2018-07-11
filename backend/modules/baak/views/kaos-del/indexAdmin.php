@@ -41,12 +41,9 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
 
             ['class' => 'common\components\ToolsColumn',
-                'template' => '{view} {edit}',
+                'template' => '{edit}',
                 'header' => 'Action',
                 'urlCreator' => function ($action, $model, $key, $index){
-                    if ($action === 'view') {
-                        return Url::toRoute(['view-admin', 'id' => $key]);
-                    } 
                     if ($action === 'edit') {
                         return Url::toRoute(['edit', 'id' => $key]);
                     }
