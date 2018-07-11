@@ -68,13 +68,13 @@ class KamarController extends Controller
         if ($confirm) {
             foreach($models as $model){
                 $model->forceDelete();
-                $asrama->jumlah_mahasiswa = 0;
-                $asrama->save();
             }
+            $asrama->jumlah_mahasiswa = 0;
+            $asrama->save();
             \Yii::$app->messenger->addInfoFlash("Penghuni kamar telah dikosongkan");
-            return $this->redirect(['kamar/index', 'KamarSearch[asrama_id]' => $asrama_id]);
+            return $this->redirect(['kamar/index', 'KamarSearch[asrama_id]' => $asrama_id, 'id_asrama' => $asrama_id]);
         }
-        return $this->render('confirmDeleteAll', ['asrama_id' => $asrama_id]);
+        return $this->render('confirmDeleteAll', ['asrama_id' => $asrama_id, 'asrama' => $asrama]);
     }
     
     /*
@@ -95,20 +95,38 @@ class KamarController extends Controller
             return $this->redirect(['view', 'id' => $id]);
         }
         $k = Kamar::findOne(['kamar_id' => $id, 'deleted' => 0]);
-        return $this->render('confirmDelete', ['id' => $id, 'nomor_kamar' => $k->nomor_kamar]);
+        return $this->render('confirmDelete', ['id' => $id, 'nomor_kamar' => $k->nomor_kamar, 'kamar' => $kamar, 'asrama' => $asrama]);
     }
     
     /*
     * action-id: del-kamar
     * action-desc: Menghapus kamar
     */
-    public function actionDelKamar($id){
+    public function actionDelKamar($id, $confirm=false){
         $model = $this->findModel($id);
-        $model['deleted']=1;
-        $model->save();
+        $kamar = Kamar::find()->where(['kamar_id' => $id])->one();
+        $asrama = Asrama::find()->where(['asrama_id' => $kamar->asrama_id])->one();
+        $dim_kamar = DimKamar::find()->where(['kamar_id' => $id])->all();
+
+        // $kosong = true;
+        // foreach ($dim_kamar->dim as $d) {
+        //     $kosong = false;
+        //     break;
+        // }
+        if (!empty($dim_kamar)) {
+            \Yii::$app->messenger->addWarningFlash("Kamar masih memiliki penghuni, silahkan reset terlebih dahulu!");
+            return $this->redirect(['kamar/index', 'KamarSearch[asrama_id]' => $asrama->asrama_id, 'id_asrama' => $asrama->asrama_id]);
+        }
+
+        if ($confirm) {
+            $model['deleted']=1;
+            $model->save();
+
+            \Yii::$app->messenger->addInfoFlash("Kamar ".$model['nomor_kamar']." telah dihapus");
+            return $this->redirect(['kamar/index', 'KamarSearch[asrama_id]' => $asrama->asrama_id]);
+        }
         
-         \Yii::$app->messenger->addInfoFlash("Kamar ".$model['nomor_kamar']."Asrama".$model['asrama_id']." telah dihapus");
-        return $this->redirect(Yii::$app->request->referrer);
+        return $this->render('confirmDeleteKamar', ['id' => $id, 'kamar' => $kamar, 'asrama' => $asrama]);
     }
 
     /**

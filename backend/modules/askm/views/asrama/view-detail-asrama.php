@@ -26,8 +26,8 @@ $uiHelper=\Yii::$app->uiHelper;
                 'buttons' => [
                     'edit' => ['url' => Url::toRoute(['edit', 'id' => $model->asrama_id]), 'label'=> 'Edit Asrama', 'icon'=>'fa fa-pencil'],
                     'keasramaan' => ['url' => Url::toRoute(['keasramaan/add-pengurus', 'id_asrama' => $model->asrama_id]), 'label'=> 'Tambah Pengurus', 'icon'=>'fa fa-users'],
-                    'kamar' => ['url' => Url::toRoute(['kamar/index', 'KamarSearch[asrama_id]' => $model->asrama_id]), 'label'=> 'Daftar Kamar', 'icon'=>'fa fa-list'],
-                    'del' => ['url' => Url::toRoute(['del', 'asrama_id' => $model->asrama_id]), 'label'=> 'Hapus Asrama', 'icon'=>'fa fa-times'],
+                    'kamar' => ['url' => Url::toRoute(['kamar/index', 'KamarSearch[asrama_id]' => $model->asrama_id, 'id_asrama' => $model->asrama_id]), 'label'=> 'Daftar Kamar', 'icon'=>'fa fa-list'],
+                    'del' => ['url' => Url::toRoute(['del', 'asrama_id' => $model->asrama_id]), 'label'=> 'Hapus Asrama', 'icon'=>'fa fa-trash'],
                     // 'import' => ['url' => Url::toRoute(['dim-kamar/import-excel', 'asrama_id' => $model->asrama_id]), 'label'=> 'Import Data Penghuni', 'icon'=>'fa fa-download'],
                     'export' => ['url' => Url::toRoute(['export-excel', 'asrama_id' => $model->asrama_id]), 'label'=> 'Export Data Penghuni', 'icon'=>'fa fa-upload'],
                 ],

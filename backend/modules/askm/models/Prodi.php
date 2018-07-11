@@ -7,6 +7,7 @@ use Yii;
 use common\behaviors\TimestampBehavior;
 use common\behaviors\BlameableBehavior;
 use common\behaviors\DeleteBehavior;
+use backend\modules\prkl\models\Jenjang;
 
 /**
  * This is the model class for table "inst_prodi".
@@ -125,6 +126,14 @@ class Prodi extends \yii\db\ActiveRecord
             'deleted_by' => 'Deleted By',
             'created_at' => 'Created At',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getJenjang()
+    {
+        return $this->hasOne(Jenjang::className(), ['jenjang_id' => 'jenjang_id']);
     }
     
 }

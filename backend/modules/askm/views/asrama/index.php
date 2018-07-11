@@ -27,9 +27,9 @@ $uiHelper=\Yii::$app->uiHelper;
                 <li>
                     <a href="<?= Url::to(['asrama/add']) ?>"><i class="fa fa-plus"></i>Tambah Asrama</a>
                 </li>
-                <!-- <li>
-                    <a href="<?= Url::to(['asrama/template-excel']) ?>"><i class="fa fa-download"></i>Template Data Penghuni</a>
-                </li> -->
+                <li>
+                    <a href="<?= Url::to(['asrama/import-excel']) ?>"><i class="fa fa-upload"></i>Import Excel</a>
+                </li>
             </ul>
         </div>
     </div>

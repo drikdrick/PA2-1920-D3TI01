@@ -255,7 +255,7 @@ class IzinKeluarController extends Controller
 
         if ($model->status_request_dosen_wali = 1) {
             $model->status_request_dosen_wali = 2;
-            $model->dosen_id = $id_kemahasiswaan;
+            $model->dosen_wali_id = $id_kemahasiswaan;
             $model->save();
 
             \Yii::$app->messenger->addSuccessFlash("Izin keluar telah disetujui");
@@ -301,7 +301,7 @@ class IzinKeluarController extends Controller
 
         if ($model->status_request_dosen_wali = 1) {
             $model->status_request_dosen_wali = 2;
-            $model->dosen_id = $id_dosen;
+            $model->dosen_wali_id = $id_dosen;
             $model->save();
 
             \Yii::$app->messenger->addSuccessFlash("Izin keluar telah disetujui");
@@ -373,7 +373,7 @@ class IzinKeluarController extends Controller
             $model->status_request_dosen_wali = 3;
             $model->status_request_keasramaan = 3;
             $model->status_request_baak = 3;
-            $model->dosen_id = $id_dosen;
+            $model->dosen_wali_id = $id_dosen;
             $model->save();
 
             \Yii::$app->messenger->addSuccessFlash("Izin keluar telah ditolak");
@@ -421,7 +421,7 @@ class IzinKeluarController extends Controller
             $model->status_request_dosen_wali = 3;
             $model->status_request_baak = 3;
             $model->status_request_keasramaan = 3;
-            $model->dosen_id = $id_kemahasiswaan;
+            $model->dosen_wali_id = $id_kemahasiswaan;
             $model->save();
 
             \Yii::$app->messenger->addSuccessFlash("Izin keluar telah ditolak");
