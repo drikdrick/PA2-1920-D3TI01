@@ -6,7 +6,9 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model backend\modules\baak\models\SuratMagang */
 
+$this->title = 'Detail Surat';
 $this->params['breadcrumbs'][] = ['label' => 'Surat Magang', 'url' => ['index-admin']];
+$this->params['breadcrumbs'][] = ['label' => 'Detail Surat'];
 ?>
 <div class="surat-magang-view">
 
@@ -67,6 +69,10 @@ $this->params['breadcrumbs'][] = ['label' => 'Surat Magang', 'url' => ['index-ad
                     'nullDisplay' => '-',
                 ],
                 'attributes' => [
+                    [
+                        'label' => 'Pemohon',
+                        'value' => $model->pemohon->nama,
+                    ],
                     'nama_perusahaan',
                     'alamat_perusahaan',
                     'waktu_awal_magang',
@@ -85,6 +91,10 @@ $this->params['breadcrumbs'][] = ['label' => 'Surat Magang', 'url' => ['index-ad
                     'nullDisplay' => '-',
                 ],
                 'attributes' => [
+                    [
+                        'label' => 'Pemohon',
+                        'value' => $model->pemohon->nama,
+                    ],
                     'nama_perusahaan',
                     'alamat_perusahaan',
                     'waktu_awal_magang',
@@ -104,6 +114,10 @@ $this->params['breadcrumbs'][] = ['label' => 'Surat Magang', 'url' => ['index-ad
                     'nullDisplay' => '-',
                 ],
                 'attributes' => [
+                    [
+                        'label' => 'Pemohon',
+                        'value' => $model->pemohon->nama,
+                    ],
                     'nama_perusahaan',
                     'alamat_perusahaan',
                     'waktu_awal_magang',
@@ -124,6 +138,10 @@ $this->params['breadcrumbs'][] = ['label' => 'Surat Magang', 'url' => ['index-ad
                     'nullDisplay' => '-',
                 ],
                 'attributes' => [
+                    [
+                        'label' => 'Pemohon',
+                        'value' => $model->pemohon->nama,
+                    ],
                     'nama_perusahaan',
                     'alamat_perusahaan',
                     'waktu_awal_magang',

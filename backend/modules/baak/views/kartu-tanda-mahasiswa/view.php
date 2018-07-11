@@ -6,7 +6,7 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model backend\modules\baak\models\Ktm */
 
-$this->title = $model->kartu_tanda_mahasiswa_id;
+$this->title = 'Detail Pengajuan';
 $this->params['breadcrumbs'][] = ['label' => 'Kartu Tanda Mahasiswa', 'url' => ['index']];
 ?>
 <div class="kartu-tanda-mahasiswa-view">

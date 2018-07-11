@@ -6,7 +6,9 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model backend\modules\baak\models\SuratPengantarPa */
 
+$this->title = 'Detail Surat';
 $this->params['breadcrumbs'][] = ['label' => 'Surat Pengantar Proyek', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Detail Surat'];
 ?>
 <div class="surat-pengantar-proyek-view">
     <br>

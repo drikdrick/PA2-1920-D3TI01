@@ -22,8 +22,11 @@ $datetime = new DateTime();
                 'nullDisplay' => '-',
             ],
             'attributes' => [
+            [
+                'label' => 'Pemohon',
+                'value' => $model->pemohon->nama,
+            ],
                 'alasan',
-                'pemohon.nama',
             ],
         ]) ?>
 

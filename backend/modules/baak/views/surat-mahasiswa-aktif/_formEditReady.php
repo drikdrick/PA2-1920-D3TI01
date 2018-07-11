@@ -18,6 +18,10 @@ $datetime = new DateTime();
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
+            [
+                'label' => 'Pemohon',
+                'value' => $model->pemohon->nama,
+            ],
             'tujuan',
         ],
     ]) ?>

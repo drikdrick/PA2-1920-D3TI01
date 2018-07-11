@@ -25,10 +25,7 @@ use yii\widgets\DetailView;
                 'nullDisplay' => '-',
             ],
             'attributes' => [
-                'alamat_tujuan',
-                'kuliah.nama_kul_ind',
                 'dims',
-                'statusPengajuan.name',
             ],
         ]) ?>
 

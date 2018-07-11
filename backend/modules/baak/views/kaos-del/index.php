@@ -3,7 +3,6 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\GridView;
-use common\components\ToolsColumn;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\modules\baak\models\KaosDelSearch */
@@ -34,16 +33,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         return '-';
                     }
                     return $model->stok;
-                }
-            ],
-
-            ['class' => 'common\components\ToolsColumn',
-                'template' => '{view}',
-                'header' => 'Action',
-                'urlCreator' => function ($action, $model, $key, $index){
-                    if ($action === 'view') {
-                        return Url::toRoute(['view', 'id' => $key]);
-                    }
                 }
             ],
         ],

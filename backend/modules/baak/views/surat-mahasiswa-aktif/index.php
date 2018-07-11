@@ -56,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute'=>'status_pengajuan_id',
                 'label' => 'Status',
                 'filter'=>ArrayHelper::map(StatusPengajuan::find()->asArray()->all(), 'status_pengajuan_id', 'name'),
-                'filterInputOptions' => ['class' => 'form-control', 'id' => null, 'prompt' => 'ALL'],
+                'filterInputOptions' => ['class' => 'form-control', 'id' => null, 'prompt' => 'Semua Status'],
                 'value' => 'statusPengajuan.name',
             ],
 

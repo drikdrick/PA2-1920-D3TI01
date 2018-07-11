@@ -142,6 +142,11 @@ class SuratMagangController extends Controller
             $user_dim = Dim::find()->where(['user_id'=> $user_id])->one();
             $pemohon = $user_dim->dim_id;
             $model->pemohon_id = $pemohon;
+            $model->save();
+
+            $dim->surat_magang_id = $model->surat_magang_id;
+            $dim->dim_id = $pemohon;
+            $dim->save();
 
             return $this->redirect(['view', 'id' => $model->surat_magang_id]);
         } else {
@@ -164,7 +169,7 @@ class SuratMagangController extends Controller
                     ->where('nim LIKE :query')
                     ->orWhere('nama LIKE :query')
                     ->andWhere('deleted!=1')
-                    ->andWhere(['status_akhir'=>'Aktif'])
+                    ->andWhere(['status_akhir' => 'Aktif'])
                     ->addParams([':query' => '%'.$query.'%'])
                     ->limit(10)
                     ->asArray()
@@ -408,10 +413,12 @@ class SuratMagangController extends Controller
     public function actionEditPdf($id)
     {
         $model = $this->findModel($id);
-        $nomor_surat = NomorSuratTerakhir::find()->one();
+        $model_nomor_surat = NomorSuratTerakhir::find()->one();
 
         if ($model->load(Yii::$app->request->post())) {
             if($model->nomor_surat_lengkap == null){
+                $model_nomor_surat->nomor_surat = $model->nomor_surat;
+                $model_nomor_surat->save();                
                 $nomor_surat->nomor_surat = $model->nomor_surat;
                 $nomor_surat->save();
             }
@@ -454,7 +461,7 @@ class SuratMagangController extends Controller
 
             return $this->render('editPdf', [
                 'model' => $model,
-                'nomor_surat' => $nomor_surat,
+                'model_nomor_surat' => $model_nomor_surat,
             ]);
         }
     }

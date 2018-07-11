@@ -6,7 +6,10 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model backend\modules\baak\models\SuratMahasiswaAktif */
 
+$this->title = 'Detail Surat';
 $this->params['breadcrumbs'][] = ['label' => 'Surat Mahasiswa Aktif', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Detail Surat'];
+
 ?>
 <div class="surat-mahasiswa-aktif-view">
 

@@ -45,10 +45,9 @@ class DataSuratController extends Controller
         $searchModel = new DataSuratSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
+        return $this->render('view', [
+            'model' => $this->findModel(1),
+        ]); 
     }
 
     /**
@@ -67,6 +66,11 @@ class DataSuratController extends Controller
 
     /**
      * Creates a new DataSurat model.
+<<<<<<< HEAD
+     * action-id: add
+     * action-desc: Tambah data
+=======
+>>>>>>> e99397fc9673110771750070eeb23e474fcda75f
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */

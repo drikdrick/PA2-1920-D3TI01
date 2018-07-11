@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $model backend\modules\baak\models\DataSurat */
 
 $this->title = 'Update Data Surat';
-$this->params['breadcrumbs'][] = ['label' => 'Manajemen Data Surat', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Manajemen Data Surat', 'url' => ['view', 'id' => $model->data_surat_id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
 <div class="data-surat-update">

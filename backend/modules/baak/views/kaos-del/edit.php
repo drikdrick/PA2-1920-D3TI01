@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model backend\modules\baak\models\KaosDel */
 
-$this->title = 'Update Stok Kaos Del: ';
+$this->title = 'Update Stok Kaos Del';
 $this->params['breadcrumbs'][] = ['label' => 'Kaos Del', 'url' => ['index-admin']];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
