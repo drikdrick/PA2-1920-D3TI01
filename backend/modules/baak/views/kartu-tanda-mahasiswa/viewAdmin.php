@@ -6,6 +6,7 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model backend\modules\baak\models\Ktm */
 
+$this->title = 'Detail Pengajuan';
 $this->params['breadcrumbs'][] = ['label' => 'Kartu Tanda Mahasiswa', 'url' => ['index-admin']];
 ?>
 <div class="ktm-view">
@@ -55,8 +56,11 @@ $this->params['breadcrumbs'][] = ['label' => 'Kartu Tanda Mahasiswa', 'url' => [
                 'nullDisplay' => '-',
             ],
             'attributes' => [
+                [
+                    'label' => 'Pemohon',
+                    'value' => $model->pemohon->nama,
+                ],
                 'alasan',
-                'pemohon.nama',
                 'statusPengajuan.name',
             ],
         ]) ?>
@@ -70,8 +74,11 @@ $this->params['breadcrumbs'][] = ['label' => 'Kartu Tanda Mahasiswa', 'url' => [
                 'nullDisplay' => '-',
             ],
             'attributes' => [
+                [
+                    'label' => 'Pemohon',
+                    'value' => $model->pemohon->nama,
+                ],
                 'alasan',
-                'pemohon.nama',
                 'statusPengajuan.name',
                 'pegawai.nama',
             ],
@@ -86,8 +93,11 @@ $this->params['breadcrumbs'][] = ['label' => 'Kartu Tanda Mahasiswa', 'url' => [
                 'nullDisplay' => '-',
             ],
             'attributes' => [
+                [
+                    'label' => 'Pemohon',
+                    'value' => $model->pemohon->nama,
+                ],
                 'alasan',
-                'pemohon.nama',
                 'statusPengajuan.name',
                 'pegawai.nama',
                 'alasan_penolakan',
@@ -103,8 +113,11 @@ $this->params['breadcrumbs'][] = ['label' => 'Kartu Tanda Mahasiswa', 'url' => [
                 'nullDisplay' => '-',
             ],
             'attributes' => [
+                [
+                    'label' => 'Pemohon',
+                    'value' => $model->pemohon->nama,
+                ],
                 'alasan',
-                'pemohon.nama',
                 'statusPengajuan.name',
                 'pegawai.nama',
                 'waktu_pengambilan',

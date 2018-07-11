@@ -8,6 +8,7 @@ use yii\helpers\Html;
 
 $this->title = 'Request Surat Magang';
 $this->params['breadcrumbs'][] = ['label' => 'Surat Magang', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Detail Surat', 'url' => ['view', 'id' => $model->surat_magang_id]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="surat-magang-create">

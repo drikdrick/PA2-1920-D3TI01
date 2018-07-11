@@ -103,7 +103,7 @@
             }?>
         </table>
         <p style="text-align: justify;">
-            Adalah benar mahasiswa yang masih aktif pada Semester <?= Yii::$app->appConfig->get('semester_tahun_ajaran', true) ?>, Tahun Akademik <?= Yii::$app->appConfig->get('tahun_ajaran', true) ?> di Institut Teknologi Del, Sitoluama, Laguboti, Toba Samosir, Sumatera Utara yang akan mewakili Institut Teknologi Del dalam kompetisi <?=$model->nama_lomba?> tersebut.
+            Adalah benar mahasiswa yang masih aktif pada Semester <?= Yii::$app->appConfig->get('semester_tahun_ajaran', true)==1?'Ganjil':'Genap' ?>, Tahun Akademik <?= Yii::$app->appConfig->get('tahun_ajaran', true) ?> di Institut Teknologi Del, Sitoluama, Laguboti, Toba Samosir, Sumatera Utara yang akan mewakili Institut Teknologi Del dalam kompetisi <?=$model->nama_lomba?> tersebut.
         </p>
         <p style="text-align: justify;">
             Demikian Surat pengantar  ini dibuat untuk dipergunakan sebagaimana semestinya.

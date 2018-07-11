@@ -6,7 +6,9 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model backend\modules\baak\models\SuratMahasiswaAktif */
 
+$this->title = 'Detail Surat';
 $this->params['breadcrumbs'][] = ['label' => 'Surat Mahasiswa Aktif', 'url' => ['index-admin']];
+$this->params['breadcrumbs'][] = ['label' => 'Detail Surat'];
 ?>
 <div class="surat-mahasiswa-aktif-view">
 
@@ -70,8 +72,11 @@ $this->params['breadcrumbs'][] = ['label' => 'Surat Mahasiswa Aktif', 'url' => [
             'nullDisplay' => '-',
         ],
         'attributes' => [
+            [
+                'label' => 'Pemohon',
+                'value' => $model->pemohon->nama,
+            ],
             'tujuan',
-            'pemohon.nama',
             'statusPengajuan.name',
         ],
     ]) ?>
@@ -87,8 +92,11 @@ $this->params['breadcrumbs'][] = ['label' => 'Surat Mahasiswa Aktif', 'url' => [
             'nullDisplay' => '-',
         ],
         'attributes' => [
+            [
+                'label' => 'Pemohon',
+                'value' => $model->pemohon->nama,
+            ],
             'tujuan',
-            'pemohon.nama',
             'statusPengajuan.name',
             'pegawai.nama',
         ],
@@ -105,8 +113,11 @@ $this->params['breadcrumbs'][] = ['label' => 'Surat Mahasiswa Aktif', 'url' => [
             'nullDisplay' => '-',
         ],
         'attributes' => [
+            [
+                'label' => 'Pemohon',
+                'value' => $model->pemohon->nama,
+            ],
             'tujuan',
-            'pemohon.nama',
             'statusPengajuan.name',
             'pegawai.nama',
             'alasan_penolakan',
@@ -126,8 +137,11 @@ $this->params['breadcrumbs'][] = ['label' => 'Surat Mahasiswa Aktif', 'url' => [
             'nullDisplay' => '-',
         ],
         'attributes' => [
+            [
+                'label' => 'Pemohon',
+                'value' => $model->pemohon->nama,
+            ],
             'tujuan',
-            'pemohon.nama',
             'statusPengajuan.name',
             'pegawai.nama',
             'waktu_pengambilan',

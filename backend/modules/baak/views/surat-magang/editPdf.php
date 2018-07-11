@@ -7,6 +7,7 @@ use yii\helpers\Html;
 
 $this->title = 'Konfirmasi Data Surat';
 $this->params['breadcrumbs'][] = ['label' => 'Surat Magang', 'url' => ['index-admin']];
+$this->params['breadcrumbs'][] = ['label' => 'Detail Surat', 'url' => ['view-admin', 'id' => $model->surat_magang_id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
 <div class="surat-magang-update">
@@ -15,7 +16,7 @@ $this->params['breadcrumbs'][] = 'Update';
 
     <?= $this->render('_formEditPdf', [
         'model' => $model,
-        'nomor_surat' => $nomor_surat,
+        'model_nomor_surat' => $model_nomor_surat,
     ]) ?>
 
 </div>

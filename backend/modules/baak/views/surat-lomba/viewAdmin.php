@@ -6,7 +6,9 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model backend\modules\baak\models\SuratLomba */
 
+$this->title = 'Detail Surat';
 $this->params['breadcrumbs'][] = ['label' => 'Surat Kompetisi', 'url' => ['index-admin']];
+$this->params['breadcrumbs'][] = ['label' => 'Detail Surat'];
 ?>
 <div class="surat-lomba-view">
 
@@ -68,7 +70,11 @@ $this->params['breadcrumbs'][] = ['label' => 'Surat Kompetisi', 'url' => ['index
                 'class' => 'yii\i18n\Formatter',
                 'nullDisplay' => '-',
             ],
-            'attributes' => [            
+            'attributes' => [   
+                [
+                    'label' => 'Pemohon',
+                    'value' => $model->pemohon->nama,
+                ],         
                 'nama_lomba',
                 'alamat_tujuan',
                 'dims',
@@ -87,7 +93,11 @@ $this->params['breadcrumbs'][] = ['label' => 'Surat Kompetisi', 'url' => ['index
                 'class' => 'yii\i18n\Formatter',
                 'nullDisplay' => '-',
             ],
-            'attributes' => [            
+            'attributes' => [  
+                [
+                    'label' => 'Pemohon',
+                    'value' => $model->pemohon->nama,
+                ],          
                 'nama_lomba',
                 'alamat_tujuan',
                 'dims',
@@ -108,7 +118,11 @@ $this->params['breadcrumbs'][] = ['label' => 'Surat Kompetisi', 'url' => ['index
                 'class' => 'yii\i18n\Formatter',
                 'nullDisplay' => '-',
             ],
-            'attributes' => [            
+            'attributes' => [ 
+                [
+                    'label' => 'Pemohon',
+                    'value' => $model->pemohon->nama,
+                ],           
                 'nama_lomba',
                 'alamat_tujuan',
                 'dims',

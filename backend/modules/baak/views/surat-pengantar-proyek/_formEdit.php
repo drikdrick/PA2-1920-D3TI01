@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use common\widgets\Typeahead;
 use yii\bootstrap\ActiveForm;
+use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
 /* @var $model backend\modules\baak\models\SuratPengantarPa */
@@ -11,6 +12,13 @@ use yii\bootstrap\ActiveForm;
 ?>
 
 <div class="surat-pengantar-proyek-form">
+
+  <?= DetailView::widget([
+        'model' => $model,
+        'attributes' => [
+            'kuliah.nama_kul_ind',
+        ],
+    ]) ?>
 
     <?php $form = ActiveForm::begin([
       'layout' => 'horizontal',
