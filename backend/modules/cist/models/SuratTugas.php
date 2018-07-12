@@ -114,7 +114,7 @@ class SuratTugas extends \yii\db\ActiveRecord
             'review_surat' => 'Review Surat',
             'desc_surat_tugas' => 'Keterangan',
             'pengalihan_tugas' => 'Pengalihan Tugas',
-            'atasan' => 'Tambah Atasan',
+            'atasan' => 'Atasan',
             'files' => 'Tambah Lampiran',
             'transportasi' => 'Transportasi',
             'catatan' => 'Catatan',
@@ -260,22 +260,22 @@ class SuratTugas extends \yii\db\ActiveRecord
     }
 
     public function getTotRequest(){
-        $requested = SuratTugas::find()->where(['name' => 1])->all();
+        $requested = SuratTugas::find()->where(['status_id' => 1])->all();
         return count($requested);
     }
 
     public function getTotDiterima(){
-        $accepted = SuratTugas::find()->where(['name' => 6])->all();
+        $accepted = SuratTugas::find()->where(['status_id' => 6])->all();
         return count($accepted);
     }
 
     public function getTotDitolak(){
-        $rejected = SuratTugas::find()->where(['name' => 4])->all();
+        $rejected = SuratTugas::find()->where(['status_id' => 4])->all();
         return count($rejected);
     }
 
     public function getTotDiterbitkan(){
-        $published = SuratTugas::find()->where(['name' => 3])->all();
+        $published = SuratTugas::find()->where(['status_id' => 3])->all();
         return count($published);
     }
 
