@@ -58,7 +58,7 @@ class SuratTugasController extends Controller
         $searchModel = new SuratTugasSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('dashboard', [
+        return $this->render('Dashboard', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider
         ]);
@@ -257,7 +257,7 @@ class SuratTugasController extends Controller
             //Set Default Information
             $model->perequest = $modelPegawai->pegawai_id;
             $model->jenis_surat_id = 1;
-            $model->name = 1;
+            $model->status_id = 1;
 
             //Get the date difference
             // $today = time();
@@ -403,7 +403,7 @@ class SuratTugasController extends Controller
         if ($model->load(Yii::$app->request->post())) {
             //Set Default Information
             $model->perequest = $modelPegawai->pegawai_id;
-            $model->name = 1;
+            $model->status_id = 1;
             $model->jenis_surat_id = 2;
 
             //Get the date difference
@@ -823,7 +823,7 @@ class SuratTugasController extends Controller
     public function actionReview($id){
         $model = $this->findModel($id);
         if($model->load(Yii::$app->request->post())){
-            $model->name = 2;
+            $model->status_id = 2;
             if($model->validate()){
                 $model->save();
                 return $this->redirect(['view-surat-bawahan', 'id' => $model->surat_tugas_id]);
@@ -843,7 +843,7 @@ class SuratTugasController extends Controller
         $modelLaporan = new LaporanSuratTugas();
 
         if($model->load(Yii::$app->request->post())){
-            $model->name = 3;
+            $model->status_id = 3;
             $modelLaporan->surat_tugas_id = $id;
             $modelLaporan->status_id = 8;
             $modelLaporan->batas_submit = date('Y-m-d H:i:s', strtotime('+2 day', strtotime($model->tanggal_kembali)));
@@ -869,8 +869,8 @@ class SuratTugasController extends Controller
      */
     public function actionTerima($id){
         $model = $this->findModel($id);
-        if($model->name == 1 || $model->name == 2 || $model->name == 4 || $model->name == 6){
-            $model->name = 6;
+        if($model->status_id == 1 || $model->status_id == 2 || $model->status_id == 4 || $model->status_id == 6){
+            $model->status_id = 6;
             if($model->validate()){
                 $model->save();
                 return $this->redirect(['view-surat-bawahan', 'id' => $model->surat_tugas_id]);
@@ -890,8 +890,8 @@ class SuratTugasController extends Controller
      */
     public function actionTolak($id){
         $model = $this->findModel($id);
-        if($model->name == 1 || $model->name == 2 || $model->name == 4 || $model->name == 6){
-            $model->name = 4;
+        if($model->status_id == 1 || $model->status_id == 2 || $model->status_id == 4 || $model->status_id == 6){
+            $model->status_id = 4;
             if($model->validate()){
                 $model->save();
                 return $this->redirect(['view-surat-bawahan', 'id' => $model->surat_tugas_id]);
@@ -1182,12 +1182,12 @@ class SuratTugasController extends Controller
      */
     public function actionAddPenugasanLuarKampus(){
         $model = new SuratTugas();
-        $modelPegawai = Pegawai::find()->where(['user_id' => Yii::$app->user->identity->id])->one();
+        $modelPegawai = Pegawai::find()->where(['user_id' => \Yii::$app->user->identity->id])->one();
 
         if($model->load(Yii::$app->request->post())){
             $model->perequest = $modelPegawai->pegawai_id;
             $model->jenis_surat_id = 3;
-            $model->name = 6;
+            $model->status_id = 6;
 
             if($model->validate()){
                 $model->save();
