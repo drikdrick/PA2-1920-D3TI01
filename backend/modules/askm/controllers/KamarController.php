@@ -62,7 +62,7 @@ class KamarController extends Controller
     * action-desc: Me-reset semua penghuni kamar
     */
     public function actionResetAllKamar($asrama_id, $confirm=false){
-        $models = DimKamar::find()->from('askm_kamar,askm_dim_kamar')->where(['askm_kamar.asrama_id'=>$asrama_id])->all();
+        $models = DimKamar::find()->from('askm_kamar.askm_dim_kamar')->where(['askm_kamar.asrama_id'=>$asrama_id])->all();
         $asrama = Asrama::find()->where(['asrama_id' => $asrama_id])->one();
 
         if ($confirm) {
@@ -76,7 +76,7 @@ class KamarController extends Controller
         }
         return $this->render('confirmDeleteAll', ['asrama_id' => $asrama_id, 'asrama' => $asrama]);
     }
-    
+
     /*
     * action-id: reset-kamar
     * action-desc: Me-reset satu penghuni kamar
@@ -97,7 +97,7 @@ class KamarController extends Controller
         $k = Kamar::findOne(['kamar_id' => $id, 'deleted' => 0]);
         return $this->render('confirmDelete', ['id' => $id, 'nomor_kamar' => $k->nomor_kamar, 'kamar' => $kamar, 'asrama' => $asrama]);
     }
-    
+
     /*
     * action-id: del-kamar
     * action-desc: Menghapus kamar
@@ -123,9 +123,9 @@ class KamarController extends Controller
             $model->save();
 
             \Yii::$app->messenger->addInfoFlash("Kamar ".$model['nomor_kamar']." telah dihapus");
-            return $this->redirect(['kamar/index', 'KamarSearch[asrama_id]' => $asrama->asrama_id]);
+            return $this->redirect(['kamar/index', 'KamarSearch[asrama_id]' => $asrama->asrama_id, 'id_asrama' => $asrama->asrama_id]);
         }
-        
+
         return $this->render('confirmDeleteKamar', ['id' => $id, 'kamar' => $kamar, 'asrama' => $asrama]);
     }
 
@@ -160,15 +160,17 @@ class KamarController extends Controller
     * action-id: add-kamar
     * action-desc: Menambahkan kamar
     */
-    public function actionAddKamar()
+    public function actionAddKamar($id_asrama)
     {
         $model = new Kamar();
+        $asrama = Asrama::find()->where(['asrama_id' => $id_asrama])->one();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->kamar_id]);
         } else {
             return $this->render('addKamar', [
                 'model' => $model,
+                'asrama' => $asrama
             ]);
         }
     }
@@ -208,7 +210,7 @@ class KamarController extends Controller
     */
     public function actionDel($id)
     {
-        $this->findModel($id)->softDelete();
+        $this->findModel($id)->forceDelete();
 
         return $this->redirect(['index']);
     }

@@ -3,11 +3,13 @@
 namespace backend\modules\askm\controllers;
 
 use Yii;
+use backend\modules\askm\models\Pegawai;
 use backend\modules\askm\models\IzinKeluar;
 use backend\modules\askm\models\search\IzinKeluarSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\bootstrap\ActiveForm;
 
 /**
  * IzinKeluarController implements the CRUD actions for IzinKeluar model.
@@ -41,7 +43,6 @@ class IzinKeluarController extends Controller
     {
         $searchModel = new IzinKeluarSearch();
         $dataProvider = $searchModel->searchByMahasiswa(Yii::$app->request->queryParams);
-        $id_mhs = 5;
 
         return $this->render('IkaByMahasiswaIndex', [
             'searchModel' => $searchModel,
@@ -56,7 +57,13 @@ class IzinKeluarController extends Controller
     public function actionIkaByBaakIndex()
     {
         $searchModel = new IzinKeluarSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->searchIkIndex(Yii::$app->request->queryParams);
+        $dataProvider->sort->defaultOrder = [
+            'status_request_baak' => SORT_ASC,
+            'status_request_keasramaan' => SORT_DESC,
+            'status_request_dosen_wali' => SORT_DESC,
+            'created_at' => SORT_ASC,
+        ];
 
         return $this->render('IkaByBaakIndex', [
             'searchModel' => $searchModel,
@@ -86,7 +93,13 @@ class IzinKeluarController extends Controller
     public function actionIkaByKeasramaanIndex()
     {
         $searchModel = new IzinKeluarSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->searchIkIndex(Yii::$app->request->queryParams);
+        $dataProvider->sort->defaultOrder = [
+            'status_request_keasramaan' => SORT_ASC,
+            'status_request_baak' => SORT_ASC,
+            'status_request_dosen_wali' => SORT_DESC,
+            'created_at' => SORT_ASC,
+        ];
 
         return $this->render('IkaByKeasramaanIndex', [
             'searchModel' => $searchModel,
@@ -101,7 +114,13 @@ class IzinKeluarController extends Controller
     public function actionIkaByKemahasiswaanIndex()
     {
         $searchModel = new IzinKeluarSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->searchIkIndex(Yii::$app->request->queryParams);
+        $dataProvider->sort->defaultOrder = [
+            'status_request_dosen_wali' => SORT_ASC,
+            'status_request_keasramaan' => SORT_ASC,
+            'status_request_baak' => SORT_ASC,
+            'created_at' => SORT_ASC,
+        ];
 
         return $this->render('IkaByKemahasiswaanIndex', [
             'searchModel' => $searchModel,
@@ -172,8 +191,13 @@ class IzinKeluarController extends Controller
     {
         $model = new IzinKeluar();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['ika-by-mahasiswa-view', 'id' => $model->izin_keluar_id]);
+        if ($model->load(Yii::$app->request->post())) {
+            if(Yii::$app->request->isAjax){
+                Yii::$app->response->format = \yii\web\Response::FORMAT_JSON; 
+                return ActiveForm::validate($model);
+            }
+            if($model->save())
+                return $this->redirect(['ika-by-mahasiswa-view', 'id' => $model->izin_keluar_id]);
         } else {
             return $this->render('IkaByMahasiswaAdd', [
                 'model' => $model,
@@ -189,8 +213,13 @@ class IzinKeluarController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['ika-by-mahasiswa-view', 'id' => $model->izin_keluar_id]);
+        if ($model->load(Yii::$app->request->post())) {
+            if(Yii::$app->request->isAjax){
+                Yii::$app->response->format = \yii\web\Response::FORMAT_JSON; 
+                return ActiveForm::validate($model);
+            }
+            if($model->save())
+                return $this->redirect(['ika-by-mahasiswa-view', 'id' => $model->izin_keluar_id]);
         } else {
             return $this->render('IkaByMahasiswaEdit', [
                 'model' => $model,
@@ -223,26 +252,35 @@ class IzinKeluarController extends Controller
     }
 
     /*
-    * action-id: approve-by-kemahasiswaan-keasramaan
+    * action-id: approve-by-maha-asra
     * action-desc: Menyetujui request izin keluar by keasramaan oleh kemahasiswaan
     */
-    public function actionApproveByKemahasiswaanKeasramaan($id, $id_kemahasiswaan)
+    public function actionApproveByMahaAsra($id, $id_kemahasiswaan)
     {
         $model = $this->findModel($id);
+        $pegawai = Pegawai::find()->where('deleted!=1')->all();
 
-        if ($model->status_request_keasramaan = 1) {
-            $model->status_request_keasramaan = 2;
-            $model->keasramaan_id = $id_kemahasiswaan;
-            $model->save();
+        foreach ($pegawai as $p) {
+            if ($p->pegawai_id == $id_kemahasiswaan) {
+                if ($model->status_request_keasramaan = 1) {
+                    $model->status_request_keasramaan = 2;
+                    $model->keasramaan_id = $id_kemahasiswaan;
+                    $model->save();
 
-            \Yii::$app->messenger->addSuccessFlash("Izin keluar telah disetujui");
-            return $this->redirect(['ika-by-kemahasiswaan-index']);
-        } else {
-            \Yii::$app->messenger->addErrorFlash("Request tidak bisa diubah bila status sudah Rejected atau Canceled");
-            return $this->render('IzinByKemahasiswaanIndex', [
-                'model'=>$model
-            ]);
+                    \Yii::$app->messenger->addSuccessFlash("Izin keluar telah disetujui");
+                    return $this->redirect(['ika-by-kemahasiswaan-index']);
+                } else {
+                    \Yii::$app->messenger->addErrorFlash("Request tidak bisa diubah bila status sudah Rejected atau Canceled");
+                    return $this->render('IzinByKemahasiswaanIndex', [
+                        'model'=>$model
+                    ]);
+                }
+            }
         }
+
+        \Yii::$app->messenger->addWarningFlash("Anda belum terdaftar di data kepegawaian IT Del, hubungi HRD untuk memasukkan data Pegawai anda");
+        return $this->redirect(['izin-by-admin-index']);
+
     }
 
     /*
@@ -252,20 +290,29 @@ class IzinKeluarController extends Controller
     public function actionApproveByKemahasiswaanDosen($id, $id_kemahasiswaan)
     {
         $model = $this->findModel($id);
+        $pegawai = Pegawai::find()->where('deleted!=1')->all();
 
-        if ($model->status_request_dosen_wali = 1) {
-            $model->status_request_dosen_wali = 2;
-            $model->dosen_wali_id = $id_kemahasiswaan;
-            $model->save();
+        foreach ($pegawai as $p) {
+            if ($p->pegawai_id == $id_kemahasiswaan) {
+                if ($model->status_request_dosen_wali = 1) {
+                    $model->status_request_dosen_wali = 2;
+                    $model->dosen_wali_id = $id_kemahasiswaan;
+                    $model->save();
 
-            \Yii::$app->messenger->addSuccessFlash("Izin keluar telah disetujui");
-            return $this->redirect(['ika-by-kemahasiswaan-index']);
-        } else {
-            \Yii::$app->messenger->addErrorFlash("Request tidak bisa diubah bila status sudah Rejected atau Canceled");
-            return $this->render('IzinByKemahasiswaanIndex', [
-                'model'=>$model
-            ]);
+                    \Yii::$app->messenger->addSuccessFlash("Izin keluar telah disetujui");
+                    return $this->redirect(['ika-by-kemahasiswaan-index']);
+                } else {
+                    \Yii::$app->messenger->addErrorFlash("Request tidak bisa diubah bila status sudah Rejected atau Canceled");
+                    return $this->render('IzinByKemahasiswaanIndex', [
+                        'model'=>$model
+                    ]);
+                }
+            }
         }
+
+        \Yii::$app->messenger->addWarningFlash("Anda belum terdaftar di data kepegawaian IT Del, hubungi HRD untuk memasukkan data Pegawai anda");
+        return $this->redirect(['izin-by-admin-index']);
+
     }
 
     /*
@@ -275,43 +322,64 @@ class IzinKeluarController extends Controller
     public function actionApproveByKeasramaan($id, $id_keasramaan)
     {
         $model = $this->findModel($id);
+        $pegawai = Pegawai::find()->where('deleted!=1')->all();
 
-        if ($model->status_request_keasramaan = 1) {
-            $model->status_request_keasramaan = 2;
-            $model->keasramaan_id = $id_keasramaan;
-            $model->save();
+        foreach ($pegawai as $p) {
+            if ($p->pegawai_id == $id_keasramaan) {
+                if ($model->status_request_keasramaan = 1) {
+                    $model->status_request_keasramaan = 2;
+                    $model->keasramaan_id = $id_keasramaan;
+                    $model->save();
 
-            \Yii::$app->messenger->addSuccessFlash("Izin keluar telah disetujui");
-            return $this->redirect(['ika-by-keasramaan-index']);
-        } else {
-            \Yii::$app->messenger->addErrorFlash("Request tidak bisa diubah bila status sudah Rejected atau Canceled");
-            return $this->render('IzinByKeasramaanIndex', [
-                'model'=>$model
-            ]);
+                    \Yii::$app->messenger->addSuccessFlash("Izin keluar telah disetujui");
+                    return $this->redirect(['ika-by-keasramaan-index']);
+                } else {
+                    \Yii::$app->messenger->addErrorFlash("Request tidak bisa diubah bila status sudah Rejected atau Canceled");
+                    return $this->render('IzinByKeasramaanIndex', [
+                        'model'=>$model
+                    ]);
+                }
+            }
         }
+
+        \Yii::$app->messenger->addWarningFlash("Anda belum terdaftar di data kepegawaian IT Del, hubungi HRD untuk memasukkan data Pegawai anda");
+        return $this->redirect(['izin-by-admin-index']);
+
     }
 
     /*
     * action-id: approve-by-dosen
     * action-desc: Menyetujui request izin keluar by dosen
     */
-    public function actionApproveByDosen($id, $id_dosen)
+    public function actionApproveByDosen($id, $id_dosen, $redback=null)
     {
         $model = $this->findModel($id);
+        $pegawai = Pegawai::find()->where('deleted!=1')->all();
 
-        if ($model->status_request_dosen_wali = 1) {
-            $model->status_request_dosen_wali = 2;
-            $model->dosen_wali_id = $id_dosen;
-            $model->save();
+        foreach ($pegawai as $p) {
+            if ($p->pegawai_id == $id_dosen) {
+                if ($model->status_request_dosen_wali = 1) {
+                    $model->status_request_dosen_wali = 2;
+                    $model->dosen_wali_id = $id_dosen;
+                    $model->save();
 
-            \Yii::$app->messenger->addSuccessFlash("Izin keluar telah disetujui");
-            return $this->redirect(['ika-by-dosen-index']);
-        } else {
-            \Yii::$app->messenger->addErrorFlash("Request tidak bisa diubah bila status sudah Rejected atau Canceled");
-            return $this->render('IzinByDosenIndex', [
-                'model'=>$model
-            ]);
+                    \Yii::$app->messenger->addSuccessFlash("Izin keluar telah disetujui");
+                    if(is_null($redback))
+                        return $this->redirect(['ika-by-dosen-index']);
+                    else
+                        return $this->redirect(Yii::$app->request->referrer);
+                } else {
+                    \Yii::$app->messenger->addErrorFlash("Request tidak bisa diubah bila status sudah Rejected atau Canceled");
+                    return $this->render('IzinByDosenIndex', [
+                        'model'=>$model
+                    ]);
+                }
+            }
         }
+
+        \Yii::$app->messenger->addWarningFlash("Anda belum terdaftar di data kepegawaian IT Del, hubungi HRD untuk memasukkan data Pegawai anda");
+        return $this->redirect(['izin-by-admin-index']);
+
     }
 
     /*
@@ -321,20 +389,29 @@ class IzinKeluarController extends Controller
     public function actionApproveByBaak($id, $id_baak)
     {
         $model = $this->findModel($id);
+        $pegawai = Pegawai::find()->where('deleted!=1')->all();
 
-        if ($model->status_request_baak = 1) {
-            $model->status_request_baak = 2;
-            $model->baak_id = $id_baak;
-            $model->save();
+        foreach ($pegawai as $p) {
+            if ($p->pegawai_id == $id_baak) {
+                if ($model->status_request_baak = 1) {
+                    $model->status_request_baak = 2;
+                    $model->baak_id = $id_baak;
+                    $model->save();
 
-            \Yii::$app->messenger->addSuccessFlash("Izin keluar telah disetujui");
-            return $this->redirect(['ika-by-baak-index']);
-        } else {
-            \Yii::$app->messenger->addErrorFlash("Request tidak bisa diubah bila status sudah Rejected atau Canceled");
-            return $this->render('IzinByBaakIndex', [
-                'model'=>$model
-            ]);
+                    \Yii::$app->messenger->addSuccessFlash("Izin keluar telah disetujui");
+                    return $this->redirect(['ika-by-baak-index']);
+                } else {
+                    \Yii::$app->messenger->addErrorFlash("Request tidak bisa diubah bila status sudah Rejected atau Canceled");
+                    return $this->render('IzinByBaakIndex', [
+                        'model'=>$model
+                    ]);
+                }
+            }
         }
+
+        \Yii::$app->messenger->addWarningFlash("Anda belum terdaftar di data kepegawaian IT Del, hubungi HRD untuk memasukkan data Pegawai anda");
+        return $this->redirect(['izin-by-admin-index']);
+
     }
 
     /*
@@ -344,46 +421,66 @@ class IzinKeluarController extends Controller
     public function actionRejectByKeasramaan($id, $id_keasramaan)
     {
         $model = $this->findModel($id);
+        $pegawai = Pegawai::find()->where('deleted!=1')->all();
 
-        if ($model->status_request_keasramaan = 1) {
-            $model->status_request_keasramaan = 3;
-            $model->status_request_baak = 3;
-            $model->keasramaan_id = $id_keasramaan;
-            $model->save();
+        foreach ($pegawai as $p) {
+            if ($p->pegawai_id == $id_keasramaan) {
+                if ($model->status_request_keasramaan = 1) {
+                    $model->status_request_keasramaan = 3;
+                    $model->status_request_baak = 3;
+                    $model->keasramaan_id = $id_keasramaan;
+                    $model->save();
 
-            \Yii::$app->messenger->addSuccessFlash("Izin keluar telah ditolak");
-            return $this->redirect(['ika-by-keasramaan-index']);
-        } else {
-            \Yii::$app->messenger->addErrorFlash("Request tidak bisa diubah bila status sudah Rejected atau Canceled");
-            return $this->render('IzinByKeasramaanIndex', [
-                'model'=>$model
-            ]);
+                    \Yii::$app->messenger->addSuccessFlash("Izin keluar telah ditolak");
+                    return $this->redirect(['ika-by-keasramaan-index']);
+                } else {
+                    \Yii::$app->messenger->addErrorFlash("Request tidak bisa diubah bila status sudah Rejected atau Canceled");
+                    return $this->render('IzinByKeasramaanIndex', [
+                        'model'=>$model
+                    ]);
+                }
+            }
         }
+
+        \Yii::$app->messenger->addWarningFlash("Anda belum terdaftar di data kepegawaian IT Del, hubungi HRD untuk memasukkan data Pegawai anda");
+        return $this->redirect(['izin-by-admin-index']);
     }
 
     /*
     * action-id: reject-by-dosen
     * action-desc: Menolak request izin keluar by dosen wali
     */
-    public function actionRejectByDosen($id, $id_dosen)
+    public function actionRejectByDosen($id, $id_dosen, $redback=null)
     {
         $model = $this->findModel($id);
+        $pegawai = Pegawai::find()->where('deleted!=1')->all();
 
-        if ($model->status_request_dosen_wali = 1) {
-            $model->status_request_dosen_wali = 3;
-            $model->status_request_keasramaan = 3;
-            $model->status_request_baak = 3;
-            $model->dosen_wali_id = $id_dosen;
-            $model->save();
+        foreach ($pegawai as $p) {
+            if ($p->pegawai_id == $id_dosen) {
+                if ($model->status_request_dosen_wali = 1) {
+                    $model->status_request_dosen_wali = 3;
+                    $model->status_request_keasramaan = 3;
+                    $model->status_request_baak = 3;
+                    $model->dosen_wali_id = $id_dosen;
+                    $model->save();
 
-            \Yii::$app->messenger->addSuccessFlash("Izin keluar telah ditolak");
-            return $this->redirect(['ika-by-dosen-index']);
-        } else {
-            \Yii::$app->messenger->addErrorFlash("Request tidak bisa diubah bila status sudah Rejected atau Canceled");
-            return $this->render('IzinByDosenIndex', [
-                'model'=>$model
-            ]);
+                    \Yii::$app->messenger->addSuccessFlash("Izin keluar telah ditolak");
+                    if(is_null($redback))
+                        return $this->redirect(['ika-by-dosen-index']);
+                    else
+                        return $this->redirect(Yii::$app->request->referrer);
+                } else {
+                    \Yii::$app->messenger->addErrorFlash("Request tidak bisa diubah bila status sudah Rejected atau Canceled");
+                    return $this->render('IzinByDosenIndex', [
+                        'model'=>$model
+                    ]);
+                }
+            }
         }
+
+        \Yii::$app->messenger->addWarningFlash("Anda belum terdaftar di data kepegawaian IT Del, hubungi HRD untuk memasukkan data Pegawai anda");
+        return $this->redirect(['izin-by-admin-index']);
+
     }
 
     /*
@@ -393,20 +490,29 @@ class IzinKeluarController extends Controller
     public function actionRejectByBaak($id, $id_baak)
     {
         $model = $this->findModel($id);
+        $pegawai = Pegawai::find()->where('deleted!=1')->all();
 
-        if ($model->status_request_baak = 1) {
-            $model->status_request_baak = 3;
-            $model->baak_id = $id_baak;
-            $model->save();
+        foreach ($pegawai as $p) {
+            if ($p->pegawai_id == $id_baak) {
+                if ($model->status_request_baak = 1) {
+                    $model->status_request_baak = 3;
+                    $model->baak_id = $id_baak;
+                    $model->save();
 
-            \Yii::$app->messenger->addSuccessFlash("Izin keluar telah ditolak");
-            return $this->redirect(['ika-by-baak-index']);
-        } else {
-            \Yii::$app->messenger->addErrorFlash("Request tidak bisa diubah bila status sudah Rejected atau Canceled");
-            return $this->render('IzinByBaakIndex', [
-                'model'=>$model
-            ]);
+                    \Yii::$app->messenger->addSuccessFlash("Izin keluar telah ditolak");
+                    return $this->redirect(['ika-by-baak-index']);
+                } else {
+                    \Yii::$app->messenger->addErrorFlash("Request tidak bisa diubah bila status sudah Rejected atau Canceled");
+                    return $this->render('IzinByBaakIndex', [
+                        'model'=>$model
+                    ]);
+                }
+            }
         }
+
+        \Yii::$app->messenger->addWarningFlash("Anda belum terdaftar di data kepegawaian IT Del, hubungi HRD untuk memasukkan data Pegawai anda");
+        return $this->redirect(['izin-by-admin-index']);
+
     }
 
     /*
@@ -416,46 +522,64 @@ class IzinKeluarController extends Controller
     public function actionRejectByKemahasiswaanDosen($id, $id_kemahasiswaan)
     {
         $model = $this->findModel($id);
+        $pegawai = Pegawai::find()->where('deleted!=1')->all();
 
-        if ($model->status_request_baak = 1) {
-            $model->status_request_dosen_wali = 3;
-            $model->status_request_baak = 3;
-            $model->status_request_keasramaan = 3;
-            $model->dosen_wali_id = $id_kemahasiswaan;
-            $model->save();
+        foreach ($pegawai as $p) {
+            if ($p->pegawai_id == $id_kemahasiswaan) {
+                if ($model->status_request_baak = 1) {
+                    $model->status_request_dosen_wali = 3;
+                    $model->status_request_baak = 3;
+                    $model->status_request_keasramaan = 3;
+                    $model->dosen_wali_id = $id_kemahasiswaan;
+                    $model->save();
 
-            \Yii::$app->messenger->addSuccessFlash("Izin keluar telah ditolak");
-            return $this->redirect(['ika-by-kemahasiswaan-index']);
-        } else {
-            \Yii::$app->messenger->addErrorFlash("Request tidak bisa diubah bila status sudah Rejected atau Canceled");
-            return $this->render('IzinByKemahasiswaanIndex', [
-                'model'=>$model
-            ]);
+                    \Yii::$app->messenger->addSuccessFlash("Izin keluar telah ditolak");
+                    return $this->redirect(['ika-by-kemahasiswaan-index']);
+                } else {
+                    \Yii::$app->messenger->addErrorFlash("Request tidak bisa diubah bila status sudah Rejected atau Canceled");
+                    return $this->render('IzinByKemahasiswaanIndex', [
+                        'model'=>$model
+                    ]);
+                }
+            }
         }
+
+        \Yii::$app->messenger->addWarningFlash("Anda belum terdaftar di data kepegawaian IT Del, hubungi HRD untuk memasukkan data Pegawai anda");
+        return $this->redirect(['izin-by-admin-index']);
+
     }
 
     /*
-    * action-id: reject-by-kemahasiswaan-keasramaan
+    * action-id: reject-by-maha-asra
     * action-desc: Menolak request izin keluar by keasramaan oleh kemahasiswaan
     */
-    public function actionRejectByKemahasiswaanKeasramaan($id, $id_kemahasiswaan)
+    public function actionRejectByMahaAsra($id, $id_kemahasiswaan)
     {
         $model = $this->findModel($id);
+        $pegawai = Pegawai::find()->where('deleted!=1')->all();
 
-        if ($model->status_request_keasramaan = 1) {
-            $model->status_request_keasramaan = 3;
-            $model->status_request_baak = 3;
-            $model->keasramaan_id = $id_kemahasiswaan;
-            $model->save();
+        foreach ($pegawai as $p) {
+            if ($p->pegawai_id == $id_kemahasiswaan) {
+                if ($model->status_request_keasramaan = 1) {
+                    $model->status_request_keasramaan = 3;
+                    $model->status_request_baak = 3;
+                    $model->keasramaan_id = $id_kemahasiswaan;
+                    $model->save();
 
-            \Yii::$app->messenger->addSuccessFlash("Izin keluar telah ditolak");
-            return $this->redirect(['ika-by-kemahasiswaan-index']);
-        } else {
-            \Yii::$app->messenger->addErrorFlash("Request tidak bisa diubah bila status sudah Rejected atau Canceled");
-            return $this->render('IzinByKemahasiswaanIndex', [
-                'model'=>$model
-            ]);
+                    \Yii::$app->messenger->addSuccessFlash("Izin keluar telah ditolak");
+                    return $this->redirect(['ika-by-kemahasiswaan-index']);
+                } else {
+                    \Yii::$app->messenger->addErrorFlash("Request tidak bisa diubah bila status sudah Rejected atau Canceled");
+                    return $this->render('IzinByKemahasiswaanIndex', [
+                        'model'=>$model
+                    ]);
+                }
+            }
         }
+
+        \Yii::$app->messenger->addWarningFlash("Anda belum terdaftar di data kepegawaian IT Del, hubungi HRD untuk memasukkan data Pegawai anda");
+        return $this->redirect(['izin-by-admin-index']);
+
     }
 
     /**

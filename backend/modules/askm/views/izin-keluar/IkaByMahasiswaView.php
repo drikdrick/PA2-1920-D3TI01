@@ -27,7 +27,7 @@ $uiHelper=\Yii::$app->uiHelper;
                     'edit' => ['url' => Url::toRoute(['ika-by-mahasiswa-edit', 'id' => $model->izin_keluar_id]), 'label'=> 'Edit', 'icon'=>'fa fa-pencil'], // id keasramaan diambil saat sudah login
                     'cancel' => ['url' => Url::toRoute(['ika-by-mahasiswa-cancel', 'id' => $model->izin_keluar_id]), 'label'=> 'Cancel', 'icon'=>'fa fa-times'],
                 ],
-                
+
             ]) ?>
     </div>
 
@@ -37,36 +37,51 @@ $uiHelper=\Yii::$app->uiHelper;
     <?php echo DetailView::widget([
         'model' => $model,
         'attributes' => [
-            ['label' => 'Nama Mahasiswa', 'value' => $model->dim['nama']],
+            ['label' => 'Pemohon', 'value' => $model->dim['nama']],
             ['label' => 'NIM Mahasiswa', 'value' => $model->dim['nim']],
             'desc:ntext',
-            'rencana_berangkat',
-            'rencana_kembali',
+            [
+                'attribute' => 'rencana_berangkat',
+                'value' => function($model){
+                    if (is_null($model->rencana_berangkat)) {
+                        return '-';
+                    }else{
+                        return date('d M Y H:i', strtotime($model->rencana_berangkat));
+                    }
+                }
+            ],
+            [
+                'attribute' => 'rencana_kembali',
+                'value' => function($model){
+                    if (is_null($model->rencana_kembali)) {
+                        return '-';
+                    }else{
+                        return date('d M Y H:i', strtotime($model->rencana_kembali));
+                    }
+                }
+            ],
             [
                 'attribute' => 'realisasi_berangkat',
-                'label' => 'Realisasi Berangkat',
                 'value' => function($model){
                     if (is_null($model->realisasi_berangkat)) {
                         return '-';
                     }else{
-                        return $model->realisasi_berangkat;
+                        return date('d M Y H:i', strtotime($model->realisasi_berangkat));
                     }
                 }
             ],
             [
                 'attribute' => 'realisasi_kembali',
-                'label' => 'Realisasi Kembali',
                 'value' => function($model){
                     if (is_null($model->realisasi_kembali)) {
                         return '-';
                     }else{
-                        return $model->realisasi_kembali;
+                        return date('d M Y H:i', strtotime($model->realisasi_kembali));
                     }
                 }
             ],
             [
                 'attribute' => 'status_request_dosen_wali',
-                'label' => 'Persetujuan Dosen',
                 'value' => function($model){
                     if (is_null($model->statusRequestDosen->status_request)) {
                         return '-';
@@ -76,7 +91,7 @@ $uiHelper=\Yii::$app->uiHelper;
                 }
             ],
             [
-                'label' => 'Dosen Penyetuju', 
+                'label' => 'Disetujui/Ditolak oleh',
                 'value' => function($model){
                     if (is_null($model->dosen['nama'])) {
                         return '-';
@@ -87,7 +102,6 @@ $uiHelper=\Yii::$app->uiHelper;
             ],
             [
                 'attribute' => 'status_request_keasramaan',
-                'label' => 'Persetujuan Keasramaan',
                 'value' => function($model){
                     if (is_null($model->statusRequestKeasramaan->status_request)) {
                         return '-';
@@ -97,7 +111,7 @@ $uiHelper=\Yii::$app->uiHelper;
                 }
             ],
             [
-                'label' => 'Keasramaan Penyetuju', 
+                'label' => 'Disetujui/Ditolak oleh',
                 'value' => function($model){
                     if (is_null($model->keasramaan['nama'])) {
                         return '-';
@@ -108,7 +122,6 @@ $uiHelper=\Yii::$app->uiHelper;
             ],
             [
                 'attribute' => 'status_request_baak',
-                'label' => 'Persetujuan BAAK',
                 'value' => function($model){
                     if (is_null($model->statusRequestBaak->status_request)) {
                         return '-';
@@ -118,7 +131,7 @@ $uiHelper=\Yii::$app->uiHelper;
                 }
             ],
             [
-                'label' => 'BAAK Penyetuju', 
+                'label' => 'Disetujui/Ditolak oleh',
                 'value' => function($model){
                     if (is_null($model->baak['nama'])) {
                         return '-';
@@ -138,36 +151,51 @@ $uiHelper=\Yii::$app->uiHelper;
     <?php echo DetailView::widget([
         'model' => $model,
         'attributes' => [
-            ['label' => 'Nama Mahasiswa', 'value' => $model->dim['nama']],
+            ['label' => 'Pemohon', 'value' => $model->dim['nama']],
             ['label' => 'NIM Mahasiswa', 'value' => $model->dim['nim']],
             'desc:ntext',
-            'rencana_berangkat',
-            'rencana_kembali',
+            [
+                'attribute' => 'rencana_berangkat',
+                'value' => function($model){
+                    if (is_null($model->rencana_berangkat)) {
+                        return '-';
+                    }else{
+                        return date('d M Y H:i', strtotime($model->rencana_berangkat));
+                    }
+                }
+            ],
+            [
+                'attribute' => 'rencana_kembali',
+                'value' => function($model){
+                    if (is_null($model->rencana_kembali)) {
+                        return '-';
+                    }else{
+                        return date('d M Y H:i', strtotime($model->rencana_kembali));
+                    }
+                }
+            ],
             [
                 'attribute' => 'realisasi_berangkat',
-                'label' => 'Realisasi Berangkat',
                 'value' => function($model){
                     if (is_null($model->realisasi_berangkat)) {
                         return '-';
                     }else{
-                        return $model->realisasi_berangkat;
+                        return date('d M Y H:i', strtotime($model->realisasi_berangkat));
                     }
                 }
             ],
             [
                 'attribute' => 'realisasi_kembali',
-                'label' => 'Realisasi Kembali',
                 'value' => function($model){
                     if (is_null($model->realisasi_kembali)) {
                         return '-';
                     }else{
-                        return $model->realisasi_kembali;
+                        return date('d M Y H:i', strtotime($model->realisasi_kembali));
                     }
                 }
             ],
             [
                 'attribute' => 'status_request_dosen_wali',
-                'label' => 'Persetujuan Dosen',
                 'value' => function($model){
                     if (is_null($model->statusRequestDosen->status_request)) {
                         return '-';
@@ -177,7 +205,7 @@ $uiHelper=\Yii::$app->uiHelper;
                 }
             ],
             [
-                'label' => 'Dosen Penyetuju', 
+                'label' => 'Disetujui/Ditolak oleh',
                 'value' => function($model){
                     if (is_null($model->dosen['nama'])) {
                         return '-';
@@ -188,7 +216,6 @@ $uiHelper=\Yii::$app->uiHelper;
             ],
             [
                 'attribute' => 'status_request_keasramaan',
-                'label' => 'Persetujuan Keasramaan',
                 'value' => function($model){
                     if (is_null($model->statusRequestKeasramaan->status_request)) {
                         return '-';
@@ -198,7 +225,7 @@ $uiHelper=\Yii::$app->uiHelper;
                 }
             ],
             [
-                'label' => 'Keasramaan Penyetuju', 
+                'label' => 'Disetujui/Ditolak oleh',
                 'value' => function($model){
                     if (is_null($model->keasramaan['nama'])) {
                         return '-';
@@ -209,7 +236,6 @@ $uiHelper=\Yii::$app->uiHelper;
             ],
             [
                 'attribute' => 'status_request_baak',
-                'label' => 'Persetujuan BAAK',
                 'value' => function($model){
                     if (is_null($model->statusRequestBaak->status_request)) {
                         return '-';
@@ -219,7 +245,7 @@ $uiHelper=\Yii::$app->uiHelper;
                 }
             ],
             [
-                'label' => 'BAAK Penyetuju', 
+                'label' => 'Disetujui/Ditolak oleh',
                 'value' => function($model){
                     if (is_null($model->baak['nama'])) {
                         return '-';

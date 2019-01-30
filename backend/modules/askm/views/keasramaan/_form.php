@@ -16,34 +16,21 @@ use backend\modules\askm\models\Pegawai;
 
   <?php $form = ActiveForm::begin(); ?>
 
-  <div class="row">
-    <div class="col-md-6">
-      <?= $form->field($model, 'asrama_id')->hiddenInput(['value' => $_GET['id_asrama']])->label(false) ?>
+    <div class="row">
+        <div class="col-md-6">
+            <?= $form->field($model, 'no_hp')->textInput(['maxlength' => true]) ?>
+        </div>
     </div>
-  </div>
-  
-  <div class="row">
-      <div class="col-md-6">
-        <?= $form->field($model, 'pegawai_id')->widget(Typeahead::classname(),[
-        'attribute' => 'pegawai_id',
-         'withSubmitButton' => false,
-         
-         'template' => "<small style='padding:4px'>{{data}}</small>",
-         'htmlOptions' => ['class' => 'typeahead', 'placeholder' => 'Nama Pengurus','required'=>true],
-         'options' => [
-          'hint' => false,
-          'highlight' => true,
-          'minLength' => 1
-         ], 
-         'sourceApiBaseUrl' => Url::toRoute(['/askm/keasramaan/list-keasramaan']),
-      ])->label(false) ?>
-      </div>
+    <div class="row">
+        <div class="col-md-6">
+            <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
+        </div>
     </div>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Tambahkan' : 'Selesai Edit', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
 
-        <?= Html::a('Batal', ['asrama/index'], ['class' => 'btn btn-danger']) ?>
+        <?= Html::a('Batal', Yii::$app->request->referrer, ['class' => 'btn btn-danger']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

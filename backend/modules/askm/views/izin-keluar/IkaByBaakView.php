@@ -17,282 +17,7 @@ $baak = Pegawai::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$app
 <div class="izin-keluar-view">
 
     <?php
-        if ($model->status_request_dosen_wali == 2 && $model->status_request_keasramaan == 2 && $model->status_request_baak == 2) {
-    ?>
-
-    <h1><?= $this->title ?></h1>
-    <?= $uiHelper->renderLine(); ?>
-
-    <?php echo DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            ['label' => 'Nama Mahasiswa', 'value' => $model->dim['nama']],
-            ['label' => 'NIM Mahasiswa', 'value' => $model->dim['nim']],
-            'desc:ntext',
-            'rencana_berangkat',
-            'rencana_kembali',
-            [
-                'attribute' => 'realisasi_berangkat',
-                'label' => 'Realisasi Berangkat',
-                'value' => function($model){
-                    if (is_null($model->realisasi_berangkat)) {
-                        return '-';
-                    }else{
-                        return $model->realisasi_berangkat;
-                    }
-                }
-            ],
-            [
-                'attribute' => 'realisasi_kembali',
-                'label' => 'Realisasi Kembali',
-                'value' => function($model){
-                    if (is_null($model->realisasi_kembali)) {
-                        return '-';
-                    }else{
-                        return $model->realisasi_kembali;
-                    }
-                }
-            ],
-            [
-                'attribute' => 'status_request_dosen_wali',
-                'label' => 'Persetujuan Dosen',
-                'value' => function($model){
-                    if (is_null($model->statusRequestDosen->status_request)) {
-                        return '-';
-                    }else{
-                        return $model->statusRequestDosen->status_request;
-                    }
-                }
-            ],
-            [
-                'label' => 'Dosen Penyetuju', 
-                'value' => function($model){
-                    if (is_null($model->dosen['nama'])) {
-                        return '-';
-                    }else{
-                        return $model->dosen['nama'];
-                    }
-                }
-            ],
-            [
-                'attribute' => 'status_request_keasramaan',
-                'label' => 'Persetujuan Keasramaan',
-                'value' => function($model){
-                    if (is_null($model->statusRequestKeasramaan->status_request)) {
-                        return '-';
-                    }else{
-                        return $model->statusRequestKeasramaan->status_request;
-                    }
-                }
-            ],
-            [
-                'label' => 'Keasramaan Penyetuju', 
-                'value' => function($model){
-                    if (is_null($model->keasramaan['nama'])) {
-                        return '-';
-                    }else{
-                        return $model->keasramaan['nama'];
-                    }
-                }
-            ],
-            [
-                'attribute' => 'status_request_baak',
-                'label' => 'Persetujuan BAAK',
-                'value' => function($model){
-                    if (is_null($model->statusRequestBaak->status_request)) {
-                        return '-';
-                    }else{
-                        return $model->statusRequestBaak->status_request;
-                    }
-                }
-            ],
-            [
-                'label' => 'BAAK Penyetuju', 
-                'value' => function($model){
-                    if (is_null($model->baak['nama'])) {
-                        return '-';
-                    }else{
-                        return $model->baak['nama'];
-                    }
-                }
-            ],
-            // ['attribute' => 'status_request_dosen_wali', 'value' => $model->status_request_dosen_wali['status_request']],
-        ],
-    ]);
-    } else if($model->status_request_dosen_wali == 1 && $model->status_request_keasramaan == 1 && $model->status_request_baak == 1){?>
-
-    <h1><?= $this->title ?></h1>
-    <?= $uiHelper->renderLine(); ?>
-
-    <?php echo DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            ['label' => 'Nama Mahasiswa', 'value' => $model->dim['nama']],
-            ['label' => 'NIM Mahasiswa', 'value' => $model->dim['nim']],
-            'desc:ntext',
-            'rencana_berangkat',
-            'rencana_kembali',
-            [
-                'attribute' => 'realisasi_berangkat',
-                'label' => 'Realisasi Berangkat',
-                'value' => function($model){
-                    if (is_null($model->realisasi_berangkat)) {
-                        return '-';
-                    }else{
-                        return $model->realisasi_berangkat;
-                    }
-                }
-            ],
-            [
-                'attribute' => 'realisasi_kembali',
-                'label' => 'Realisasi Kembali',
-                'value' => function($model){
-                    if (is_null($model->realisasi_kembali)) {
-                        return '-';
-                    }else{
-                        return $model->realisasi_kembali;
-                    }
-                }
-            ],
-            [
-                'attribute' => 'status_request_dosen_wali',
-                'label' => 'Persetujuan Dosen',
-                'value' => function($model){
-                    if (is_null($model->statusRequestDosen->status_request)) {
-                        return '-';
-                    }else{
-                        return $model->statusRequestDosen->status_request;
-                    }
-                }
-            ],
-            [
-                'attribute' => 'status_request_keasramaan',
-                'label' => 'Persetujuan Keasramaan',
-                'value' => function($model){
-                    if (is_null($model->statusRequestKeasramaan->status_request)) {
-                        return '-';
-                    }else{
-                        return $model->statusRequestKeasramaan->status_request;
-                    }
-                }
-            ],
-            [
-                'attribute' => 'status_request_baak',
-                'label' => 'Persetujuan BAAK',
-                'value' => function($model){
-                    if (is_null($model->statusRequestBaak->status_request)) {
-                        return '-';
-                    }else{
-                        return $model->statusRequestBaak->status_request;
-                    }
-                }
-            ],
-        ],
-    ]);
-    
-    } else if($model->status_request_dosen_wali == 2 && $model->status_request_keasramaan == 1 && $model->status_request_baak == 1){?>
-
-    <h1><?= $this->title ?></h1>
-    <?= $uiHelper->renderLine(); ?>
-
-    <?php echo DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            ['label' => 'Nama Mahasiswa', 'value' => $model->dim['nama']],
-            ['label' => 'NIM Mahasiswa', 'value' => $model->dim['nim']],
-            'desc:ntext',
-            'rencana_berangkat',
-            'rencana_kembali',
-            [
-                'attribute' => 'realisasi_berangkat',
-                'label' => 'Realisasi Berangkat',
-                'value' => function($model){
-                    if (is_null($model->realisasi_berangkat)) {
-                        return '-';
-                    }else{
-                        return $model->realisasi_berangkat;
-                    }
-                }
-            ],
-            [
-                'attribute' => 'realisasi_kembali',
-                'label' => 'Realisasi Kembali',
-                'value' => function($model){
-                    if (is_null($model->realisasi_kembali)) {
-                        return '-';
-                    }else{
-                        return $model->realisasi_kembali;
-                    }
-                }
-            ],
-            [
-                'attribute' => 'status_request_dosen_wali',
-                'label' => 'Persetujuan Dosen',
-                'value' => function($model){
-                    if (is_null($model->statusRequestDosen->status_request)) {
-                        return '-';
-                    }else{
-                        return $model->statusRequestDosen->status_request;
-                    }
-                }
-            ],
-            [
-                'label' => 'Dosen Penyetuju', 
-                'value' => function($model){
-                    if (is_null($model->dosen['nama'])) {
-                        return '-';
-                    }else{
-                        return $model->dosen['nama'];
-                    }
-                }
-            ],
-            [
-                'attribute' => 'status_request_keasramaan',
-                'label' => 'Persetujuan Keasramaan',
-                'value' => function($model){
-                    if (is_null($model->statusRequestKeasramaan->status_request)) {
-                        return '-';
-                    }else{
-                        return $model->statusRequestKeasramaan->status_request;
-                    }
-                }
-            ],
-            [
-                'label' => 'Keasramaan Penyetuju', 
-                'value' => function($model){
-                    if (is_null($model->keasramaan['nama'])) {
-                        return '-';
-                    }else{
-                        return $model->keasramaan['nama'];
-                    }
-                }
-            ],
-            [
-                'attribute' => 'status_request_baak',
-                'label' => 'Persetujuan BAAK',
-                'value' => function($model){
-                    if (is_null($model->statusRequestBaak->status_request)) {
-                        return '-';
-                    }else{
-                        return $model->statusRequestBaak->status_request;
-                    }
-                }
-            ],
-            [
-                'label' => 'BAAK Penyetuju', 
-                'value' => function($model){
-                    if (is_null($model->baak['nama'])) {
-                        return '-';
-                    }else{
-                        return $model->baak['nama'];
-                    }
-                }
-            ],
-        ],
-    ]);
-    
-    }else{
-    
+        if ($model->status_request_dosen_wali == 2 && $model->status_request_keasramaan == 2 && $model->status_request_baak == 1) {
     ?>
 
     <div class="pull-right">
@@ -303,9 +28,11 @@ $baak = Pegawai::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$app
                     'approve' => ['url' => Url::toRoute(['approve-by-baak', 'id' => $model->izin_keluar_id, 'id_baak' => $baak->pegawai_id]), 'label'=> 'Setujui Request', 'icon'=>'fa fa-check'], // id keasramaan diambil saat sudah login
                     'reject' => ['url' => Url::toRoute(['reject-by-baak', 'id' => $model->izin_keluar_id, 'id_baak' => $baak->pegawai_id]), 'label'=> 'Tolak Request', 'icon'=>'fa fa-times'],
                 ],
-                
+
             ]) ?>
     </div>
+
+    <?php } ?>
 
     <h1><?= $this->title ?></h1>
     <?= $uiHelper->renderLine(); ?>
@@ -313,36 +40,51 @@ $baak = Pegawai::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$app
     <?php echo DetailView::widget([
         'model' => $model,
         'attributes' => [
-            ['label' => 'Nama Mahasiswa', 'value' => $model->dim['nama']],
+            ['label' => 'Pemohon', 'value' => $model->dim['nama']],
             ['label' => 'NIM Mahasiswa', 'value' => $model->dim['nim']],
             'desc:ntext',
-            'rencana_berangkat',
-            'rencana_kembali',
+            [
+                'attribute' => 'rencana_berangkat',
+                'value' => function($model){
+                    if (is_null($model->rencana_berangkat)) {
+                        return '-';
+                    }else{
+                        return date('d M Y H:i', strtotime($model->rencana_berangkat));
+                    }
+                }
+            ],
+            [
+                'attribute' => 'rencana_kembali',
+                'value' => function($model){
+                    if (is_null($model->rencana_kembali)) {
+                        return '-';
+                    }else{
+                        return date('d M Y H:i', strtotime($model->rencana_kembali));
+                    }
+                }
+            ],
             [
                 'attribute' => 'realisasi_berangkat',
-                'label' => 'Realisasi Berangkat',
                 'value' => function($model){
                     if (is_null($model->realisasi_berangkat)) {
                         return '-';
                     }else{
-                        return $model->realisasi_berangkat;
+                        return date('d M Y H:i', strtotime($model->realisasi_berangkat));
                     }
                 }
             ],
             [
                 'attribute' => 'realisasi_kembali',
-                'label' => 'Realisasi Kembali',
                 'value' => function($model){
                     if (is_null($model->realisasi_kembali)) {
                         return '-';
                     }else{
-                        return $model->realisasi_kembali;
+                        return date('d M Y H:i', strtotime($model->realisasi_kembali));
                     }
                 }
             ],
             [
                 'attribute' => 'status_request_dosen_wali',
-                'label' => 'Persetujuan Dosen',
                 'value' => function($model){
                     if (is_null($model->statusRequestDosen->status_request)) {
                         return '-';
@@ -352,7 +94,7 @@ $baak = Pegawai::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$app
                 }
             ],
             [
-                'label' => 'Dosen Penyetuju', 
+                'label' => 'Disetujui/Ditolak oleh',
                 'value' => function($model){
                     if (is_null($model->dosen['nama'])) {
                         return '-';
@@ -363,7 +105,6 @@ $baak = Pegawai::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$app
             ],
             [
                 'attribute' => 'status_request_keasramaan',
-                'label' => 'Persetujuan Keasramaan',
                 'value' => function($model){
                     if (is_null($model->statusRequestKeasramaan->status_request)) {
                         return '-';
@@ -373,7 +114,7 @@ $baak = Pegawai::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$app
                 }
             ],
             [
-                'label' => 'Keasramaan Penyetuju', 
+                'label' => 'Disetujui/Ditolak oleh',
                 'value' => function($model){
                     if (is_null($model->keasramaan['nama'])) {
                         return '-';
@@ -384,7 +125,6 @@ $baak = Pegawai::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$app
             ],
             [
                 'attribute' => 'status_request_baak',
-                'label' => 'Persetujuan BAAK',
                 'value' => function($model){
                     if (is_null($model->statusRequestBaak->status_request)) {
                         return '-';
@@ -394,7 +134,7 @@ $baak = Pegawai::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$app
                 }
             ],
             [
-                'label' => 'BAAK Penyetuju', 
+                'label' => 'Disetujui/Ditolak oleh',
                 'value' => function($model){
                     if (is_null($model->baak['nama'])) {
                         return '-';
@@ -406,6 +146,6 @@ $baak = Pegawai::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$app
             // ['attribute' => 'status_request_dosen_wali', 'value' => $model->status_request_dosen_wali['status_request']],
         ],
     ]);
-    }?>
+    ?>
 
 </div>

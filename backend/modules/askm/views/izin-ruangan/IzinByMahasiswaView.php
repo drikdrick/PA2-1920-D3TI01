@@ -41,8 +41,26 @@ $uiHelper=\Yii::$app->uiHelper;
                 'label' => 'Nama Pengaju',
                 'value' => $model->dim->nama,
             ],
-            'rencana_mulai',
-            'rencana_berakhir',
+            [
+                'attribute' => 'rencana_mulai',
+                'value' => function($model){
+                    if (is_null($model->rencana_mulai)) {
+                        return '-';
+                    }else{
+                        return date('d M Y', strtotime($model->rencana_mulai));
+                    }
+                }
+            ],
+            [
+                'attribute' => 'rencana_berakhir',
+                'value' => function($model){
+                    if (is_null($model->rencana_berakhir)) {
+                        return '-';
+                    }else{
+                        return date('d M Y', strtotime($model->rencana_berakhir));
+                    }
+                }
+            ],
             [
                 'label' => 'Keterangan',
                 'value' => $model->desc,
@@ -65,14 +83,39 @@ $uiHelper=\Yii::$app->uiHelper;
                 'label' => 'Nama Pengaju',
                 'value' => $model->dim->nama,
             ],
-            'rencana_mulai',
-            'rencana_berakhir',
+            [
+                'attribute' => 'rencana_mulai',
+                'value' => function($model){
+                    if (is_null($model->rencana_mulai)) {
+                        return '-';
+                    }else{
+                        return date('d M Y', strtotime($model->rencana_mulai));
+                    }
+                }
+            ],
+            [
+                'attribute' => 'rencana_berakhir',
+                'value' => function($model){
+                    if (is_null($model->rencana_berakhir)) {
+                        return '-';
+                    }else{
+                        return date('d M Y', strtotime($model->rencana_berakhir));
+                    }
+                }
+            ],
             [
                 'label' => 'Keterangan',
                 'value' => $model->desc,
             ],
             'statusRequest.status_request',
-            // 'baak_id',
+            ['label' => $status, 'value' => function($model){
+                    if (is_null($model->baak['nama'])) {
+                        return '-';
+                    }else{
+                        return $model->baak['nama'];
+                    }
+                }
+            ],
         ],
     ]); } ?>
 

@@ -5,6 +5,7 @@ use yii\helpers\Url;
 use yii\grid\GridView;
 use common\components\ToolsColumn;
 use backend\modules\askm\models\Asrama;
+use backend\modules\askm\models\Pedoman;
 use backend\modules\askm\models\IzinBermalam;
 
 /* @var $this yii\web\View */
@@ -16,6 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
 $uiHelper=\Yii::$app->uiHelper;
 $asramaCount = Asrama::find()->andWhere('deleted != 1')->all();
 $requestCount = IzinBermalam::find()->where('status_request_id = 1')->andWhere('deleted != 1')->all();
+$pedoman = Pedoman::find()->where('deleted!=1')->andWhere(['jenis_izin' => 1])->one();
 ?>
 <div class="izin-bermalam-index">
 
@@ -24,11 +26,12 @@ $requestCount = IzinBermalam::find()->where('status_request_id = 1')->andWhere('
 
     <?php
 
-        $toolbarItemMenu =  
+        $toolbarItemMenu =
             "
             <a href='".Url::to(['izin-bermalam/izin-by-admin-index'])."' class='btn btn-info'><i class='fa fa-history'></i><span class='toolbar-label'>Daftar Request</span></a>
             <a href='".Url::to(['izin-bermalam/izin-by-admin-add'])."' class='btn btn-success'><i class='fa fa-book'></i><span class='toolbar-label'>Request IB</span></a>
             <a href='".Url::to(['izin-bermalam/excel'])."' class='btn btn-warning'><i class='fa fa-archive'></i><span class='toolbar-label'>Rekapitulasi IB</span></a>
+            <!-- <a href='".Url::to(['pedoman/edit'])."' class='btn btn-primary'><i class='fa fa-pencil'></i><span class='toolbar-label'> Edit Pedoman</span></a> -->
             "
             ;
 
@@ -51,9 +54,9 @@ $requestCount = IzinBermalam::find()->where('status_request_id = 1')->andWhere('
 
     <?=$uiHelper->beginContentRow() ?>
 
-        <?php 
+        <?php
             $i = 0;
-            foreach ($asramaCount as $row) { 
+            foreach ($asramaCount as $row) {
                 $i++;
         ?>
 
@@ -64,13 +67,13 @@ $requestCount = IzinBermalam::find()->where('status_request_id = 1')->andWhere('
 
                     <h4><?php echo $row->name; ?></h4>
 
-                <div class="icon">
-                    <i class="ion" style="color: #fff">
+                <div class="icon" style="color: #fff; font-size: 46px; padding-top: 37px;">
+                    <i>
                         <?php
-                        
+
                         $count = 0;
                         foreach($requestCount as $c){
-                            if($c->status_request_id == 1){
+                            if($c->status_request_id == 1 && isset($c->dim->dimKamar)){
                                 foreach($c->dim->dimKamar as $k){
                                     if($k->kamar->asrama_id == $row->asrama_id){
                                         $count++;
@@ -82,11 +85,11 @@ $requestCount = IzinBermalam::find()->where('status_request_id = 1')->andWhere('
 
                         echo $count;
 
-                        ?>    
+                        ?>
                     </i>
                 </div>
 
-                    <p>Request Masuk</p>
+                    <p>Request Masuk :</p>
                 </div>
                 <a href="izin-by-admin-index?IzinBermalamSearch%5Bdim_asrama%5D=<?php echo $i; ?>&IzinBermalamSearch%5Bstatus_request_id%5D=1" class="small-box-footer">Lihat <i class="fa fa-arrow-circle-right"></i></a>
             </div>
@@ -96,48 +99,19 @@ $requestCount = IzinBermalam::find()->where('status_request_id = 1')->andWhere('
         }
     ?>
 
-        
+
     <?=$uiHelper->endContentRow() ?>
 
     <?=$uiHelper->beginContentRow() ?>
-        
+
         <?=$uiHelper->beginContentBlock(['id' => 'grid-system2',
-             'header' => 'Pedoman Izin Bermalam',
-              'width' => 12,
-              'type' => 'danger'
-              ]); ?>
-              <ul>
-                    <li>
-                        Mahasiswa diberikan Izin Bermalam di Luar Kampus (IBL) di hari Jumat atau
-                        Sabtu atau di hari lain dimana keesokan harinya tidak ada kegiatan akademik
-                        atau kegiatan lainnya yang tidak mengharuskan mahasiswa berada di kampus
-                        IT Del.
-                    </li>
-                    <li>
-                        Mahasiswa yang IBL wajib menjaga nama baik IT Del di luar kampus.
-                    </li>
-                    <li>
-                        Mahasiswa mengisi pengajuan IBL di Aplikasi CIS
-                        (https://cis.del.ac.id/askm/izin-bermalam) selambatnya H-2. Dan mencetak form IBL untuk
-                        ditandatangani Bapak/Ibu Asrama dan ditunjukan di Pos Satpam saat keluar
-                        kampus.
-                    </li>
-                    <li>
-                        Pada saat kembali ke kampus, mahasiswa mengumpulkan kertas IBL yang
-                        telah ditandatangani oleh orangtua di Pos Satpam untuk selanjutnya
-                        dikumpulkan dan direkap oleh Pembina Asrama.
-                    </li>
-                    <li>
-                        Apabila terdapat kegiatan Badan Eksekutif Mahasiswa (BEM) yang
-                        mengharuskan seluruh mahasiswa mengikuti kegiatan tersebut, maka
-                        mahasiswa tidak diperbolehkan IBL.
-                    </li>
-                    <li>
-                        Mahasiswa yang tidak mengajukan IBL sesuai ketentuan pada butir 3 (tiga)
-                        tidak diizinkan untuk IBL kecuali dalam kondisi mendesak (emergency)
-                        seperti sakit atau ada keluarga meninggal
-                    </li>
-              </ul>
+            'header' => $pedoman->judul,
+            'type' => 'danger',
+            'width' => 12,
+        ]); ?>
+
+        <?= $pedoman->isi ?>
+
         <?= $uiHelper->endContentBlock()?>
 
     <?=$uiHelper->endContentRow() ?>

@@ -18,8 +18,8 @@ class AsramaSearch extends Asrama
     public function rules()
     {
         return [
-            [['asrama_id', 'jumlah_mahasiswa', 'kapasitas', 'deleted'], 'integer'],
-            [['name', 'lokasi', 'deleted_at', 'deleted_by', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'safe'],
+            [['asrama_id', 'kapasitas', 'deleted'], 'integer'],
+            [['name', 'lokasi', 'desc', 'deleted_at', 'deleted_by', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'safe'],
         ];
     }
 
@@ -55,14 +55,14 @@ class AsramaSearch extends Asrama
         $this->load($params);
 
         if (!$this->validate()) {
-            // uncomment the following line if you do not want to any records when validation fails
+            // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
             return $dataProvider;
         }
 
+        // grid filtering conditions
         $query->andFilterWhere([
             'asrama_id' => $this->asrama_id,
-            'jumlah_mahasiswa' => $this->jumlah_mahasiswa,
             'kapasitas' => $this->kapasitas,
             'deleted' => $this->deleted,
             'deleted_at' => $this->deleted_at,
@@ -72,6 +72,7 @@ class AsramaSearch extends Asrama
 
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'lokasi', $this->lokasi])
+            ->andFilterWhere(['like', 'desc', $this->desc])
             ->andFilterWhere(['like', 'deleted_by', $this->deleted_by])
             ->andFilterWhere(['like', 'created_by', $this->created_by])
             ->andFilterWhere(['like', 'updated_by', $this->updated_by])

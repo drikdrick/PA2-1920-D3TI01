@@ -93,7 +93,7 @@ class Kamar extends \yii\db\ActiveRecord
      */
     public function getDimKamar()
     {
-        return $this->hasMany(DimKamar::className(), ['kamar_id' => 'kamar_id']);
+        return $this->hasMany(DimKamar::className(), ['kamar_id' => 'kamar_id'])->where('deleted!=1');
     }
 
     /**

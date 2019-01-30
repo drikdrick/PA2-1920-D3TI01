@@ -3,6 +3,7 @@
 namespace backend\modules\askm\controllers;
 
 use Yii;
+use backend\modules\askm\models\Pegawai;
 use backend\modules\askm\models\IzinKolaboratif;
 use backend\modules\askm\models\search\IzinKolaboratifSearch;
 use yii\web\Controller;
@@ -66,7 +67,7 @@ class IzinKolaboratifController extends Controller
 
         //Set the search/filter parameter
         $status_request = Yii::$app->request->get('status_request_id');
-        if($status_request == 1 || $status_request == 2 || $status_request == 3){
+        if($status_request == 1 || $status_request == 2 || $status_request == 3 || $status_request == 4){
             $params['IzinKolaboratifSearch']['status_request_id'] = $status_request;
         }
 
@@ -83,7 +84,17 @@ class IzinKolaboratifController extends Controller
     */
     public function actionIzinByMahasiswaView($id)
     {
+        $model = IzinKolaboratif::find()->where('deleted!=1')->andWhere(['izin_kolaboratif_id'=>$id])->one();
+        if ($model->status_request_id == 2) {
+            $status = 'Disetujui oleh';
+        }
+        elseif ($model->status_request_id == 3) {
+            $status = 'Ditolak oleh';
+        } else{
+            $status = 'Persetujuan';
+        }
         return $this->render('IzinByMahasiswaView', [
+            'status' => $status,
             'model' => $this->findModel($id),
         ]);
     }
@@ -94,7 +105,17 @@ class IzinKolaboratifController extends Controller
     */
     public function actionIzinByBaakView($id)
     {
+        $model = IzinKolaboratif::find()->where('deleted!=1')->andWhere(['izin_kolaboratif_id'=>$id])->one();
+        if ($model->status_request_id == 2) {
+            $status = 'Disetujui oleh';
+        }
+        elseif ($model->status_request_id == 3) {
+            $status = 'Ditolak oleh';
+        } else{
+            $status = 'Persetujuan';
+        }
         return $this->render('IzinByBaakView', [
+            'status' => $status,
             'model' => $this->findModel($id),
         ]);
     }
@@ -157,20 +178,29 @@ class IzinKolaboratifController extends Controller
     public function actionIzinByBaakApprove($id, $id_baak)
     {
         $model=$this->findModel($id);
+        $pegawai = Pegawai::find()->where('deleted!=1')->all();
 
-        $model->status_request_id = $id;
-        $model->status_request_id = 2;
-        $model->baak_id = $id_baak;
+        foreach ($pegawai as $p) {
+            if ($p->pegawai_id == $id_baak) {
+                $model->status_request_id = $id;
+                $model->status_request_id = 2;
+                $model->baak_id = $id_baak;
 
-        if($model->save()){
-            \Yii::$app->messenger->addSuccessFlash("Izin Tambahan Jam Kolaboratif telah disetujui");
-            return $this->redirect(['izin-by-baak-index']);
-        } else {
-            \Yii::$app->messenger->addErrorFlash("Request tidak bisa diubah bila status sudah ditolak");
-            return $this->render('IzinByBaakView', [
-                'model'=>$model
-            ]);
+                if($model->save()){
+                    \Yii::$app->messenger->addSuccessFlash("Izin Tambahan Jam Kolaboratif telah disetujui");
+                    return $this->redirect(['izin-by-baak-index']);
+                } else {
+                    \Yii::$app->messenger->addErrorFlash("Request tidak bisa diubah bila status sudah ditolak");
+                    return $this->render('IzinByBaakView', [
+                        'model'=>$model
+                    ]);
+                }
+            }
         }
+
+        \Yii::$app->messenger->addWarningFlash("Anda belum terdaftar di data kepegawaian IT Del, hubungi HRD untuk memasukkan data Pegawai anda");
+        return $this->redirect(['izin-by-admin-index']);
+
     }
 
     /*
@@ -180,20 +210,29 @@ class IzinKolaboratifController extends Controller
     public function actionIzinByBaakReject($id, $id_baak)
     {
         $model=$this->findModel($id);
+        $pegawai = Pegawai::find()->where('deleted!=1')->all();
 
-        $model->status_request_id = $id;
-        $model->status_request_id = 3;
-        $model->baak_id = $id_baak;
+        foreach ($pegawai as $p) {
+            if ($p->pegawai_id == $id_baak) {
+                $model->status_request_id = $id;
+                $model->status_request_id = 3;
+                $model->baak_id = $id_baak;
 
-        if($model->save()){
-            \Yii::$app->messenger->addSuccessFlash("Izin tambahan jam kolaboratif ditolak");
-            return $this->redirect(['izin-by-baak-index']);
-        } else {
-            \Yii::$app->messenger->addErrorFlash("Request tidak bisa diubah bila status sudah disetujui");
-            return $this->render('IzinByBaakView', [
-                'model'=>$model
-            ]);
+                if($model->save()){
+                    \Yii::$app->messenger->addSuccessFlash("Izin tambahan jam kolaboratif ditolak");
+                    return $this->redirect(['izin-by-baak-index']);
+                } else {
+                    \Yii::$app->messenger->addErrorFlash("Request tidak bisa diubah bila status sudah disetujui");
+                    return $this->render('IzinByBaakView', [
+                        'model'=>$model
+                    ]);
+                }
+            }
         }
+
+        \Yii::$app->messenger->addWarningFlash("Anda belum terdaftar di data kepegawaian IT Del, hubungi HRD untuk memasukkan data Pegawai anda");
+        return $this->redirect(['izin-by-admin-index']);
+
     }
 
     /*

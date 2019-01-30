@@ -10,6 +10,7 @@ use common\components\ToolsColumn;
 use common\helpers\LinkHelper;
 use backend\modules\askm\models\StatusRequest;
 use backend\modules\askm\models\Dim;
+use backend\modules\askm\models\Pedoman;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\modules\askm\models\search\IzinKeluarSearch */
@@ -18,10 +19,12 @@ use backend\modules\askm\models\Dim;
 $this->title = 'Izin Keluar';
 $this->params['breadcrumbs'][] = $this->title;
 $uiHelper=\Yii::$app->uiHelper;
+$pedoman = Pedoman::find()->where('deleted!=1')->andWhere(['jenis_izin' => 2])->one();
 ?>
 <div class="izin-keluar-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
+    <?= $uiHelper->renderLine(); ?>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
@@ -45,53 +48,35 @@ $uiHelper=\Yii::$app->uiHelper;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            // 'izin_keluar_id',
-            // [
-            //     'attribute'=>'dim_nama',
-            //     'label' => 'Pemohon',
-            //     'value' => 'dim.nama',
-            // ],
             [
                 'attribute'=>'desc',
                 'label' => 'Keperluan',
                 'value' => 'desc',
             ],
-            // 'rencana_berangkat',
-            // 'rencana_kembali',
-            // 'desc:ntext',
-            // 'realisasi_berangkat',
-            // 'realisasi_kembali',
-            // 'dosen_id',
-            // 'baak_id',
-            // 'keasramaan_id',
+
             [
-                'attribute'=>'status_request_dosen_wali',
-                'label' => 'Persetujuan Dosen',
-                'filter'=>ArrayHelper::map(StatusRequest::find()->asArray()->all(), 'status_request_id', 'status_request'),
-                'filterInputOptions' => ['class' => 'form-control', 'id' => null, 'prompt' => 'ALL'],
-                'value' => 'statusRequestDosen.status_request',
+                'label' => 'Status Request',
+                'filter' => '',
+                'value' => function($model){
+                    if ($model->status_request_dosen_wali == 4 || $model->status_request_keasramaan == 4 || $model->status_request_baak == 4) {
+                        return 'Dibatalkan';
+                    } else if ($model->status_request_dosen_wali == 1) {
+                        return 'Menunggu Persetujuan Dosen Wali';
+                    } elseif ($model->status_request_keasramaan == 1) {
+                        return 'Menunggu Persetujuan Keasramaan';
+                    } elseif ($model->status_request_baak == 1) {
+                        return 'Menunggu Persetujuan BAAK';
+                    } elseif ($model->status_request_dosen_wali == 3) {
+                        return 'Ditolak oleh Dosen Wali';
+                    } elseif ($model->status_request_keasramaan == 3) {
+                        return 'Ditolak oleh Keasramaan';
+                    } elseif ($model->status_request_baak == 3) {
+                        return 'Ditolak oleh BAAK';
+                    } else {
+                        return 'Selesai';
+                    }
+                },
             ],
-            [
-                'attribute'=>'status_request_keasramaan',
-                'label' => 'Persetujuan Keasramaan',
-                'filter'=>ArrayHelper::map(StatusRequest::find()->asArray()->all(), 'status_request_id', 'status_request'),
-                'filterInputOptions' => ['class' => 'form-control', 'id' => null, 'prompt' => 'ALL'],
-                'value' => 'statusRequestKeasramaan.status_request',
-            ],
-            [
-                'attribute'=>'status_request_baak',
-                'label' => 'Persetujuan BAAK',
-                'filter'=>ArrayHelper::map(StatusRequest::find()->asArray()->all(), 'status_request_id', 'status_request'),
-                'filterInputOptions' => ['class' => 'form-control', 'id' => null, 'prompt' => 'ALL'],
-                'value' => 'statusRequestBaak.status_request',
-            ],
-            // 'deleted',
-            // 'deleted_at',
-            // 'deleted_by',
-            // 'created_at',
-            // 'created_by',
-            // 'updated_at',
-            // 'updated_by',
 
             ['class' => 'common\components\ToolsColumn',
                 'template' => '{view} {edit} {cancel}',
@@ -127,5 +112,19 @@ $uiHelper=\Yii::$app->uiHelper;
             ],
         ],
     ]); ?>
+
+    <?=$uiHelper->beginContentRow() ?>
+
+        <?=$uiHelper->beginContentBlock(['id' => 'grid-system2',
+            'header' => $pedoman->judul,
+            'type' => 'danger',
+            'width' => 12,
+        ]); ?>
+
+        <?= $pedoman->isi ?>
+
+        <?= $uiHelper->endContentBlock()?>
+
+    <?=$uiHelper->endContentRow() ?>
 
 </div>
