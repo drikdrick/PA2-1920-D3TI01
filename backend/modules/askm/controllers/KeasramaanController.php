@@ -46,9 +46,20 @@ class KeasramaanController extends Controller
     */
     public function actionIndex($id_asrama)
     {
-        $searchModel = new KamarSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $asrama = Asrama::find()->where(['asrama_id' => $id_asrama])->one();
+        $searchModel = new KeasramaanSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->query->andWhere(['asrama_id' => $id_asrama]);
+
+        $keasramaan = Keasramaan::find()->where('deleted!=1')->andWhere(['asrama_id' => $id_asrama])->all();
+        $temp = 0;
+        foreach ($keasramaan as $k) {
+            $temp++;
+        }
+
+        if ($temp == 0) {
+            \Yii::$app->messenger->addWarningFlash("Pengurus/pembina asrama belum di-assign.");
+        }
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -66,9 +77,27 @@ class KeasramaanController extends Controller
     * action-id: view
     * action-desc: Menampilkan keasramaan
     */
-    public function actionView($id)
+    public function actionView()
     {
+        $pegawai = Pegawai::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$app->user->identity->user_id])->one();
+        $keasramaan = Keasramaan::find()->where('deleted!=1')->andWhere(['pegawai_id' => $pegawai->pegawai_id])->one();
         return $this->render('view', [
+            'model' => $this->findModel($keasramaan->keasramaan_id),
+        ]);
+    }
+
+    /**
+     * Displays a single Keasramaan model.
+     * @param integer $id
+     * @return mixed
+     */
+    /*
+    * action-id: view-only
+    * action-desc: Menampilkan keasramaan
+    */
+    public function actionViewOnly($id)
+    {
+        return $this->render('view-only', [
             'model' => $this->findModel($id),
         ]);
     }
@@ -84,25 +113,29 @@ class KeasramaanController extends Controller
     */
     public function actionAddPengurus($id_asrama)
     {
-    
+
         $model = new Keasramaan();
         $asrama = Asrama::find()->where(['asrama_id' => $id_asrama])->one();
-        
+
         if ($model->load(Yii::$app->request->post())) {
-            
+
             $model->save();
             return $this->redirect(['/askm/asrama/view-detail-asrama', 'id' => $_GET['id_asrama']]);
         } else {
             return $this->render('addPengurus', [
-                'model' => $model, 
+                'model' => $model,
                 'asrama' => $asrama,
             ]);
         }
     }
-    
+
+    /**
+     * Lists all Keasramaan models.
+     * @return mixed
+     */
     /*
     * action-id: list-keasramaan
-    * action-desc: Mengambil daftar pegawai keasramaan
+    * action-desc: Display All Data
     */
     public function actionListKeasramaan($query){
         $data = [];
@@ -116,12 +149,12 @@ class KeasramaanController extends Controller
                     ->asArray()
                     ->all();
         foreach ($asramas as $asrama) {
-            
+
             $dataValue = $asrama['nama'];
             $data []  = [
                             'value' => $asrama['pegawai_id'],
                             'data' => $dataValue,
-                          
+
                         ];
         }
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
@@ -156,7 +189,7 @@ class KeasramaanController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->keasramaan_id]);
         } else {
-            return $this->render('update', [
+            return $this->render('edit', [
                 'model' => $model,
             ]);
         }
@@ -176,7 +209,7 @@ class KeasramaanController extends Controller
     {
         $this->findModel($id)->softDelete();
         \Yii::$app->messenger->addSuccessFlash("Pengurus telah dihapus");
-        
+
         return $this->redirect(['asrama/view', 'id' => $id_asrama]);
     }
 

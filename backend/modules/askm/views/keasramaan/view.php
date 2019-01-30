@@ -1,43 +1,56 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\DetailView;
+use backend\modules\askm\models\Pegawai;
+use backend\modules\askm\models\Keasramaan;
 
 /* @var $this yii\web\View */
 /* @var $model backend\modules\askm\models\KeasramaanPegawai */
 
-$this->title = $model->keasramaan_id;
-$this->params['breadcrumbs'][] = ['label' => 'Keasramaan Pegawais', 'url' => ['index']];
+$this->title = 'Data Diri Keasramaan';
 $this->params['breadcrumbs'][] = $this->title;
+$uiHelper=\Yii::$app->uiHelper;
+$pegawai = Pegawai::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$app->user->identity->user_id])->one();
+$keasramaan = Keasramaan::find()->where('deleted!=1')->andWhere(['pegawai_id' => $pegawai->pegawai_id])->one();
 ?>
 <div class="keasramaan-pegawai-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <div class="pull-right">
+        Pengaturan
+        <?= $uiHelper->renderButtonSet([
+                'template' => ['edit'],
+                'buttons' => [
+                    'edit' => ['url' => Url::to(['edit', 'id'=> $keasramaan->keasramaan_id]), 'label'=> 'Edit Data Diri', 'icon'=>'fa fa-pencil'],
+                ],
+            ]) ?>
+    </div>
 
-    <p>
-        <?= Html::a('Update', ['update', 'id' => $model->keasramaan_id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->keasramaan_id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
+    <h1><?= Html::encode($this->title) ?></h1>
+    <?= $uiHelper->renderLine(); ?>
 
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'keasramaan_id',
-            'asrama_id',
-            'pegawai_id',
-            'deleted',
-            'deleted_at',
-            'deleted_by',
-            'created_at',
-            'created_by',
-            'updated_at',
-            'updated_by',
+
+            [
+                'attribute' => 'nama_keasramaan',
+                'label' => 'Nama',
+                'value' => function($model){
+                        return $model->pegawai->nama;
+                    }
+            ],
+            [
+                'attribute' => 'telepon_keasramaan',
+                'label' => 'Telepon',
+                'value' => function($model){
+                        return $model->pegawai->telepon;
+                    }
+            ],
+            'no_hp',
+            'email',
+
         ],
     ]) ?>
 

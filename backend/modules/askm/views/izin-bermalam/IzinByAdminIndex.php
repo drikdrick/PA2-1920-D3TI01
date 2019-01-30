@@ -11,6 +11,7 @@ use backend\modules\askm\models\StatusRequest;
 use backend\modules\askm\models\Asrama;
 use backend\modules\askm\models\Prodi;
 use backend\modules\askm\models\Pegawai;
+use dosamigos\datetimepicker\DateTimePicker;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\modules\askm\models\IzinBermalamSearch */
@@ -27,7 +28,7 @@ $uiHelper=\Yii::$app->uiHelper;
 $pegawai = Pegawai::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$app->user->identity->user_id])->one();
 ?>
 <div class="izin-bermalam-index">
-    
+
     <div class="pull-right">
         Manage Request
         <div class="btn-group">
@@ -50,7 +51,7 @@ $pegawai = Pegawai::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$
             </ul>
         </div>
     </div>
-    
+
     <?= $uiHelper->renderContentSubHeader(' '.$this->title, ['icon' => 'fa fa-list']);?>
     <?= $uiHelper->renderLine(); ?>
 
@@ -62,11 +63,12 @@ $pegawai = Pegawai::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$
         $status3 = ($status_request_id == 2)?'active':'';
         $status4 = ($status_request_id == 3)?'active':'';
 
-        $toolbarItemStatusRequest =  
+        $toolbarItemStatusRequest =
             "<a href='".Url::to(['izin-bermalam/izin-by-admin-index'])."' class='btn btn-default ".$status1."'><i class='fa fa-list'></i><span class='toolbar-label'>All</span></a>
             <a href='".Url::to(['izin-bermalam/izin-by-admin-index', $status_url => 1])."' class='btn btn-info ".$status2."'><i class='fa fa-info'></i><span class='toolbar-label'>Requested</span></a>
             <a href='".Url::to(['izin-bermalam/izin-by-admin-index', $status_url => 2])."' class='btn btn-success ".$status3."'><i class='fa fa-check'></i><span class='toolbar-label'>Accepted</span></a>
             <a href='".Url::to(['izin-bermalam/izin-by-admin-index', $status_url => 3])."' class='btn btn-danger ".$status4."'><i class='fa fa-ban'></i><span class='toolbar-label'>Rejected</span></a>
+            <a href='".Url::to(['izin-by-admin-index', $status_url => 4])."' class='btn btn-warning ".$status4."'><i class='fa fa-times'></i><span class='toolbar-label'>Canceled</span></a>
             "
             ;
 
@@ -109,20 +111,37 @@ $pegawai = Pegawai::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$
             // 'realisasi_kembali',
             // 'desc:ntext',
             // 'tujuan',
+            // [
+            // 'attribute' => 'dim_nama',
+            // 'label' => 'Nama Mahasiswa',
+            // 'format' => 'raw',
+            // 'value' => 'dim.nama',
+            // ],
             [
-            'attribute' => 'dim_nama',
-            'label' => 'Nama Mahasiswa',
-            'format' => 'raw',
-            'value' => 'dim.nama',
+                'attribute' => 'dim_nama',
+                'label'=>'Nama Mahasiswa',
+                'format' => 'raw',
+                'value'=>function ($model) {
+                    return "<a href='".Url::toRoute(['/dimx/dim/mahasiswa-view', 'dim_id' => $model->dim_id])."'>".$model->dim->nama."</a>";
+                },
             ],
             [
                 'attribute'=>'dim_prodi',
                 'label' => 'Prodi',
-                'filter'=>ArrayHelper::map(Prodi::find()->where('deleted!=1')->andWhere(['is_hidden' => 0])->asArray()->all(), 'ref_kbk_id', function($data){ 
-                    return $data->jenjang->nama.' - '. $data->singkatan_prodi;
-                }),
+                'filter'=>ArrayHelper::map(Prodi::find()->where('inst_prodi.deleted!=1')->andWhere("inst_prodi.kbk_ind NOT LIKE 'Semua Prodi'")->andWhere(['inst_prodi.is_hidden' => 0])->joinWith(['jenjangId' => function($query){
+                    return $query->orderBy(['inst_r_jenjang.nama' => SORT_ASC]);
+                }])->all(), 'ref_kbk_id', function($data){
+                    if (is_null($data->jenjang_id)) {
+                        return '';
+                    } else{
+                        return $data->kbk_ind;
+                    }
+
+                }, 'jenjangId.nama'),
                 'filterInputOptions' => ['class' => 'form-control', 'id' => null, 'prompt' => 'ALL'],
-                'value' => 'dim.refKbk.singkatan_prodi',
+                'value'=> function($model){
+                    return $model->dim->kbkId==null?null:$model->dim->kbkId->jenjangId->nama." ".$model->dim->kbkId->kbk_ind;
+                },
             ],
             [
                 'attribute' => 'dim_angkatan',
@@ -130,6 +149,8 @@ $pegawai = Pegawai::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$
                 'headerOptions' => ['style' => 'width:20px'],
                 'format' => 'raw',
                 'value' => 'dim.thn_masuk',
+                'filter'=>ArrayHelper::map($angkatan, 'thn_masuk', 'thn_masuk'),
+                'filterInputOptions' => ['class' => 'form-control', 'id' => null, 'prompt' => 'ALL'],
             ],
             'desc',
             [
@@ -139,8 +160,58 @@ $pegawai = Pegawai::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$
                 'headerOptions' => ['style' => 'width:100px'],
                 'value' => 'tujuan',
             ],
-            'rencana_berangkat',
-            'rencana_kembali',
+            [
+                'attribute'=>'rencana_berangkat',
+                'label' => 'Rencana Berangkat',
+                'format'=> 'raw',
+                'headerOptions' => ['style' => 'color:#3c8dbc'],
+                'value'=>function($model,$key,$index){
+                    if($model->rencana_berangkat==NULL){
+                        return '-';
+                    }
+                    else{
+                        return date('d M Y H:i', strtotime($model->rencana_berangkat));
+                    }
+                },
+                'filter'=>DateTimePicker::widget([
+                    'model'=>$searchModel,
+                    'attribute'=>'rencana_berangkat',
+                    'template'=>'{input}{reset}{button}',
+                        'clientOptions' => [
+                            'startView' => 2,
+                            'minView' => 2,
+                            'maxView' => 2,
+                            'autoclose' => true,
+                            'format' => 'yyyy-mm-dd',
+                        ],
+                ])
+            ],
+            [
+                'attribute'=>'rencana_kembali',
+                'label' => 'Rencana Kembali',
+                'format'=> 'raw',
+                'headerOptions' => ['style' => 'color:#3c8dbc'],
+                'value'=>function($model,$key,$index){
+                    if($model->rencana_kembali==NULL){
+                        return '-';
+                    }
+                    else{
+                        return date('d M Y H:i', strtotime($model->rencana_kembali));
+                    }
+                },
+                'filter'=>DateTimePicker::widget([
+                    'model'=>$searchModel,
+                    'attribute'=>'rencana_kembali',
+                    'template'=>'{input}{reset}{button}',
+                        'clientOptions' => [
+                            'startView' => 2,
+                            'minView' => 2,
+                            'maxView' => 2,
+                            'autoclose' => true,
+                            'format' => 'yyyy-mm-dd',
+                        ],
+                ])
+            ],
             [
                 'attribute'=>'dim_asrama',
                 'label' => 'Asrama',
@@ -150,23 +221,6 @@ $pegawai = Pegawai::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$
                 'filterInputOptions' => ['class' => 'form-control', 'id' => null, 'prompt' => 'ALL'],
                 'value' => 'dim.dimAsrama.kamar.asrama.name',
             ],
-            // [
-            // 'attribute' => 'keasramaan_id',
-            // 'label' => 'Disetujui oleh',
-            // 'value' => function($model){
-            //         if (is_null($model->pegawai['nama'])) {
-            //             return '-';
-            //         }else{
-            //             return $model->pegawai['nama'];
-            //         }
-            //     }
-            // ],
-            // [
-            //     'attribute'=>'status_request_id',
-            //     'label' => 'Status Request',
-            //     'filter'=>ArrayHelper::map(StatusRequest::find()->asArray()->all(), 'status_request_id', 'status_request'),
-            //     'value' => 'statusRequest.status_request',
-            // ],
             ['class' => 'common\components\ToolsColumn',
                 'template' => '{view} {approve} {reject} {print}',
                 'header' => 'Aksi',
@@ -253,7 +307,7 @@ $pegawai = Pegawai::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$
         var keys = $('#tabel-izin-bermalam').yiiGridView('getSelectedRows');
             // alert(keys);
             var ajax = new XMLHttpRequest();
-            var keasramaan_id = "<?php $pegawai = Pegawai::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$app->user->identity->user_id])->one(); 
+            var keasramaan_id = "<?php $pegawai = Pegawai::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$app->user->identity->user_id])->one();
             echo $pegawai->pegawai_id; ?>"
             var htmlString = "approve-selected?id_keasramaan=" + keasramaan_id;
             $.ajax({
@@ -270,7 +324,7 @@ $pegawai = Pegawai::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$
         var keys = $('#tabel-izin-bermalam').yiiGridView('getSelectedRows');
             // alert(keys);
             var ajax = new XMLHttpRequest();
-            var keasramaan_id = "<?php $pegawai = Pegawai::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$app->user->identity->user_id])->one(); 
+            var keasramaan_id = "<?php $pegawai = Pegawai::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$app->user->identity->user_id])->one();
             echo $pegawai->pegawai_id; ?>"
             var htmlString = "reject-selected?id_keasramaan=" + keasramaan_id;
             $.ajax({

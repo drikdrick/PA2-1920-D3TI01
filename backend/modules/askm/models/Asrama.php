@@ -14,7 +14,7 @@ use common\behaviors\DeleteBehavior;
  * @property integer $asrama_id
  * @property string $name
  * @property string $lokasi
- * @property integer $jumlah_mahasiswa
+ * @property string $desc
  * @property integer $kapasitas
  * @property integer $deleted
  * @property string $deleted_at
@@ -24,11 +24,12 @@ use common\behaviors\DeleteBehavior;
  * @property string $updated_at
  * @property string $updated_by
  *
- * @property Kamar[] $Kamar
+ * @property Kamar[] $Kamars
  * @property Keasramaan[] $Keasramaans
  */
 class Asrama extends \yii\db\ActiveRecord
 {
+    public $jumlah_mahasiswa;
 
     /**
      * behaviour to add created_at and updatet_at field with current datetime (timestamp)
@@ -63,11 +64,12 @@ class Asrama extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'lokasi'], 'required'],
-            [['jumlah_mahasiswa', 'kapasitas', 'deleted'], 'integer'],
+            [['desc'], 'string'],
+            [['kapasitas', 'deleted'], 'integer'],
             [['deleted_at', 'created_at', 'updated_at'], 'safe'],
             [['name'], 'string', 'max' => 50],
             [['lokasi'], 'string', 'max' => 45],
-            [['deleted_by', 'created_by', 'updated_by'], 'string', 'max' => 32]
+            [['deleted_by', 'created_by', 'updated_by'], 'string', 'max' => 32],
         ];
     }
 
@@ -80,7 +82,7 @@ class Asrama extends \yii\db\ActiveRecord
             'asrama_id' => 'Asrama ID',
             'name' => 'Name',
             'lokasi' => 'Lokasi',
-            'jumlah_mahasiswa' => 'Jumlah Mahasiswa',
+            'desc' => 'Desc',
             'kapasitas' => 'Kapasitas',
             'deleted' => 'Deleted',
             'deleted_at' => 'Deleted At',
@@ -95,7 +97,7 @@ class Asrama extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getKamar()
+    public function getKamars()
     {
         return $this->hasMany(Kamar::className(), ['asrama_id' => 'asrama_id']);
     }
@@ -103,8 +105,24 @@ class Asrama extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getKeasramaan()
+    public function getKeasramaans()
     {
         return $this->hasMany(Keasramaan::className(), ['asrama_id' => 'asrama_id']);
     }
+
+    public function afterFind(){
+       parent::afterFind();
+
+       $komponen = Kamar::find()->where('deleted != 1')->andWhere(['asrama_id' => $this->asrama_id])->all();
+
+       $this->jumlah_mahasiswa = 0;
+       foreach($komponen as $k){
+            foreach ($k->dimKamar as $b) {
+                $this->jumlah_mahasiswa +=1;
+            }
+       }
+
+       return true;
+    }
+
 }

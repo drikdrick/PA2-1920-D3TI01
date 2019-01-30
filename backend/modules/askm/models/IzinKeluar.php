@@ -86,7 +86,8 @@ class IzinKeluar extends \yii\db\ActiveRecord
             [['keasramaan_id'], 'exist', 'skipOnError' => true, 'targetClass' => Pegawai::className(), 'targetAttribute' => ['keasramaan_id' => 'pegawai_id']],
             [['baak_id'], 'exist', 'skipOnError' => true, 'targetClass' => Pegawai::className(), 'targetAttribute' => ['baak_id' => 'pegawai_id']],
             [['status_request_dosen_wali'], 'exist', 'skipOnError' => true, 'targetClass' => StatusRequest::className(), 'targetAttribute' => ['status_request_dosen_wali' => 'status_request_id']],
-            [['dim_id'], 'exist', 'skipOnError' => true, 'targetClass' => Dim::className(), 'targetAttribute' => ['dim_id' => 'dim_id']]
+            [['dim_id'], 'exist', 'skipOnError' => true, 'targetClass' => Dim::className(), 'targetAttribute' => ['dim_id' => 'dim_id']],
+            [['rencana_kembali'], 'isAfterBerangkat'],
         ];
     }
 
@@ -101,14 +102,14 @@ class IzinKeluar extends \yii\db\ActiveRecord
             'rencana_kembali' => 'Rencana Kembali',
             'realisasi_berangkat' => 'Realisasi Berangkat',
             'realisasi_kembali' => 'Realisasi Kembali',
-            'desc' => 'Desc',
+            'desc' => 'Keperluan IK',
             'dim_id' => 'Dim ID',
             'dosen_wali_id' => 'Dosen ID',
             'baak_id' => 'Baak ID',
             'keasramaan_id' => 'Keasramaan ID',
-            'status_request_baak' => 'Status Request Baak',
-            'status_request_keasramaan' => 'Status Request Keasramaan',
-            'status_request_dosen_wali' => 'Status Request Dosen',
+            'status_request_baak' => 'Status Request(Baak)',
+            'status_request_keasramaan' => 'Status Request(Keasramaan)',
+            'status_request_dosen_wali' => 'Status Request(Dosen)',
             'deleted' => 'Deleted',
             'deleted_at' => 'Deleted At',
             'deleted_by' => 'Deleted By',
@@ -117,6 +118,12 @@ class IzinKeluar extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
             'updated_by' => 'Updated By',
         ];
+    }
+
+    public function isAfterBerangkat($attribute, $params)
+    {
+        if(strtotime($this->rencana_kembali)<=strtotime($this->rencana_berangkat))
+            $this->addError($attribute, 'Tidak boleh lebih awal atau sama dengan Rencana Berangkat !');
     }
 
     /**

@@ -4,6 +4,7 @@ namespace backend\modules\askm\controllers;
 
 use Yii;
 use backend\modules\askm\models\Dim;
+use backend\modules\askm\models\Pegawai;
 use backend\modules\askm\models\IzinBermalam;
 use backend\modules\askm\models\search\IzinBermalamSearch;
 use yii\web\Controller;
@@ -11,6 +12,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\Json;
 use yii\helpers\Url;
+use yii\bootstrap\ActiveForm;
 use mPDF;
 
 /**
@@ -100,18 +102,21 @@ class IzinBermalamController extends Controller
     public function actionIzinByAdminIndex()
     {
         $searchModel = new IzinBermalamSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->searchIbIndex(Yii::$app->request->queryParams);
 
         //Set the search/filter parameter
         $status_request = Yii::$app->request->get('status_request_id');
-        if($status_request == 1 || $status_request == 2 || $status_request == 3){
+        if($status_request == 1 || $status_request == 2 || $status_request == 3 || $status_request == 4){
             $params['IzinBermalamSearch']['status_request_id'] = $status_request;
         }
+
+        $angkatan = Dim::find()->select('thn_masuk')->where('deleted!=1')->andWhere(['status_akhir' => 'Aktif'])->groupBy(['thn_masuk'])->orderBy(['thn_masuk' => SORT_ASC])->all();
 
         return $this->render('IzinByAdminIndex', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'status_request_id' => $status_request,
+            'angkatan' => $angkatan
         ]);
     }
 
@@ -121,7 +126,17 @@ class IzinBermalamController extends Controller
     */
     public function actionIzinByMahasiswaView($id)
     {
+        $model = IzinBermalam::find()->where('deleted!=1')->andWhere(['izin_bermalam_id'=>$id])->one();
+        if ($model->status_request_id == 2) {
+            $status = 'Disetujui oleh';
+        }
+        elseif ($model->status_request_id == 3) {
+            $status = 'Ditolak oleh';
+        } else{
+            $status = 'Persetujuan';
+        }
         return $this->render('IzinByMahasiswaView', [
+            'status' => $status,
             'model' => $this->findModel($id),
         ]);
     }
@@ -132,7 +147,17 @@ class IzinBermalamController extends Controller
     */
     public function actionIzinByAdminView($id)
     {
+        $model = IzinBermalam::find()->where('deleted!=1')->andWhere(['izin_bermalam_id'=>$id])->one();
+        if ($model->status_request_id == 2) {
+            $status = 'Disetujui oleh';
+        }
+        elseif ($model->status_request_id == 3) {
+            $status = 'Ditolak oleh';
+        } else{
+            $status = 'Persetujuan';
+        }
         return $this->render('IzinByAdminView', [
+            'status' => $status,
             'model' => $this->findModel($id),
         ]);
     }
@@ -145,8 +170,13 @@ class IzinBermalamController extends Controller
     {
         $model = new IzinBermalam();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['izin-by-mahasiswa-view', 'id' => $model->izin_bermalam_id]);
+        if ($model->load(Yii::$app->request->post())) {
+            if(Yii::$app->request->isAjax){
+                Yii::$app->response->format = \yii\web\Response::FORMAT_JSON; 
+                return ActiveForm::validate($model);
+            }
+            if($model->save())
+                return $this->redirect(['izin-by-mahasiswa-view', 'id' => $model->izin_bermalam_id]);
         } else {
             return $this->render('IzinByMahasiswaAdd', [
                 'model' => $model,
@@ -162,8 +192,13 @@ class IzinBermalamController extends Controller
     {
         $model = new IzinBermalam();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['izin-by-admin-view', 'id' => $model->izin_bermalam_id]);
+        if ($model->load(Yii::$app->request->post())) {
+            if(Yii::$app->request->isAjax){
+                Yii::$app->response->format = \yii\web\Response::FORMAT_JSON; 
+                return ActiveForm::validate($model);
+            }
+            if($model->save())
+                return $this->redirect(['izin-by-admin-view', 'id' => $model->izin_bermalam_id]);
         } else {
             return $this->render('IzinByAdminAdd', [
                 'model' => $model,
@@ -181,8 +216,7 @@ class IzinBermalamController extends Controller
                     ->select('dim_id,nim,nama')
                     ->where('deleted!=1')
                     ->andWhere(['status_akhir' => 'Aktif'])
-                    ->andWhere('nama LIKE :query')
-                    ->orWhere('nim LIKE :query')
+                    ->andWhere('nama LIKE :query OR nim LIKE :query')
                     ->addParams([':query' => '%'.$query.'%'])
                     ->limit(10)
                     ->asArray()
@@ -192,7 +226,7 @@ class IzinBermalamController extends Controller
             $data []  = [
                             'value' => $dim['dim_id'],
                             'data' => $dataValue
-                          
+
                         ];
         }
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
@@ -207,8 +241,13 @@ class IzinBermalamController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['izin-by-admin-view', 'id' => $model->izin_bermalam_id]);
+        if ($model->load(Yii::$app->request->post())) {
+            if(Yii::$app->request->isAjax){
+                Yii::$app->response->format = \yii\web\Response::FORMAT_JSON; 
+                return ActiveForm::validate($model);
+            }
+            if($model->save())
+                return $this->redirect(['izin-by-admin-view', 'id' => $model->izin_bermalam_id]);
         } else {
             return $this->render('IzinByAdminEdit', [
                 'model' => $model,
@@ -224,8 +263,13 @@ class IzinBermalamController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['izin-by-mahasiswa-index']);
+        if ($model->load(Yii::$app->request->post())) {
+            if(Yii::$app->request->isAjax){
+                Yii::$app->response->format = \yii\web\Response::FORMAT_JSON; 
+                return ActiveForm::validate($model);
+            }
+            if($model->save())
+                return $this->redirect(['izin-by-mahasiswa-index']);
         } else {
             return $this->render('IzinByMahasiswaEdit', [
                 'model' => $model,
@@ -283,12 +327,11 @@ class IzinBermalamController extends Controller
     */
     public function actionPrintIb($id)
     {
-
         $pdf_content = $this->renderPartial('view-pdf', [
             'model' => $this->findModel($id),
         ]);
 
-        $mpdf = new mPDF();
+        $mpdf = new \Mpdf\Mpdf();
         $mpdf->showImageErrors = true;
         $mpdf->WriteHTML($pdf_content);
         $mpdf->Output();
@@ -317,20 +360,28 @@ class IzinBermalamController extends Controller
     public function actionApproveByKeasramaanIndex($id_ib, $id_keasramaan)
     {
         $model = $this->findModel($id_ib);
+        $pegawai = Pegawai::find()->where('deleted!=1')->all();
 
-        if ($model->status_request_id = 1) {
-            $model->status_request_id = 2;
-            $model->keasramaan_id = $id_keasramaan;
-            $model->save();
+        foreach ($pegawai as $p) {
+            if ($p->pegawai_id == $id_keasramaan) {
+                if ($model->status_request_id = 1) {
+                    $model->status_request_id = 2;
+                    $model->keasramaan_id = $id_keasramaan;
+                    $model->save();
 
-            \Yii::$app->messenger->addSuccessFlash("Izin bermalam telah disetujui");
-            return $this->redirect(['izin-by-admin-index']);
-        } else {
-            \Yii::$app->messenger->addErrorFlash("Request tidak bisa diubah bila status sudah Rejected");
-            return $this->render('IzinByAdminIndex', [
-                'model'=>$model
-            ]);
+                    \Yii::$app->messenger->addSuccessFlash("Izin bermalam telah disetujui");
+                    return $this->redirect(['izin-by-admin-index']);
+                } else {
+                    \Yii::$app->messenger->addErrorFlash("Request tidak bisa diubah bila status sudah Rejected");
+                    return $this->render('IzinByAdminIndex', [
+                        'model'=>$model
+                    ]);
+                }
+            }
         }
+
+        \Yii::$app->messenger->addWarningFlash("Anda belum terdaftar di data kepegawaian IT Del, hubungi HRD untuk memasukkan data Pegawai anda");
+        return $this->redirect(['izin-by-admin-index']);
     }
 
     /*
@@ -345,30 +396,37 @@ class IzinBermalamController extends Controller
         $status_request = Yii::$app->request->get('status_request_id');
         $model = IzinBermalam::find()->all();
         $keasramaan = $id_keasramaan;
+        $pegawai = Pegawai::find()->where('deleted!=1')->all();
 
-        foreach ($model as $m) {
-            if ($m->status_request_id == 1) {
-                $m->status_request_id = 2;
-                $m->keasramaan_id = $keasramaan;
-                $m->save();
+        foreach ($pegawai as $p) {
+            if ($p->pegawai_id == $id_keasramaan) {
+                foreach ($model as $m) {
+                    if ($m->status_request_id == 1) {
+                        $m->status_request_id = 2;
+                        $m->keasramaan_id = $keasramaan;
+                        $m->save();
+                    }
+                }
+
+                if($status_request == 1 || $status_request == 2 || $status_request == 3){
+                    $params['IzinBermalamSearch']['status_request_id'] = $status_request;
+                }
+
+                if ($m->save()) {
+                    \Yii::$app->messenger->addSuccessFlash("Semua izin bermalam telah disetujui");
+                    return $this->redirect(['izin-by-admin-index']);
+                } else {
+                    return $this->render('IzinByAdminIndex', [
+                        'searchModel' => $searchModel,
+                        'dataProvider' => $dataProvider,
+                        'status_request_id' => $status_request,
+                    ]);
+                }
             }
         }
 
-        if($status_request == 1 || $status_request == 2 || $status_request == 3){
-            $params['IzinBermalamSearch']['status_request_id'] = $status_request;
-        } 
-
-        if ($m->save()) {
-            \Yii::$app->messenger->addSuccessFlash("Semua izin bermalam telah disetujui");
-            return $this->redirect(['izin-by-admin-index']);
-        } else {
-            return $this->render('IzinByAdminIndex', [
-                'searchModel' => $searchModel,
-                'dataProvider' => $dataProvider,
-                'status_request_id' => $status_request,
-            ]);
-        }
-        
+        \Yii::$app->messenger->addWarningFlash("Anda belum terdaftar di data kepegawaian IT Del, hubungi HRD untuk memasukkan data Pegawai anda");
+        return $this->redirect(['izin-by-admin-index']);
     }
 
     /*
@@ -378,23 +436,32 @@ class IzinBermalamController extends Controller
     public function actionApproveSelected($id_keasramaan)
     {
         $model = IzinBermalam::find()->andWhere('deleted' != 1)->andWhere(['in', 'izin_bermalam_id', Yii::$app->request->post()['keylist']])->all();
+        $pegawai = Pegawai::find()->where('deleted!=1')->all();
 
-        if (Yii::$app->request->post()) {
-            foreach ($model as $m) {
-                $m->status_request_id = 2;
-                $m->keasramaan_id = $id_keasramaan;
-                $m->save();
-            }
+        foreach ($pegawai as $p) {
+            if ($p->pegawai_id == $id_keasramaan) {
+                if (Yii::$app->request->post()) {
+                    foreach ($model as $m) {
+                        $m->status_request_id = 2;
+                        $m->keasramaan_id = $id_keasramaan;
+                        $m->save();
+                    }
 
-            if ($m->save()) {
-                \Yii::$app->messenger->addSuccessFlash("Izin bermalam telah disetujui");
-                return $this->redirect(['izin-by-admin-index']);
-            } else {
-                return $this->render('IzinByAdminIndex');
+                    if ($m->save()) {
+                        \Yii::$app->messenger->addSuccessFlash("Izin bermalam telah disetujui");
+                        return $this->redirect(['izin-by-admin-index']);
+                    } else {
+                        return $this->render('IzinByAdminIndex');
+                    }
+                } else {
+                    return $this->render('IzinByAdminIndex');
+                }
             }
-        } else {
-            return $this->render('IzinByAdminIndex');
         }
+
+        \Yii::$app->messenger->addWarningFlash("Anda belum terdaftar di data kepegawaian IT Del, hubungi HRD untuk memasukkan data Pegawai anda");
+        return $this->redirect(['izin-by-admin-index']);
+
     }
 
     /*
@@ -404,18 +471,28 @@ class IzinBermalamController extends Controller
     public function actionRejectByKeasramaanIndex($id_ib, $id_keasramaan)
     {
         $model = $this->findModel($id_ib);
+        $pegawai = Pegawai::find()->where('deleted!=1')->all();
 
-        $model->status_request_id = 3;
-        $model->keasramaan_id = $id_keasramaan;
+        foreach ($pegawai as $p) {
+            if ($p->pegawai_id == $id_keasramaan) {
+                if ($model->status_request_id = 1) {
+                    $model->status_request_id = 3;
+                    $model->keasramaan_id = $id_keasramaan;
+                    $model->save();
 
-        if($model->save()){
-            \Yii::$app->messenger->addSuccessFlash("Izin bermalam telah ditolak");
-            return $this->redirect(['izin-by-admin-index']);
-        } else {
-            return $this->render('IzinByAdminIndex', [
-                'model'=>$model
-            ]);
+                    \Yii::$app->messenger->addSuccessFlash("Izin bermalam telah ditolak");
+                    return $this->redirect(['izin-by-admin-index']);
+                } else {
+                    \Yii::$app->messenger->addErrorFlash("Request tidak bisa diubah bila status sudah Rejected");
+                    return $this->render('IzinByAdminIndex', [
+                        'model'=>$model
+                    ]);
+                }
+            }
         }
+
+        \Yii::$app->messenger->addWarningFlash("Anda belum terdaftar di data kepegawaian IT Del, hubungi HRD untuk memasukkan data Pegawai anda");
+        return $this->redirect(['izin-by-admin-index']);
     }
 
     /*
@@ -431,29 +508,38 @@ class IzinBermalamController extends Controller
         $model = IzinBermalam::find()->all();
         $m = IzinBermalam::find()->andWhere(['status_request_id' => 1])->all();
         $keasramaan = $id_keasramaan;
+        $pegawai = Pegawai::find()->where('deleted!=1')->all();
 
-        foreach ($model as $m) {
-            while ($m->status_request_id == 1) {
-                $m->status_request_id = 3;
-                $m->keasramaan_id = $keasramaan;
-                $m->save();
+        foreach ($pegawai as $p) {
+            if ($p->pegawai_id == $id_keasramaan) {
+                foreach ($model as $m) {
+                    while ($m->status_request_id == 1) {
+                        $m->status_request_id = 3;
+                        $m->keasramaan_id = $keasramaan;
+                        $m->save();
+                    }
+                }
+
+                if($status_request == 1 || $status_request == 2 || $status_request == 3){
+                    $params['IzinBermalamSearch']['status_request_id'] = $status_request;
+                }
+
+                if ($m->save()) {
+                    \Yii::$app->messenger->addSuccessFlash("Semua izin bermalam telah ditolak");
+                    return $this->redirect(['izin-by-admin-index']);
+                } else {
+                    return $this->render('IzinByAdminIndex', [
+                        'searchModel' => $searchModel,
+                        'dataProvider' => $dataProvider,
+                        'status_request_id' => $status_request,
+                    ]);
+                }
             }
         }
 
-        if($status_request == 1 || $status_request == 2 || $status_request == 3){
-            $params['IzinBermalamSearch']['status_request_id'] = $status_request;
-        }
+        \Yii::$app->messenger->addWarningFlash("Anda belum terdaftar di data kepegawaian IT Del, hubungi HRD untuk memasukkan data Pegawai anda");
+        return $this->redirect(['izin-by-admin-index']);
 
-        if ($m->save()) {
-            \Yii::$app->messenger->addSuccessFlash("Semua izin bermalam telah ditolak");
-            return $this->redirect(['izin-by-admin-index']);
-        } else {
-            return $this->render('IzinByAdminIndex', [
-                'searchModel' => $searchModel,
-                'dataProvider' => $dataProvider,
-                'status_request_id' => $status_request,
-            ]);
-        }
     }
 
     /*
@@ -463,27 +549,32 @@ class IzinBermalamController extends Controller
     public function actionRejectSelected($id_keasramaan)
     {
         $model = IzinBermalam::find()->andWhere('deleted' != 1)->andWhere(['in', 'izin_bermalam_id', Yii::$app->request->post()['keylist']])->all();
+        $pegawai = Pegawai::find()->where('deleted!=1')->all();
 
-        // echo '<pre>';
-        // print_r(Yii::$app->request->post('keylist'));
-        // die();
+        foreach ($pegawai as $p) {
+            if ($p->pegawai_id == $id_keasramaan) {
+                if (Yii::$app->request->post()) {
+                    foreach ($model as $m) {
+                        $m->status_request_id = 3;
+                        $m->keasramaan_id = $id_keasramaan;
+                        $m->save();
+                    }
 
-        if (Yii::$app->request->post()) {
-            foreach ($model as $m) {
-                $m->status_request_id = 3;
-                $m->keasramaan_id = $id_keasramaan;
-                $m->save();
+                    if ($m->save()) {
+                        \Yii::$app->messenger->addSuccessFlash("Izin bermalam telah ditolak");
+                        return $this->redirect(['izin-by-admin-index']);
+                    } else {
+                        return $this->render('IzinByAdminIndex');
+                    }
+                } else {
+                    return $this->render('IzinByAdminIndex');
+                }
             }
-
-            if ($m->save()) {
-                \Yii::$app->messenger->addSuccessFlash("Izin bermalam telah ditolak");
-                return $this->redirect(['izin-by-admin-index']);
-            } else {
-                return $this->render('IzinByAdminIndex');
-            }
-        } else {
-            return $this->render('IzinByAdminIndex');
         }
+
+        \Yii::$app->messenger->addWarningFlash("Anda belum terdaftar di data kepegawaian IT Del, hubungi HRD untuk memasukkan data Pegawai anda");
+        return $this->redirect(['izin-by-admin-index']);
+
     }
 
     /**

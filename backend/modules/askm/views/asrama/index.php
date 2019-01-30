@@ -7,7 +7,7 @@ use yii\widgets\Pjax;
 use common\helpers\LinkHelper;
 use yii\helpers\ArrayHelper;
 use common\components\ToolsColumn;
-
+use backend\modules\askm\models\Asrama;
 /* @var $this yii\web\View */
 /* @var $searchModel backend\modules\askm\models\search\AsramaSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -15,10 +15,11 @@ use common\components\ToolsColumn;
 $this->title = 'Asrama';
 $this->params['breadcrumbs'][] = $this->title;
 $uiHelper=\Yii::$app->uiHelper;
+$asramaCount = Asrama::find()->andWhere('deleted != 1')->all();
 ?>
 <div class="asrama-index">
 
-     <div class="pull-right">
+    <div class="pull-right">
         Pengaturan
         <div class="btn-group">
             <button type="button" class="btn btn-default btn-flat btn-set btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="true"><span style="font-size: 18px;" class="fa fa-gear"></span>
@@ -28,7 +29,10 @@ $uiHelper=\Yii::$app->uiHelper;
                     <a href="<?= Url::to(['asrama/add']) ?>"><i class="fa fa-plus"></i>Tambah Asrama</a>
                 </li>
                 <li>
-                    <a href="<?= Url::to(['asrama/import-excel']) ?>"><i class="fa fa-upload"></i>Import Excel</a>
+                    <a href="<?= Url::to(['asrama/import-excel']) ?>"><i class="fa fa-upload"></i>Import Mahasiswa</a>
+                </li>
+                <li>
+                    <a href="<?= Url::to(['asrama/template-excel']) ?>"><i class="fa fa-file"></i>Download Template</a>
                 </li>
             </ul>
         </div>
@@ -39,89 +43,38 @@ $uiHelper=\Yii::$app->uiHelper;
 
     <?= $uiHelper->renderLine(); ?>
 
+    <?=$uiHelper->beginContentRow() ?>
+
+        <?php
+            $i = 0;
+            foreach ($asramaCount as $row) {
+                $i++;
+        ?>
+
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-primary">
+                <div class="inner">
+
+                    <h1><?php echo $row->name; ?></h1>
+
+                <div class="icon">
+                    <h1 style="color: #fff;">
+                        <?php echo $row->jumlah_mahasiswa; ?>/<?php echo $row->kapasitas; ?>
+                    </h1>
+                </div>
+
+                    <p><?php echo $row->lokasi; ?></p>
+                </div>
+                <a href="<?= Url::to(['asrama/view-detail-asrama', 'id' => $row->asrama_id]) ?>" class="small-box-footer">Lihat <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+
     <?php
-    Pjax::begin();
-    echo GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            // 'asrama_id',
-            [
-                'attribute' => 'name',
-                'label' => 'Nama Asrama',
-                'format' => 'raw',
-                'value' => function($data){
-                    return LinkHelper::renderLink([
-                            'label' => '<strong>'.$data['name'].'</strong>',
-                            'url' => Url::to(['view-detail-asrama', 'id' => $data['asrama_id']]),
-                        ]);
-                }
-            ],
-            'lokasi',
-            [
-                'attribute' => 'jumlah_mahasiswa',
-                'label' => 'Jumlah Mahasiswa',
-                'value' => function($data){
-                    return $data['jumlah_mahasiswa'].' orang';
-                }
-            ],
-            [
-                'attribute' => 'kapasitas',
-                'label' => 'Kapasitas Maksimal',
-                'value' => function($data){
-                    return $data['kapasitas'].' orang';
-                }
-            ],
-            // 'deleted',
-            // 'deleted_at',
-            // 'deleted_by',
-            // 'created_at',
-            // 'created_by',
-            // 'updated_at',
-            // 'updated_by',
-
-            ['class' => 'common\components\ToolsColumn',
-                'template' => '{edit} {keasramaan} {kamar} {export} {delete-asrama}',
-                'header' => 'Aksi',
-                'buttons' => [
-                    'keasramaan' => function ($url, $model){
-                        return ToolsColumn::renderCustomButton($url, $model, 'Tambah Pengurus', 'fa fa-users');
-                    },
-                    'edit' => function ($url, $model){
-                        return ToolsColumn::renderCustomButton($url, $model, 'Edit Asrama', 'fa fa-pencil');
-                    },
-                    'kamar' => function ($url, $model){
-                        return ToolsColumn::renderCustomButton($url, $model, 'Daftar Kamar', 'fa fa-list');
-                    },
-                    'export' => function ($url, $model){
-                        return ToolsColumn::renderCustomButton($url, $model, 'Export Data Penghuni', 'fa fa-upload');
-                    },					
-					'delete-asrama' => function ($url, $model){
-                        return ToolsColumn::renderCustomButton($url, $model, 'Hapus Asrama', 'fa fa-trash');
-                    },
-                ],
-                'urlCreator' => function ($action, $model, $key, $index){
-                    if ($action === 'view') {
-                        return Url::toRoute(['view-detail-asrama', 'id' => $key]);
-                    }else if ($action === 'edit') {
-                        return Url::toRoute(['edit', 'id' => $key]);
-                    }else if ($action === 'keasramaan') {
-                        return Url::toRoute(['keasramaan/add-pengurus', 'id_asrama' => $key]);
-                    }else if ($action === 'kamar') {
-                        return Url::toRoute(['kamar/index', 'KamarSearch[asrama_id]' => $key, 'id_asrama' => $key]);
-                    }else if($action==='export'){
-                        return Url::toRoute(['export-excel', 'asrama_id' => $key]);
-                    }else if($action==='delete-asrama'){
-						return Url::toRoute(['del', 'asrama_id' => $key]);
-					}
-
-                }
-            ],
-        ],
-    ]); 
-    Pjax::end();
+        }
     ?>
+
+
+    <?=$uiHelper->endContentRow() ?>
 
 </div>

@@ -19,7 +19,9 @@ $pegawai = Pegawai::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$
 
 <div class="izin-bermalam-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+                                'enableAjaxValidation' => true,
+                            ]); ?>
 
     <div class="row">
         <div class="col-md-6 col-sm-6">

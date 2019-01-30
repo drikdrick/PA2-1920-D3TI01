@@ -82,8 +82,8 @@ Versi minimum php yang didukung adalah 5.6 tetapi anda diharuskan menggunakan PH
 INSTALLATION
 ------------
 
-1. Clone proyek dari gitlab
-2. Siapkan database CIS dengan menggunakan struktur yang telah diberikan (database hanya memiliki tabel kosong)
+1. Clone proyek dari gitlab: `git clone -b pa3_1819 https://gitlab.del.ac.id/tambun/cis-lite.git`
+2. Siapkan database CIS dengan menggunakan struktur yang telah diberikan (ada di issue "Standar Teknis & Struktur DB: https://gitlab.del.ac.id/tambun/cis-lite/issues/3)
 2. Ikuti panduan GETTING STARTED yii dibawah (panduan Yii 2)
 3. login menggunakan user: root, password:root
 
@@ -100,8 +100,16 @@ the installed application. You only need to do these once for all.
 
 - for backend `/path/to/yii-application/backend/web/` and using the URL `http://backend/`
 
+NOTES!
+--------
+1. Setelah berhasil masuk ke halaman Home, aset perlu di download terlebih dahulu
+2. Pada file `backend/themes/v2/assets/V2Asset.php` ubah nilai variabel `forceCopy` menjadi `true`
+3. Lalu refresh halaman Home beberapa kali (untuk men-download asset) sampai tidak ada lagi error pada `Inspect element -> Console` (di browser Chrome)
+4. Ubah kembali nilai variabel `forceCopy` menjadi `false`, agar load tidak lama
+
 MASALAH?
 --------
 
-Jika ada masalah, silahkan buat create sebagai issue di proyek gitlab ini. TIM SDI tidak melayani pertanyaan pribadi. Tujuaanya supaya pertanyaan/solusi yang ada bisa digunakan oleh orang lain yang mungkin memiliki masalah yang sama.
+Jika ada masalah, silahkan buat create sebagai issue di proyek gitlab ini. Tujuaanya supaya pertanyaan/solusi yang ada bisa digunakan oleh orang lain yang mungkin memiliki masalah yang sama.
+Lihat juga issues versi public project ini di `https://gitlab.del.ac.id/itd-x/cis-lite/issues`
 
