@@ -65,19 +65,16 @@ $uiHelper=\Yii::$app->uiHelper;
                 },
                 'columns' => [
                     ['class' => 'yii\grid\SerialColumn'],
-                    // 'izin_bermalam_id',
-                    // 'dim_id',
-                    // 'rencana_berangkat',
-                    // 'rencana_kembali',
-                    // 'realisasi_berangkat',
-                    // 'realisasi_kembali',
-                    'desc:ntext',
-                    'tujuan',            
-                    // 'keasramaan_id',
+                    
                     [
-                    'attribute' => 'keasramaan_id',
-                    'label' => 'Disetujui oleh',
-                    'value' => function($model){
+                        'attribute' => 'status_request_id',
+                        'label' => 'Status Permohonan',
+                        'value' => 'statusRequest.status_request',
+                    ],
+                    [
+                        'attribute' => 'keasramaan_id',
+                        'label' => 'Oleh',
+                        'value' => function($model){
                             if (is_null($model->pegawai['nama'])) {
                                 return '-';
                             }else{
@@ -85,14 +82,8 @@ $uiHelper=\Yii::$app->uiHelper;
                             }
                         }
                     ],
-                    [
-                    'attribute' => 'status_request_id',
-                    'label' => 'Status request',
-                    'value' => 'statusRequest.status_request',
-                    ],
-                    // 'izin_laptop_id',
-
-                    // ['class' => 'yii\grid\ActionColumn','header' => 'Action',],
+                    'desc:ntext',
+                    'tujuan',
                     ['class' => 'common\components\ToolsColumn',
                         'template' => '{view} {edit} {cancel} {print}',
                         'header' => 'Aksi',

@@ -1,47 +1,75 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
-
+use yii\bootstrap\ActiveForm;
+use yii\helpers\ArrayHelper;
+$uiHelper = \Yii::$app->uiHelper;
 /* @var $this yii\web\View */
-/* @var $model backend\modules\askm\models\search\LogMahasiswaSearch */
+/* @var $model backend\modules\dimx\models\search\DimSearch */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="log-mahasiswa-search">
+<div class="dim-search">
 
     <?php $form = ActiveForm::begin([
-        'action' => ['index'],
-        'method' => 'get',
+        'layout' => 'horizontal',
+        'method'=>'get',
+        'fieldConfig' => [
+        'template' => "{label}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}",
+            'horizontalCssClasses' => [
+            'label' => 'col-md-3',
+            'offset' => 'col-md-offset-12',
+            'wrapper' => 'col-md-12',
+            'error' => '',
+            'hint' => '',
+        ],
+    ],
     ]); ?>
 
-    <?= $form->field($model, 'log_mahasiswa_id') ?>
+<?=$uiHelper->beginContentRow() ?>
+        <?= $uiHelper->beginContentBlock(['id' => 'grid-system1',
+            'width' => 6,
+        ]) ?>
+                
+                <?= $form->field($searchModel, 'dim_nama', [
+                        'horizontalCssClasses' => ['wrapper' => 'col-sm-8',],
+                        'inputOptions' => ['placeHolder'=>'Nama Mahasiswa',]
+                    ])->label('Nama');
+                ?>
+                <?= $form->field($searchModel, 'dim_asrama',[
+                            'horizontalCssClasses' => ['wrapper' => 'col-sm-8',],
+                        ])->dropDownList(ArrayHelper::map($asrama, 'asrama_id', 'name'),
+                            ['prompt'=>'All']) 
+                        ->label ('Asrama');
+                    ?>
+        <?=$uiHelper->endContentBlock()?>
 
-    <?= $form->field($model, 'dim_id') ?>
 
-    <?= $form->field($model, 'tanggal_keluar') ?>
+        <?= $uiHelper->beginContentBlock(['id' => 'grid-system2',
+            'width' => 6,
+        ]) ?>  
+                    <?= $form->field($searchModel, 'dim_prodi',[
+                            'horizontalCssClasses' => ['wrapper' => 'col-sm-8',],
+                        ])->dropDownList(ArrayHelper::map($prodi, 'ref_kbk_id', 'kbk_ind', 'jenjangId.nama'),
+                            ['prompt'=>'All']) 
+                        ->label ('Prodi');
+                    ?>
+                    <?= $form->field($searchModel, 'dim_dosen',[
+                            'horizontalCssClasses' => ['wrapper' => 'col-sm-8',],
+                        ])->dropDownList(ArrayHelper::map($dosen_wali, 'dosen_wali_id', 'dosenWali.nama'),
+                            ['prompt'=>'All']) 
+                        ->label ('Dosen Wali');
+                    ?>
+        <?=$uiHelper->endContentBlock()?>
+<?=$uiHelper->endContentRow() ?>
 
-    <?= $form->field($model, 'tanggal_masuk') ?>
-
-    <?= $form->field($model, 'deleted') ?>
-
-    <?php // echo $form->field($model, 'deleted_at') ?>
-
-    <?php // echo $form->field($model, 'deleted_by') ?>
-
-    <?php // echo $form->field($model, 'created_at') ?>
-
-    <?php // echo $form->field($model, 'created_by') ?>
-
-    <?php // echo $form->field($model, 'updated_at') ?>
-
-    <?php // echo $form->field($model, 'updated_by') ?>
-
+<?=$uiHelper->beginContentRow() ?>
     <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
+        <div class='col-sm-offset-4 col-sm-1'></div>
+            <?= Html::submitButton('Cari', ['class' => 'btn btn-primary']) ?>
+            <?= Html::a('Hapus', ['index'], ['class' => 'btn btn-default']) ?>
     </div>
-
+<?=$uiHelper->endContentRow() ?>
     <?php ActiveForm::end(); ?>
 
 </div>

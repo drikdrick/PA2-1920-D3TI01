@@ -76,7 +76,8 @@ class IzinBermalam extends \yii\db\ActiveRecord
             [['deleted_by', 'created_by', 'updated_by'], 'string', 'max' => 32],
             [['keasramaan_id'], 'exist', 'skipOnError' => true, 'targetClass' => Pegawai::className(), 'targetAttribute' => ['keasramaan_id' => 'pegawai_id']],
             [['status_request_id'], 'exist', 'skipOnError' => true, 'targetClass' => StatusRequest::className(), 'targetAttribute' => ['status_request_id' => 'status_request_id']],
-            [['dim_id'], 'exist', 'skipOnError' => true, 'targetClass' => Dim::className(), 'targetAttribute' => ['dim_id' => 'dim_id']]
+            [['dim_id'], 'exist', 'skipOnError' => true, 'targetClass' => Dim::className(), 'targetAttribute' => ['dim_id' => 'dim_id']],
+            [['rencana_kembali'], 'isAfterBerangkat'],
         ];
     }
 
@@ -104,6 +105,12 @@ class IzinBermalam extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
             'updated_by' => 'Updated By',
         ];
+    }
+
+    public function isAfterBerangkat($attribute, $params)
+    {
+        if(strtotime($this->rencana_kembali)<=strtotime($this->rencana_berangkat))
+            $this->addError($attribute, 'Tidak boleh lebih awal atau sama dengan Rencana Berangkat !');
     }
 
     /**

@@ -9,6 +9,8 @@ use common\components\SwitchColumn;
 use common\components\ToolsColumn;
 use common\helpers\LinkHelper;
 use backend\modules\askm\models\StatusRequest;
+use backend\modules\askm\models\Pedoman;
+use dosamigos\datetimepicker\DateTimePicker;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\modules\askm\models\search\IzinTambahanJamKolaboratifSearch */
@@ -18,6 +20,7 @@ $this->title = 'Izin Tambahan Jam Kolaboratif';
 $this->params['breadcrumbs'][] = $this->title;
 $this->params['header'] = 'Izin Tambahan Jam Kolaboratif';
 $status_url = urldecode('IzinKolaboratifSearch%5Bstatus_request_id%5D');
+$pedoman = Pedoman::find()->where('deleted!=1')->andWhere(['jenis_izin' => 4])->one();
 
 $uiHelper=\Yii::$app->uiHelper;
 ?>
@@ -42,6 +45,7 @@ $uiHelper=\Yii::$app->uiHelper;
             <a href='".Url::to(['izin-by-mahasiswa-index', $status_url => 1])."' class='btn btn-info ".$status2."'><i class='fa fa-info'></i><span class='toolbar-label'>Requested</span></a>
             <a href='".Url::to(['izin-by-mahasiswa-index', $status_url => 2])."' class='btn btn-success ".$status3."'><i class='fa fa-check'></i><span class='toolbar-label'>Accepted</span></a>
             <a href='".Url::to(['izin-by-mahasiswa-index', $status_url => 3])."' class='btn btn-danger ".$status4."'><i class='fa fa-ban'></i><span class='toolbar-label'>Rejected</span></a>
+            <a href='".Url::to(['izin-by-mahasiswa-index', $status_url => 4])."' class='btn btn-warning ".$status4."'><i class='fa fa-times'></i><span class='toolbar-label'>Rejected</span></a>
             "
             ;
 
@@ -78,14 +82,62 @@ $uiHelper=\Yii::$app->uiHelper;
             ['class' => 'yii\grid\SerialColumn'],
 
             // 'izin_kolaboratif_id',
-            // [
-            // 'attribute' => 'dim_id',
-            // 'label' => 'Nama Mahasiswa',
-            // 'value' => 'dim.nama',
-            // ],
-            'rencana_mulai',
-            'rencana_berakhir',
-            'batas_waktu',
+            [
+                'attribute'=>'rencana_mulai',
+                'label' => 'Rencana Mulai',
+                'format'=> 'raw',
+                'headerOptions' => ['style' => 'color:#3c8dbc'],
+                'value'=>function($model,$key,$index){
+                    if($model->rencana_mulai==NULL){
+                        return '-';
+                    }
+                    else{
+                        return date('d M Y', strtotime($model->rencana_mulai));
+                    }
+                },
+                'filter'=>DateTimePicker::widget([
+                    'model'=>$searchModel,
+                    'attribute'=>'rencana_mulai',
+                    'template'=>'{input}{reset}{button}',
+                        'clientOptions' => [
+                            'startView' => 2,
+                            'minView' => 2,
+                            'maxView' => 2,
+                            'autoclose' => true,
+                            'format' => 'yyyy-mm-dd',
+                        ],
+                ])
+            ],
+            [
+                'attribute'=>'rencana_berakhir',
+                'label' => 'Rencana Berakhir',
+                'format'=> 'raw',
+                'headerOptions' => ['style' => 'color:#3c8dbc'],
+                'value'=>function($model,$key,$index){
+                    if($model->rencana_berakhir==NULL){
+                        return '-';
+                    }
+                    else{
+                        return date('d M Y', strtotime($model->rencana_berakhir));
+                    }
+                },
+                'filter'=>DateTimePicker::widget([
+                    'model'=>$searchModel,
+                    'attribute'=>'rencana_berakhir',
+                    'template'=>'{input}{reset}{button}',
+                        'clientOptions' => [
+                            'startView' => 2,
+                            'minView' => 2,
+                            'maxView' => 2,
+                            'autoclose' => true,
+                            'format' => 'yyyy-mm-dd',
+                        ],
+                ])
+            ],
+            [
+                'attribute' => 'batas_waktu',
+                'value' => function($model){return date('H:i', strtotime($model->batas_waktu));},
+            ],
             'desc:ntext',
             // [
             //     'attribute'=>'status_request_id',
@@ -132,5 +184,20 @@ $uiHelper=\Yii::$app->uiHelper;
             ],
         ],
     ]); ?>
+
+    <?=$uiHelper->beginContentRow() ?>
+
+        <?=$uiHelper->beginContentBlock(['id' => 'grid-system2',
+            'header' => $pedoman->judul,
+            'type' => 'danger',
+            'width' => 12,
+        ]); ?>
+
+        <?= $pedoman->isi ?>
+
+        <?= $uiHelper->endContentBlock()?>
+
+    <?=$uiHelper->endContentRow() ?>
+    
 </div>
 

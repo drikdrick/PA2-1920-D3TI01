@@ -18,6 +18,8 @@ use yii\widgets\ActiveForm;
 
             <?= $form->field($model, 'lokasi')->textInput(['maxlength' => true]) ?>
 
+            <?= $form->field($model, 'desc')->textInput(['maxlength' => true]) ?>
+
             <?= $form->field($model, 'kapasitas')->textInput() ?>
         </div>
     </div>

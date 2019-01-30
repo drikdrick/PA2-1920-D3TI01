@@ -12,6 +12,10 @@ use backend\modules\askm\models\Keasramaan;
  */
 class KeasramaanSearch extends Keasramaan
 {
+    public $nama_keasramaan;
+    public $foto_keasramaan;
+    public $telepon_keasramaan;
+
     /**
      * @inheritdoc
      */
@@ -19,7 +23,7 @@ class KeasramaanSearch extends Keasramaan
     {
         return [
             [['keasramaan_id', 'asrama_id', 'pegawai_id', 'deleted'], 'integer'],
-            [['deleted_at', 'deleted_by', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'safe'],
+            [['telepon_keasramaan', 'no_hp', 'email', 'deleted_at', 'deleted_by', 'created_at', 'created_by', 'updated_at', 'updated_by', 'nama_keasramaan', 'foto_keasramaan'], 'safe'],
         ];
     }
 
@@ -42,15 +46,21 @@ class KeasramaanSearch extends Keasramaan
     public function search($params)
     {
         $query = Keasramaan::find();
+        $query->joinWith(['pegawai']);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'pagination' => [
-                'pageSize' => 15,
-            ],
-            'sort' => ['defaultOrder' => ['updated_at' => SORT_DESC, 'created_at' => SORT_DESC]],
-
         ]);
+
+        $dataProvider->sort->attributes['nama_keasramaan'] = [
+            'asc' => ['hrdx_pegawai.nama' => SORT_ASC],
+            'desc' => ['hrdx_pegawai.nama' => SORT_DESC],
+        ];
+
+        $dataProvider->sort->attributes['telepon_keasramaan'] = [
+            'asc' => ['hrdx_pegawai.telepon' => SORT_ASC],
+            'desc' => ['hrdx_pegawai.telepon' => SORT_DESC],
+        ];
 
         $this->load($params);
 
@@ -70,10 +80,14 @@ class KeasramaanSearch extends Keasramaan
             'updated_at' => $this->updated_at,
         ]);
 
-        $query->andFilterWhere(['like', 'deleted_by', $this->deleted_by])
+        $query->andFilterWhere(['like', 'no_hp', $this->no_hp])
+            ->andFilterWhere(['like', 'email', $this->email])
+            ->andFilterWhere(['like', 'hrdx_pegawai.nama', $this->nama_keasramaan])
+            ->andFilterWhere(['like', 'hrdx_pegawai.telepon', $this->telepon_keasramaan])
+            ->andFilterWhere(['like', 'deleted_by', $this->deleted_by])
             ->andFilterWhere(['like', 'created_by', $this->created_by])
             ->andFilterWhere(['like', 'updated_by', $this->updated_by])
-            ->andFilterWhere(['not', ['deleted' => 1]]);
+            ->andFilterWhere(['not', ['askm_keasramaan.deleted' => 1]]);
 
         return $dataProvider;
     }

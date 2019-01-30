@@ -12,6 +12,7 @@ use backend\modules\askm\models\IzinKolaboratif;
  */
 class IzinKolaboratifSearch extends IzinKolaboratif
 {
+    public $dim_nama;
     /**
      * @inheritdoc
      */
@@ -19,7 +20,7 @@ class IzinKolaboratifSearch extends IzinKolaboratif
     {
         return [
             [['izin_kolaboratif_id', 'dim_id', 'status_request_id', 'baak_id', 'deleted'], 'integer'],
-            [['rencana_mulai', 'rencana_berakhir', 'batas_waktu', 'desc', 'deleted_at', 'deleted_by', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'safe'],
+            [['dim_nama', 'rencana_mulai', 'rencana_berakhir', 'batas_waktu', 'desc', 'deleted_at', 'deleted_by', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'safe'],
         ];
     }
 
@@ -50,12 +51,16 @@ class IzinKolaboratifSearch extends IzinKolaboratif
                 'pageSize' => 15,
             ],
             'sort' => ['defaultOrder' => [
-                'status_request_id' => SORT_ASC, 
-                'updated_at' => SORT_DESC, 
-                'created_at' => SORT_DESC
+                'created_at' => SORT_DESC,
+                'status_request_id' => SORT_ASC,
             ]],
 
         ]);
+
+        $dataProvider->sort->attributes['dim_nama'] = [
+            'asc' => ['dimx_dim.nama' => SORT_ASC],
+            'desc' => ['dimx_dim.nama' => SORT_DESC],
+        ];
 
         $this->load($params);
 
@@ -80,6 +85,7 @@ class IzinKolaboratifSearch extends IzinKolaboratif
         ]);
 
         $query->andFilterWhere(['like', 'desc', $this->desc])
+            ->andFilterWhere(['like', 'dimx_dim.nama', $this->dim_nama])
             ->andFilterWhere(['like', 'deleted_by', $this->deleted_by])
             ->andFilterWhere(['like', 'created_by', $this->created_by])
             ->andFilterWhere(['like', 'updated_by', $this->updated_by])
@@ -100,9 +106,8 @@ class IzinKolaboratifSearch extends IzinKolaboratif
                 'pageSize' => 15,
             ],
             'sort' => ['defaultOrder' => [
-                'status_request_id' => SORT_ASC, 
-                'updated_at' => SORT_DESC, 
-                'created_at' => SORT_DESC
+                'created_at' => SORT_DESC,
+                'status_request_id' => SORT_ASC,
             ]],
 
         ]);

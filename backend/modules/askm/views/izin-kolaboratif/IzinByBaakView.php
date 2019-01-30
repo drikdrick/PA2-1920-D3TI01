@@ -48,11 +48,29 @@ $baak = Pegawai::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$app
             // 'izin_kolaboratif_id',
             'dim.nama',
             'desc:ntext',
-            'rencana_mulai',
-            'rencana_berakhir',
+            [
+                'attribute' => 'rencana_mulai',
+                'value' => function($model){
+                    if (is_null($model->rencana_mulai)) {
+                        return '-';
+                    }else{
+                        return date('d M Y', strtotime($model->rencana_mulai));
+                    }
+                }
+            ],
+            [
+                'attribute' => 'rencana_berakhir',
+                'value' => function($model){
+                    if (is_null($model->rencana_berakhir)) {
+                        return '-';
+                    }else{
+                        return date('d M Y', strtotime($model->rencana_berakhir));
+                    }
+                }
+            ],
             'batas_waktu',
             'statusRequest.status_request',
-            ['label' => 'Disetujui oleh', 'value' => function($model){
+            ['label' => $status, 'value' => function($model){
                     if (is_null($model->baak['nama'])) {
                         return '-';
                     }else{

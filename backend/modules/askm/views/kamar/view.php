@@ -41,12 +41,18 @@ $uiHelper=\Yii::$app->uiHelper;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
+            // [
+            //     'attribute' => 'dim_id',
+            //     'label' => 'Nama',
+            //     'value' => 'dim.nama'
+            // ],
             [
-                'attribute' => 'dim_id',
-                'label' => 'Nama',
-                'value' => 'dim.nama'
+                'attribute'=>'Nama Mahasiswa',
+                'format' => 'raw',
+                'value'=>function ($model) {
+                    return "<a href='".Url::toRoute(['/dimx/dim/mahasiswa-view', 'dim_id' => $model->dim_id])."'>".$model->dim->nama."</a>";
+                },
             ],
-
             ['class' => 'yii\grid\ActionColumn',
                 'template' => '{del}',
                 'contentOptions' => ['style' => 'width: 8.7%'],

@@ -27,6 +27,8 @@ use common\behaviors\DeleteBehavior;
  */
 class LogMahasiswa extends \yii\db\ActiveRecord
 {
+    public $realisasi_berangkat;
+    public $realisasi_kembali;
 
     /**
      * behaviour to add created_at and updatet_at field with current datetime (timestamp)
@@ -61,7 +63,7 @@ class LogMahasiswa extends \yii\db\ActiveRecord
     {
         return [
             [['dim_id', 'deleted'], 'integer'],
-            [['tanggal_keluar', 'tanggal_masuk', 'deleted_at', 'created_at', 'updated_at'], 'safe'],
+            [['realisasi_berangkat', 'realisasi_kembali', 'tanggal_keluar', 'tanggal_masuk', 'deleted_at', 'created_at', 'updated_at'], 'safe'],
             [['deleted_by', 'created_by', 'updated_by'], 'string', 'max' => 32],
             [['dim_id'], 'exist', 'skipOnError' => true, 'targetClass' => Dim::className(), 'targetAttribute' => ['dim_id' => 'dim_id']]
         ];
@@ -85,6 +87,15 @@ class LogMahasiswa extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
             'updated_by' => 'Updated By',
         ];
+    }
+
+    public function afterFind(){
+        parent::afterFind();
+
+        $this->realisasi_berangkat = $this->tanggal_keluar;
+        $this->realisasi_kembali = $this->tanggal_masuk;
+
+        return true;
     }
 
     /**

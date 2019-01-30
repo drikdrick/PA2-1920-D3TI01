@@ -10,6 +10,7 @@ use common\components\ToolsColumn;
 use common\helpers\LinkHelper;
 use backend\modules\askm\models\Lokasi;
 use backend\modules\askm\models\Pegawai;
+use backend\modules\askm\models\Pedoman;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\modules\askm\models\search\IzinRuanganSearch */
@@ -19,6 +20,7 @@ $this->title = 'Daftar Izin';
 $this->params['breadcrumbs'][] = ['label' => 'Izin Penggunaan Ruangan', 'url' => ['index-baak']];
 $this->params['breadcrumbs'][] = $this->title;
 $this->params['header'] = 'Izin Penggunaan Ruangan';
+$pedoman = Pedoman::find()->where('deleted!=1')->andWhere(['jenis_izin' => 3])->one();
 
 $status_url = urldecode('IzinRuanganSearch%5Bstatus_request_id%5D');
 $uiHelper=\Yii::$app->uiHelper;
@@ -39,6 +41,7 @@ $uiHelper=\Yii::$app->uiHelper;
             <a href='".Url::to(['izin-ruangan/izin-by-baak-index', $status_url => 1])."' class='btn btn-info ".$status2."'><i class='fa fa-info'></i><span class='toolbar-label'>Requested</span></a>
             <a href='".Url::to(['izin-ruangan/izin-by-baak-index', $status_url => 2])."' class='btn btn-success ".$status3."'><i class='fa fa-check'></i><span class='toolbar-label'>Accepted</span></a>
             <a href='".Url::to(['izin-ruangan/izin-by-baak-index', $status_url => 3])."' class='btn btn-danger ".$status4."'><i class='fa fa-ban'></i><span class='toolbar-label'>Rejected</span></a>
+            <a href='".Url::to(['izin-by-baak-index', $status_url => 4])."' class='btn btn-warning ".$status4."'><i class='fa fa-times'></i><span class='toolbar-label'>Canceled</span></a>
             "
             ;
 
@@ -73,12 +76,14 @@ $uiHelper=\Yii::$app->uiHelper;
         },
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
-            // 'izin_tambahan_jam_kolaboratif_id',
+            
             [
-            'attribute' => 'dim_nama',
-            'label' => 'Nama Mahasiswa',
-            'value' => 'dim.nama',
+                'attribute' => 'dim_nama',
+                'label'=>'Nama Mahasiswa',
+                'format' => 'raw',
+                'value'=>function ($model) {
+                    return "<a href='".Url::toRoute(['/dimx/dim/mahasiswa-view', 'dim_id' => $model->dim_id])."'>".$model->dim->nama."</a>";
+                },
             ],
             'rencana_mulai',
             'rencana_berakhir',
@@ -90,14 +95,6 @@ $uiHelper=\Yii::$app->uiHelper;
                 'filterInputOptions' => ['class' => 'form-control', 'id' => null, 'prompt' => 'ALL'],
                 'value' => 'lokasi.name',
             ],
-            // 'status_request_id',
-            // [
-            //     'attribute'=>'status_request_id',
-            //     'label' => 'Status Request',
-            //     'filter'=>ArrayHelper::map(StatusRequest::find()->asArray()->all(), 'status_request_id', 'status_request'),
-            //     'value' => 'statusRequest.status_request',
-            // ],
-            // 'baak_id',
 
             ['class' => 'common\components\ToolsColumn',
                 'template' => '{view} {approve} {reject}',
@@ -145,5 +142,19 @@ $uiHelper=\Yii::$app->uiHelper;
             ],
         ],
     ]); ?>
+
+    <?=$uiHelper->beginContentRow() ?>
+
+        <?=$uiHelper->beginContentBlock(['id' => 'grid-system2',
+            'header' => $pedoman->judul,
+            'type' => 'danger',
+            'width' => 12,
+        ]); ?>
+
+        <?= $pedoman->isi ?>
+
+        <?= $uiHelper->endContentBlock()?>
+
+    <?=$uiHelper->endContentRow() ?>
 </div>
 

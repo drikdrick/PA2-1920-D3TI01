@@ -7,17 +7,16 @@ use yii\grid\GridView;
 /* @var $searchModel backend\modules\askm\models\search\KeasramaanPegawaiSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Keasramaan Pegawais';
+$this->title = 'Daftar Pembina Asrama '. $asrama->name;
+$this->params['breadcrumbs'][] = ['label' => 'Data Penghuni Asrama', 'url' => ['asrama/index-all']];
 $this->params['breadcrumbs'][] = $this->title;
+$uiHelper=\Yii::$app->uiHelper;
 ?>
 <div class="keasramaan-pegawai-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <?= $uiHelper->renderContentSubHeader($this->title);?>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <p>
-        <?= Html::a('Create Keasramaan Pegawai', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+    <?= $uiHelper->renderLine(); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -25,18 +24,37 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'keasramaan_id',
-            'asrama_id',
-            'pegawai_id',
-            'deleted',
-            'deleted_at',
-            // 'deleted_by',
-            // 'created_at',
-            // 'created_by',
-            // 'updated_at',
-            // 'updated_by',
+            [
+                'attribute' => 'nama_keasramaan',
+                'label' => 'Nama',
+                'value' => 'pegawai.nama',
+            ],
+            [
+                'attribute' => 'no_hp',
+                'label' => 'No. HP',
+                'value' => 'no_hp',
+            ],
+            [
+                'attribute' => 'telepon_keasramaan',
+                'label' => 'Telepon',
+                'value' => 'pegawai.telepon',
+            ],
+            [
+                'attribute' => 'email',
+                'label' => 'Email',
+                'value' => 'email',
+            ],
 
-            ['class' => 'yii\grid\ActionColumn'],
+            ['class' => 'yii\grid\ActionColumn',
+                'template' => '{view}',
+                // 'contentOptions' => ['style' => 'width: 8.7%'],
+                'buttons'=>[
+                    'view'=>function ($url, $model, $key) {
+                        return Html::a('Lihat', ['view-only', 'id' => $key], [
+                            'class' => 'btn btn-primary',]);
+                    },
+                ],
+            ],
         ],
     ]); ?>
 

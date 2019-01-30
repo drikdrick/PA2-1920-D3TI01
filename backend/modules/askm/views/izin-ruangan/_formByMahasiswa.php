@@ -10,6 +10,8 @@ use backend\modules\askm\models\Dim;
 /* @var $this yii\web\View */
 /* @var $model backend\modules\askm\models\IzinTambahanJamKolaboratif */
 /* @var $form yii\widgets\ActiveForm */
+$datetime = new DateTime();
+$datetime->modify('+1 day');
 $dim = Dim::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$app->user->identity->user_id])->one();
 ?>
 
@@ -32,7 +34,7 @@ $dim = Dim::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$app->use
                     'autoclose' => true,
                     'format' => 'yyyy-mm-dd hh:ii:00', // if inline = false
                     // 'todayBtn' => true,
-                    'startDate' => date("Y-m-d"),
+                    'startDate' => date($datetime->format("Y-m-d")),
                 ]
             ]);?>
 
@@ -49,7 +51,7 @@ $dim = Dim::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$app->use
                     'autoclose' => true,
                     'format' => 'yyyy-mm-dd hh:ii:00', // if inline = false
                     // 'todayBtn' => true,
-                    'startDate' => date("Y-m-d"),
+                    'startDate' => date($datetime->format("Y-m-d")),
                 ]
             ]);?>
         </div>
@@ -63,7 +65,7 @@ $dim = Dim::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$app->use
 
     <div class="row">
         <div class="col-md-4">
-            <?= $form->field($model, 'lokasi_id')->dropDownList(ArrayHelper::map(Lokasi::find()->all(), 'lokasi_id', 'name'), ['prompt'=>'Pilih Ruangan'])?>
+            <?= $form->field($model, 'lokasi_id')->dropDownList(ArrayHelper::map(Lokasi::find()->where('deleted!=1')->all(), 'lokasi_id', 'name'), ['prompt'=>'Pilih Ruangan'])?>
         </div>
     </div>
 

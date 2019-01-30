@@ -65,34 +65,50 @@ $pegawai = Pegawai::find()->where('deleted != 1')->andWhere(['user_id' => Yii::$
             ['label' => 'Nama Mahasiswa', 'value' => $model->dim['nama']],
             ['label' => 'NIM Mahasiswa', 'value' => $model->dim['nim']],
             // ['label' => 'Asrama', 'value' => $model->dim->kamar->asrama['name']],
-            'rencana_berangkat',
-            'rencana_kembali',
+            [
+                'attribute' => 'rencana_berangkat',
+                'value' => function($model){
+                    if (is_null($model->rencana_berangkat)) {
+                        return '-';
+                    }else{
+                        return date('d M Y H:i', strtotime($model->rencana_berangkat));
+                    }
+                }
+            ],
+            [
+                'attribute' => 'rencana_kembali',
+                'value' => function($model){
+                    if (is_null($model->rencana_kembali)) {
+                        return '-';
+                    }else{
+                        return date('d M Y H:i', strtotime($model->rencana_kembali));
+                    }
+                }
+            ],
             [
                 'attribute' => 'realisasi_berangkat',
-                'label' => 'Realisasi Berangkat',
                 'value' => function($model){
                     if (is_null($model->realisasi_berangkat)) {
                         return '-';
                     }else{
-                        return $model->realisasi_berangkat;
+                        return date('d M Y H:i', strtotime($model->realisasi_berangkat));
                     }
                 }
             ],
             [
                 'attribute' => 'realisasi_kembali',
-                'label' => 'Realisasi Kembali',
                 'value' => function($model){
                     if (is_null($model->realisasi_kembali)) {
                         return '-';
                     }else{
-                        return $model->realisasi_kembali;
+                        return date('d M Y H:i', strtotime($model->realisasi_kembali));
                     }
                 }
             ],
             ['label' => 'Keperluan IB', 'value' => $model->desc],
             ['label' => 'Tempat Tujuan', 'value' => $model->tujuan],
             'statusRequest.status_request',
-            ['label' => 'Disetujui oleh', 'value' => function($model){
+            ['label' => $status, 'value' => function($model){
                 if (is_null($model->pegawai['nama'])) {
                     return '-';
                 }else{

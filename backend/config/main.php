@@ -23,6 +23,9 @@ return [
         'dashboard' => [
             'class' => 'backend\modules\dashboard\Dashboard',
         ],
+        'inst' => [
+            'class' => 'backend\modules\inst\Inst',
+        ],
     ],
     'components' => [
         'uiHelper' => [
