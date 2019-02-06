@@ -82,7 +82,7 @@ Versi minimum php yang didukung adalah 5.6 tetapi anda diharuskan menggunakan PH
 INSTALLATION
 ------------
 
-1. Clone proyek dari gitlab: `git clone -b pa3_1819 https://gitlab.del.ac.id/tambun/cis-lite.git`
+1. Clone proyek dari gitlab: `git clone -b development https://gitlab.del.ac.id/tambun/cis-lite.git`
 2. Siapkan database CIS dengan menggunakan struktur yang telah diberikan (ada di issue "Standar Teknis & Struktur DB: https://gitlab.del.ac.id/tambun/cis-lite/issues/3)
 2. Ikuti panduan GETTING STARTED yii dibawah (panduan Yii 2)
 3. login menggunakan user: root, password:root
