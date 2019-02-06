@@ -26,6 +26,21 @@ return [
         'inst' => [
             'class' => 'backend\modules\inst\Inst',
         ],
+        'askm' => [
+            'class' => 'backend\modules\askm\Askm',
+        ],
+        'cist' => [
+            'class' => 'backend\modules\cist\Cist',
+        ],
+        'hrdx' => [
+            'class' => 'backend\modules\hrdx\Hrdx',
+        ],
+        'invt' => [
+            'class' => 'backend\modules\invt\Invt',
+        ],
+        'rakx' => [
+            'class' => 'backend\modules\rakx\Rakx',
+        ],
     ],
     'components' => [
         'uiHelper' => [
