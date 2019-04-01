@@ -18,6 +18,8 @@ class LogMahasiswaSearch extends LogMahasiswa
     public $dim_prodi;
     public $dim_dosen;
     public $dim_asrama;
+    public $status;
+    public $jenis_log;
     /**
      * @inheritdoc
      */
@@ -25,7 +27,7 @@ class LogMahasiswaSearch extends LogMahasiswa
     {
         return [
             [['log_mahasiswa_id', 'dim_id', 'deleted', 'dim_asrama'], 'integer'],
-            [['realisasi_berangkat', 'realisasi_kembali', 'tanggal_keluar', 'tanggal_masuk', 'deleted_at', 'deleted_by', 'created_at', 'created_by', 'updated_at', 'updated_by', 'dim_nama', 'dim_prodi', 'dim_dosen'], 'safe'],
+            [['realisasi_berangkat', 'realisasi_kembali', 'tanggal_keluar', 'tanggal_masuk','status','jenis_log', 'deleted_at', 'deleted_by', 'created_at', 'created_by', 'updated_at', 'updated_by', 'dim_nama', 'dim_prodi', 'dim_dosen'], 'safe'],
         ];
     }
 
@@ -96,19 +98,13 @@ class LogMahasiswaSearch extends LogMahasiswa
             if($this->tanggal_masuk!=""){
                 $query->andFilterWhere(['like', 'askm_log_mahasiswa.tanggal_masuk',SUBSTR($this->tanggal_masuk,1,10)]);
             }
-
-            // if($this->dim_asrama!=""){
-            //     $asrama_id = (int)$this->dim_asrama;
-            //     $dim_arr = DimKamar::find()->where('askm_dim_kamar.deleted!=1')->orderBy(['askm_dim_kamar.created_at' => SORT_DESC])/*->groupBy(['askm_dim_kamar.dim_id'])*/->joinWith(['kamar' => function($query) use($asrama_id) {
-            //         $query->where('askm_kamar.deleted!=1')->andWhere(['asrama_id' => $asrama_id]);
-            //     }])->all();
-            //     $dim_arr = DimKamar::find()->where('askm_dim_kamar.deleted!=1')->orderBy(['askm_dim_kamar.created_at' => SORT_DESC])->distinct()->all();
-            //     foreach($dim_arr as $d){
-            //         echo $d->dim->nama.' - '.$d->kamar->asrama->name.'<br />';
-            //     }
-            //     die;
-            //     $query->andFilterWhere(['in', 'askm_log_mahasiswa.dim_id', $dim_arr]);
-            // }
+            // keluar kampus
+            if($this->status == 0){
+                $query->andFilterWhere(['is', 'askm_log_mahasiswa.tanggal_masuk', new \yii\db\Expression('null')]);
+            // dalam kampus 
+            }else if($this->status == 1){
+                $query->andFilterWhere(['not',['askm_log_mahasiswa.tanggal_masuk'=>new \yii\db\Expression('null')]]);
+            }
 
         return $dataProvider;
     }
@@ -162,6 +158,10 @@ class LogMahasiswaSearch extends LogMahasiswa
 
             if($this->tanggal_masuk!=""){
                 $query->andFilterWhere(['like', 'askm_log_mahasiswa.tanggal_masuk',SUBSTR($this->tanggal_masuk,1,10)]);
+            }
+
+            if($this->tanggal_keluar!=""){
+                $query->andFilterWhere(['like', 'askm_log_mahasiswa.tanggal_keluar',SUBSTR($this->tanggal_keluar,1,10)]);
             }
 
             if($this->dim_dosen!=""){

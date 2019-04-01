@@ -131,7 +131,7 @@ $uiHelper=\Yii::$app->uiHelper;
             ],
 
             ['class' => 'common\components\ToolsColumn',
-                'template' => '{view} {edit}',
+                'template' => '{view} {edit} {hapus}',
                 'header' => 'Aksi',
                 'buttons' => [
                     'view' => function ($url, $model){
@@ -142,6 +142,14 @@ $uiHelper=\Yii::$app->uiHelper;
                     },
                     'pemutihan' => function ($url, $model){
                         return ToolsColumn::renderCustomButton($url, $model, 'Tebus Dosa', 'fa fa-thumbs-up');
+                    },
+                    'hapus' => function ($url, $model){
+                        return "<li>".Html::a('<span class="fa fa-trash"></span> Hapus', $url, [
+                                        'title' => Yii::t('yii', 'Hapus'),
+                                        'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+                                        'data-method' => 'post',
+                                         'data-pjax' => '0',
+                                    ])."</li>";
                     }
                 ],
                 'urlCreator' => function ($action, $model, $key, $index){
@@ -151,6 +159,8 @@ $uiHelper=\Yii::$app->uiHelper;
                         return Url::toRoute(['dim-pelanggaran/edit', 'id' => $key, 'penilaian_id' => $model->penilaian_id]);
                     }else if ($action === 'pemutihan') {
                         return Url::toRoute(['poin-kebaikan/add', 'id' => $key]);
+                    }else if ($action === 'hapus'){
+                        return Url::toRoute(['dim-pelanggaran/del', 'id' => $key]);
                     }
                 }
             ],

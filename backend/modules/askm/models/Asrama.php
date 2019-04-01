@@ -112,17 +112,23 @@ class Asrama extends \yii\db\ActiveRecord
 
     public function afterFind(){
        parent::afterFind();
-
-       $komponen = Kamar::find()->where('deleted != 1')->andWhere(['asrama_id' => $this->asrama_id])->all();
-
-       $this->jumlah_mahasiswa = 0;
-       foreach($komponen as $k){
-            foreach ($k->dimKamar as $b) {
-                $this->jumlah_mahasiswa +=1;
-            }
-       }
+    
+       $this->jumlah_mahasiswa = $this->getJumlahMahasiswa();
 
        return true;
+    }
+
+    public function getJumlahMahasiswa(){
+        $query = DimKamar::find()->joinWith(['dim', 'kamar'])
+                ->where([
+                    'askm_dim_kamar.deleted' => 0,
+                    'askm_kamar.deleted' => 0,
+                    'askm_kamar.asrama_id' => $this->asrama_id,
+                ])
+                ->andWhere(['like', 'dimx_dim.status_akhir', 'Aktif'])
+                ->all();
+
+        return $query?count($query):0;
     }
 
 }

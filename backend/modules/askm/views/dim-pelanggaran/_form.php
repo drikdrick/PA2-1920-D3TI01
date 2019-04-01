@@ -6,6 +6,13 @@ use yii\helpers\ArrayHelper;
 use dosamigos\datetimepicker\DateTimePicker;
 use backend\modules\askm\models\Pembinaan;
 use backend\modules\askm\models\PoinPelanggaran;
+use common\widgets\Typeahead;
+use yii\helpers\Url;
+use backend\modules\askm\assets\web\php\Select2;
+
+
+$pelanggaran = PoinPelanggaran::find()->where('deleted!=1')->all();
+$data = ArrayHelper::map($pelanggaran, 'poin_id', 'name'); 
 
 /* @var $this yii\web\View */
 /* @var $model backend\modules\askm\models\DimPelanggaran */
@@ -14,12 +21,25 @@ use backend\modules\askm\models\PoinPelanggaran;
 
 <div class="dim-pelanggaran-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+
+    <?php $form = ActiveForm::begin();?>
 
     <div class="row">
+        <?php if(!$model->isNewRecord) {?>
+            <div class="col-md-6 col-sm-6">
+                <?= $form->field($model, 'poin_id')->dropDownList(ArrayHelper::map(PoinPelanggaran::find()->where('deleted!=1')->all(), 'poin_id', 'name'), ['prompt'=>'Poin Pelanggaran', 'disabled' => true,])?>
+            </div> 
+        <?php }else{ ?>
         <div class="col-md-6 col-sm-6">
-            <?= $form->field($model, 'poin_id')->dropDownList(ArrayHelper::map(PoinPelanggaran::find()->where('deleted!=1')->all(), 'poin_id', 'name'), ['prompt'=>'Poin Pelanggaran', 'disabled' => !$model->isNewRecord,])?>
+            <?= $form->field($model, 'poin_id')->widget(Select2::classname(), [
+                'data' => $data,
+                'options' => ['placeholder' => 'Pilih Pelanggaran ...'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]); ?>
         </div>
+        <?php }?> 
         <div class="col-md-6 col-sm-6">
             <?= $form->field($model, 'pembinaan_id')->dropDownList(ArrayHelper::map(Pembinaan::find()->where('deleted!=1')->all(), 'pembinaan_id', 'name'), ['prompt'=>'Pilih Pembinaan', 'disabled' => !$model->isNewRecord,])?>
         </div>
