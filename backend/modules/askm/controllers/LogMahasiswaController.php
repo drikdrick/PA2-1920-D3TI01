@@ -83,6 +83,12 @@ class LogMahasiswaController extends Controller
         if(isset(Yii::$app->request->queryParams['LogMahasiswaSearch']['dim_asrama'])){
             $searchModelIb->dim_asrama = Yii::$app->request->queryParams['LogMahasiswaSearch']['dim_asrama'];
         }
+        if(isset(Yii::$app->request->queryParams['LogMahasiswaSearch']['tanggal_masuk'])){
+            $searchModelIb->tanggal_masuk = Yii::$app->request->queryParams['LogMahasiswaSearch']['tanggal_masuk'];
+        }
+        if(isset(Yii::$app->request->queryParams['LogMahasiswaSearch']['tanggal_keluar'])){
+            $searchModelIb->tanggal_keluar = Yii::$app->request->queryParams['LogMahasiswaSearch']['tanggal_keluar'];
+        }
         $dataProviderIb = $searchModelIb->searchCombinedLog(Yii::$app->request->queryParams);
         $dataProviderIb->sort->defaultOrder = ['updated_at' => SORT_DESC, 'created_at' => SORT_DESC];
         $dataProviderIb->pagination = false;
@@ -100,11 +106,30 @@ class LogMahasiswaController extends Controller
         if(isset(Yii::$app->request->queryParams['LogMahasiswaSearch']['dim_asrama'])){
             $searchModelIk->dim_asrama = Yii::$app->request->queryParams['LogMahasiswaSearch']['dim_asrama'];
         }
+        if(isset(Yii::$app->request->queryParams['LogMahasiswaSearch']['tanggal_masuk'])){
+            $searchModelIk->tanggal_masuk = Yii::$app->request->queryParams['LogMahasiswaSearch']['tanggal_masuk'];
+        }
+        if(isset(Yii::$app->request->queryParams['LogMahasiswaSearch']['tanggal_keluar'])){
+            $searchModelIk->tanggal_keluar = Yii::$app->request->queryParams['LogMahasiswaSearch']['tanggal_keluar'];
+        }
         $dataProviderIk = $searchModelIk->searchCombinedLog(Yii::$app->request->queryParams);
         $dataProviderIk->sort->defaultOrder = ['updated_at' => SORT_DESC, 'created_at' => SORT_DESC];
         $dataProviderIk->pagination = false;
 
         $data = array_merge($dataProviderLog->getModels(), $dataProviderIb->getModels(), $dataProviderIk->getModels());
+
+        if(isset(Yii::$app->request->queryParams['LogMahasiswaSearch']['jenis_log'])){
+          $param = Yii::$app->request->queryParams['LogMahasiswaSearch']['jenis_log'];
+          if ($param == 1){
+            $data = $dataProviderLog->getModels();
+          }elseif ($param == 2) {
+            $data = $dataProviderIk->getModels();
+          }elseif ($param == 3) {
+            $data = $dataProviderIb->getModels();
+          }else{
+            $data = array_merge($dataProviderLog->getModels(), $dataProviderIb->getModels(), $dataProviderIk->getModels());
+          }
+        }
 
         $data2 = array();
         foreach($data as $d){
@@ -119,7 +144,7 @@ class LogMahasiswaController extends Controller
                     if($day==0||$day==1||$day==2||$day==3||$day==4){
                         if($day==$dayOut){
                             if($time > '22:00'){
-                                $ket = "Besok hari biasa/weekdays masuk lebih dari jam 22.00";
+                                $ket = "Besok hari biasa/weekdays masuk asrama lebih dari pukul 22.00";
                             }
                         }
                         // else{
@@ -129,7 +154,7 @@ class LogMahasiswaController extends Controller
                     else if($day==5||$day==6){
                         if($day==$dayOut){
                             if($time > '23:00'){
-                                $ket = "Besok akhir pekan/weekend masuk lebih dari jam 23.00";
+                                $ket = "Besok akhir pekan/weekend masuk lebih dari pukul 23.00";
                             }
                         }
                         // else{
@@ -138,8 +163,10 @@ class LogMahasiswaController extends Controller
                     }
                 }else{
                     if($day==1||$day==2||$day==3||$day==4||$day==5){
-                        if($time2 < '17:00'){
-                            $ket = "Hari biasa/weekdays keluar kurang dari jam 17.00";
+                        if($time2 < '16:30'){
+                            $ket = "Hari biasa/weekdays keluar kampus kurang dari pukul 16.30";
+                        }else if($time2 > '21:30'){
+                            $ket = "Hari biasa/weekdays keluar kampus malam hari lebih dari pukul 21.30";
                         }
                     }
                 }
@@ -192,7 +219,15 @@ class LogMahasiswaController extends Controller
                 $query->orderBy(['hrdx_pegawai.nama' => SORT_ASC]);
         }])->groupBy(['dosen_wali_id'])->all();
         $asrama = Asrama::find()->where('deleted!=1')->orderBy('name')->all();
+        $jenisLogData = [
+            '0'=>'',
+            '1'=>'Jam Keluar-Masuk',
+            '2'=>'Izin Keluar',
+            '3'=>'Izin Bermalam'
+        ];
+
         return $this->render('index', [
+            'jenisLogData' => $jenisLogData, 
             'searchModel' => $searchModelLog,
             'dataProvider' => $dataProvider,
             'prodi' => $prodi,

@@ -93,7 +93,7 @@ class DimPenilaianController extends Controller
     {
         $searchModel = new DimPelanggaranSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $dataProvider->query->andWhere(['askm_dim_pelanggaran.penilaian_id' => $id]);
+        $dataProvider->query->andWhere(['askm_dim_pelanggaran.penilaian_id' => $id,'askm_dim_pelanggaran.deleted' => 0]);
 
         $searchModel2 = new PoinKebaikanSearch();
         $dataProvider2 = $searchModel2->search(Yii::$app->request->queryParams);

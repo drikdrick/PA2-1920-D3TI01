@@ -21,6 +21,9 @@ class IzinBermalamSearch extends IzinBermalam
     public $dim_kamar;
     public $dim_asrama;
     public $keasramaan;
+    public $status;
+    public $tanggal_masuk;
+    public $tanggal_keluar;
 
     /**
      * @inheritdoc
@@ -29,7 +32,7 @@ class IzinBermalamSearch extends IzinBermalam
     {
         return [
             [['izin_bermalam_id', 'dim_id', 'keasramaan_id', 'status_request_id', 'deleted', 'dim_asrama'], 'integer'],
-            [['rencana_berangkat', 'rencana_kembali', 'realisasi_berangkat', 'realisasi_kembali', 'desc', 'tujuan','dim_nama', 'dim_prodi', 'dim_angkatan', 'dim_dosen', 'keasramaan', 'deleted_at', 'deleted_by', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'safe'],
+            [['rencana_berangkat', 'rencana_kembali', 'realisasi_berangkat', 'realisasi_kembali', 'desc', 'tujuan','dim_nama', 'dim_prodi', 'dim_angkatan', 'dim_dosen', 'keasramaan','tanggal_masuk','status', 'deleted_at', 'deleted_by', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'safe'],
         ];
     }
 
@@ -353,6 +356,75 @@ class IzinBermalamSearch extends IzinBermalam
                 }]);
                 $query->andFilterWhere(['in', 'askm_izin_bermalam.dim_id', $dim_arr]);
             }
+
+            if($this->tanggal_masuk!=""){
+                $query->andFilterWhere(['like', 'askm_izin_bermalam.realisasi_kembali',$this->tanggal_masuk]);
+            }
+
+            if($this->tanggal_keluar!=""){
+                $query->andFilterWhere(['like', 'askm_izin_bermalam.realisasi_berangkat',$this->tanggal_keluar]);
+            }
+
+        return $dataProvider;
+    }
+
+    public function searchIbApi($params)
+    {
+        $query = IzinBermalam::find()->andWhere('askm_izin_bermalam.deleted!=1')->andWhere(['status_request_id'=>2])->orderBy(['izin_bermalam_id'=>SORT_DESC]);
+        $query->joinWith('dim');
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination'=>['pageSize'=>10],
+            'sort' => ['defaultOrder' => ['updated_at' => SORT_DESC, 'created_at' => SORT_DESC]],
+        ]); 
+
+        $this->load($params);
+
+        if (!$this->validate()) {
+            // uncomment the following line if you do not want to any records when validation fails
+            // $query->where('0=1');
+            return $dataProvider;
+        }
+
+        $query->andFilterWhere([
+            'izin_bermalam_id' => $this->izin_bermalam_id,
+            'dim_id' => $this->dim_id,
+            'keasramaan_id' => $this->keasramaan_id,
+            'status_request_id' => $this->status_request_id,
+            'deleted' => $this->deleted,
+            'deleted_at' => $this->deleted_at,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+        ]);
+
+        $query->andFilterWhere(['like', 'desc', $this->desc])
+            ->andFilterWhere(['like', 'rencana_berangkat',SUBSTR($this->rencana_berangkat,1,10)])
+            ->andFilterWhere(['like', 'rencana_kembali',SUBSTR($this->rencana_kembali,1,10)])
+            ->andFilterWhere(['like', 'tujuan', $this->tujuan])
+            ->andFilterWhere(['like', 'deleted_by', $this->deleted_by])
+            ->andFilterWhere(['like','dimx_dim.nama',$this->dim_nama])
+            ->andFilterWhere(['like', 'created_by', $this->created_by])
+            ->andFilterWhere(['like', 'updated_by', $this->updated_by])
+            ->andFilterWhere(['not', ['askm_izin_bermalam.deleted' => 1]]);
+            if($this->realisasi_berangkat!=""){
+                $query->andFilterWhere(['like', 'realisasi_berangkat',SUBSTR($this->realisasi_berangkat,1,10)]);
+            }
+            if($this->realisasi_kembali!=""){
+                $query->andFilterWhere(['like', 'realisasi_kembali',SUBSTR($this->realisasi_kembali,1,10)]);
+            }
+        if($this->status == 0){
+            $query->andWhere(['not',['realisasi_berangkat'=>NULL]])->andWhere(['realisasi_kembali'=>NULL]);
+        }else if($this->status == 1){
+            $query->andWhere(['and',
+                ['realisasi_berangkat'=>NULL],
+                ['realisasi_kembali'=>NULL]
+            ])
+            ->orWhere(['and',
+                ['not',['realisasi_berangkat'=>NULL]],
+                ['not',['realisasi_kembali'=>NULL]]
+            ]);
+
+        }
 
         return $dataProvider;
     }
