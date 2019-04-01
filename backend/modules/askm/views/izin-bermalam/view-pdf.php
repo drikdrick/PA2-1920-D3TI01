@@ -46,7 +46,7 @@ function tgl_indo($tanggal){
                     
                 </td>
                 <td>
-                    <img src="<?=\Yii::$app->getRequest()->getHostInfo().'/img/logo.jpg'?>" alt="logo del" border="0" height="100" width="100">
+                    <img src="<?=\Yii::$app->appConfig->get('logo-del-url')?>" alt="logo del" border="0" height="100" width="100">
                 </td>
                 <td>
                     <p style="text-align: left; font-size: 10px;font-family: sans-serif;">

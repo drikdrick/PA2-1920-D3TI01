@@ -16,9 +16,13 @@ use backend\modules\adak\models\Registrasi;
 class IzinKeluarSearch extends IzinKeluar
 {
     public $dim_nama;
+    public $dim_nim;
     public $dim_prodi;
     public $dim_dosen;
     public $dim_asrama;
+    public $status;
+    public $tanggal_masuk;
+    public $tanggal_keluar;
     /**
      * @inheritdoc
      */
@@ -26,7 +30,7 @@ class IzinKeluarSearch extends IzinKeluar
     {
         return [
             [['izin_keluar_id', 'dim_id', 'dim_asrama', 'dosen_wali_id', 'baak_id', 'keasramaan_id', 'status_request_baak', 'status_request_keasramaan', 'status_request_dosen_wali', 'deleted'], 'integer'],
-            [['dim_nama', 'dim_prodi', 'dim_dosen', 'rencana_berangkat', 'rencana_kembali', 'realisasi_berangkat', 'realisasi_kembali', 'desc', 'deleted_at', 'deleted_by', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'safe'],
+            [['dim_nama', 'dim_prodi', 'dim_dosen', 'rencana_berangkat', 'rencana_kembali', 'realisasi_berangkat', 'realisasi_kembali', 'desc','tanggal_masuk', 'deleted_at', 'deleted_by', 'created_at', 'created_by', 'updated_at', 'updated_by','status','dim_nim'], 'safe'],
         ];
     }
 
@@ -436,6 +440,82 @@ class IzinKeluarSearch extends IzinKeluar
                 }]);
                 $query->andFilterWhere(['in', 'askm_izin_keluar.dim_id', $dim_arr]);
             }
+
+            if($this->tanggal_masuk!=""){
+                $query->andFilterWhere(['like', 'askm_izin_keluar.realisasi_kembali',$this->tanggal_masuk]);
+            }
+
+            if($this->tanggal_keluar!=""){
+                $query->andFilterWhere(['like', 'askm_izin_keluar.realisasi_berangkat',$this->tanggal_keluar]);
+            }
+
+
+        return $dataProvider;
+    }
+
+    public function searchIkApi($params)
+    {
+        $query = IzinKeluar::find()->AndWhere('askm_izin_keluar.deleted!=1')->AndWhere(['status_request_dosen_wali'=>2,'status_request_keasramaan'=>2,'status_request_baak'=>2]);
+        $query->joinWith('dim');
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination'=>['pageSize'=>10],
+            'sort' => ['defaultOrder' => ['izin_keluar_id'=>SORT_DESC,'updated_at' => SORT_DESC, 'created_at' => SORT_DESC]],
+        ]);
+
+        $this->load($params);
+
+        if (!$this->validate()) {
+            // uncomment the following line if you do not want to any records when validation fails
+            // $query->where('0=1');
+            return $dataProvider;
+        }
+
+        $query->andFilterWhere([
+            'izin_keluar_id' => $this->izin_keluar_id,            
+            'dim_id' => $this->dim_id,
+            'baak_id' => $this->baak_id,
+            'keasramaan_id' => $this->keasramaan_id,
+            'status_request_baak' => $this->status_request_baak,
+            'status_request_keasramaan' => $this->status_request_keasramaan,
+            'status_request_dosen_wali' => $this->status_request_dosen_wali,
+            'deleted' => $this->deleted,
+            'deleted_at' => $this->deleted_at,
+            'created_at' => $this->created_at,
+            'created_by' => $this->created_by,
+            'updated_at' => $this->updated_at,
+        ]);
+
+        $query->andFilterWhere(['like', 'desc', $this->desc])
+            ->andFilterWhere(['like', 'deleted_by', $this->deleted_by])
+            ->andFilterWhere(['like','dimx_dim.nama',$this->dim_nama])
+            ->andFilterWhere(['like', 'rencana_berangkat',SUBSTR($this->rencana_berangkat,1,10)])
+            ->andFilterWhere(['like', 'rencana_kembali',SUBSTR($this->rencana_kembali,1,10)])
+            ->andFilterWhere(['like','dimx_dim.nim',$this->dim_nim])
+            ->andFilterWhere(['like', 'updated_by', $this->updated_by])
+            ->andFilterWhere(['not', ['askm_izin_keluar.deleted' => 1]]);
+            if($this->realisasi_berangkat!=""){
+                $query->andFilterWhere(['like', 'realisasi_berangkat',SUBSTR($this->realisasi_berangkat,1,10)]);
+            }
+            if($this->realisasi_kembali!=""){
+                $query->andFilterWhere(['like', 'realisasi_kembali',SUBSTR($this->realisasi_kembali,1,10)]);
+            }
+
+        // keluar kampus
+        if($this->status == 0){
+            $query->andWhere(['not',['realisasi_berangkat'=>NULL]])->andWhere(['realisasi_kembali'=>NULL]);
+        // dalam kampus
+        }else if($this->status == 1){
+            $query->andWhere(['and',
+                ['realisasi_berangkat'=>NULL],
+                ['realisasi_kembali'=>NULL]
+            ])
+            ->orWhere(['and',
+                ['not',['realisasi_berangkat'=>NULL]],
+                ['not',['realisasi_kembali'=>NULL]]
+            ]);
+        }
 
         return $dataProvider;
     }

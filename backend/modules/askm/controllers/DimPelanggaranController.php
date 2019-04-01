@@ -6,7 +6,11 @@ use Yii;
 use backend\modules\askm\models\DimPelanggaran;
 use backend\modules\askm\models\DimPenilaian;
 use backend\modules\askm\models\PoinPelanggaran;
+use backend\modules\askm\models\Asrama;
 use backend\modules\askm\models\search\DimPelanggaranSearch;
+use backend\modules\askm\models\search\PelanggaranBrowseSearch;
+use yii\web\Response;
+use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -54,6 +58,62 @@ class DimPelanggaranController extends Controller
         ]);
     }
 
+     /**
+     * browse DimPelanggaran models.
+     * action-id: browse
+     * action-desc: Browse all data
+     * Lists all DimPelanggaran models.
+     * @return mixed
+     */
+    public function actionBrowse($tanggal_awal=null, $tanggal_akhir = null, $asrama_id = null){
+        $searchModel = new PelanggaranBrowseSearch();
+        $dataProvider = null;
+        $_post = Yii::$app->request->get();
+
+        if(isset($_post['PelanggaranBrowseSearch']))
+        {
+            if($_post['PelanggaranBrowseSearch']['tanggal_awal']!="")
+            {
+                $searchModel->tanggal_awal = $_post['PelanggaranBrowseSearch']['tanggal_awal'];
+                $tanggal_awal = $searchModel->tanggal_awal;
+            }
+            if($_post['PelanggaranBrowseSearch']['tanggal_akhir']!="")
+            {
+                $searchModel->tanggal_akhir = $_post['PelanggaranBrowseSearch']['tanggal_akhir'];
+                $tanggal_akhir = $searchModel->tanggal_akhir;
+            }
+            if($_post['PelanggaranBrowseSearch']['asrama_id']!="")
+            {
+                $searchModel->asrama_id = $_post['PelanggaranBrowseSearch']['asrama_id'];
+                $asrama_id = $searchModel->asrama_id;
+            }
+            $dataProvider = $searchModel->search(null,null,null,Yii::$app->request->queryParams);
+        }
+        
+        if (Yii::$app->request->get('export') == 1) {
+            $dataProvider = $searchModel->search($tanggal_awal,$tanggal_akhir,$asrama_id,null);
+            $dataProvider->pagination->pageSize = false;
+            return $this->render('exportPelanggaran', [
+                'dataProvider' => $dataProvider,
+            ]);
+        }
+
+        if(strtotime($tanggal_akhir)<=strtotime($tanggal_awal)){
+            $dataProvider =null;
+        }
+
+        $dataAsrama = Asrama::find()->where('deleted!=1')->all();
+
+        return $this->render('browse', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'dataAsrama' => $dataAsrama,
+            'asrama_id'=> $asrama_id,
+            'tanggal_awal' => $tanggal_awal,
+            'tanggal_akhir' => $tanggal_akhir,
+        ]);
+    }
+
     /**
      * Lists single DimPelanggaran models.
      * @return mixed
@@ -86,6 +146,15 @@ class DimPelanggaranController extends Controller
         $count_skor = DimPelanggaran::find()->where('deleted!=1')->andWhere(['penilaian_id' => $id])->andWhere('status_pelanggaran!=1')->all();
 
         if ($model->load(Yii::$app->request->post())) {
+            // poin id harus required
+            if (!Yii::$app->request->post()['DimPelanggaran']['poin_id']){
+                 Yii::$app->messenger->addWarningFlash('Poin Pelanggaran Harus Diisi!');
+                    return $this->render('add', [
+                      'model' => $model,
+                      'dim' => $total->dim->nama,
+                    ]);
+            }
+
             $poin = PoinPelanggaran::find()->where('deleted!=1')->andWhere(['poin_id' => $model->poin_id])->one();
             $akumulasi_skor = 0;
             foreach ($count_skor as $skor) {
@@ -151,9 +220,24 @@ class DimPelanggaranController extends Controller
     */
     public function actionDel($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        $penilaian_id = $model->penilaian_id;
 
-        return $this->redirect(['index']);
+        $pelanggaran = DimPelanggaran::find()->where('deleted!=1')->andWhere(['pelanggaran_id' => $id])->andWhere(['penilaian_id' => $penilaian_id])->one();
+        $total = DimPenilaian::find()->where('deleted!=1')->andWhere(['penilaian_id' => $penilaian_id])->one();
+
+        $current_poin = 0;
+        $current_poin = $pelanggaran->poin->poin;
+        $total->akumulasi_skor = $total->akumulasi_skor - $current_poin;
+        
+        if($total->save()){
+            if($model->softDelete()){
+                \Yii::$app->messenger->addSuccessFlash("Berhasil Menghapus Pelanggaran");
+                return $this->redirect(['dim-penilaian/view', 'id' => $penilaian_id]);
+            }
+        }
+        \Yii::$app->messenger->addWarningFlash("Gagal Menghapus Pelanggaran");
+        return $this->redirect(['dim-penilaian/view', 'id' => $penilaian_id]);
     }
 
     /**
@@ -167,7 +251,7 @@ class DimPelanggaranController extends Controller
     {
         if (($model = DimPelanggaran::findOne($id)) !== null) {
             return $model;
-        } else {
+        }else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
