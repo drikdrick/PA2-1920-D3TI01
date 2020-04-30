@@ -21,9 +21,9 @@ return [
                             ]
                         ],
                         [
-                            'label' => 'Contoh Menu',
+                            'label' => 'RPP',
                             'icon' => 'fa fa-dashboard',
-                            'url' => '/test'
+                            'url' => '/user/index'
                         ],
                         [
                             'label' => 'Institusi',
