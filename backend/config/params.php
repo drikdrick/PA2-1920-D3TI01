@@ -23,7 +23,28 @@ return [
                         [
                             'label' => 'RPP',
                             'icon' => 'fa fa-dashboard',
-                            'url' => '/user/index'
+                            'childs' => [
+                                [
+                                    'label' => 'Penugasan Dosen',
+                                    'url' => '/user/index',
+                                    'icon' => 'fa fa-building-o',
+                                ],
+                                [
+                                    'label' => 'Request Dosen',
+                                    'url' => '/user/request',
+                                    'icon' => 'fa fa-building-o',
+                                ],
+                                [
+                                    'label' => 'Approve Dosen',
+                                    'url' => '/user/approval',
+                                    'icon' => 'fa fa-building-o',
+                                ],
+                                [
+                                    'label' => 'History Request',
+                                    'url' => '/inst/inst-manager',
+                                    'icon' => 'fa fa-building-o',
+                                ],
+                            ]
                         ],
                         [
                             'label' => 'Institusi',
