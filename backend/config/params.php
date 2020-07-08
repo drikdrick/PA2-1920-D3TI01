@@ -25,8 +25,18 @@ return [
                             'icon' => 'fa fa-dashboard',
                             'childs' => [
                                 [
-                                    'label' => 'Penugasan Dosen',
-                                    'url' => '/user/index',
+                                    'label' => 'View Penugasan By Dosen',
+                                    'url' => '/user/view-penugasan-by-dosen',
+                                    'icon' => 'fa fa-building-o',
+                                ],
+                                [
+                                    'label' => 'View Penugasan By TA',
+                                    'url' => '/user/view-penugasan-by-ta',
+                                    'icon' => 'fa fa-building-o',
+                                ],
+                                [
+                                    'label' => 'View Penugasan By Baak',
+                                    'url' => '/user/view-penugasan-by-baak',
                                     'icon' => 'fa fa-building-o',
                                 ],
                                 [
@@ -35,13 +45,18 @@ return [
                                     'icon' => 'fa fa-building-o',
                                 ],
                                 [
-                                    'label' => 'Approve Dosen',
-                                    'url' => '/user/approval',
-                                    'icon' => 'fa fa-building-o',
+                                    'label' => 'Approval',
+                                    'url' => '/admin/user/approval',
+                                    'icon' => 'fa fa-certificate',
                                 ],
                                 [
-                                    'label' => 'History Request',
-                                    'url' => '/inst/inst-manager',
+                                    'label' => 'History',
+                                    'url' => '/admin/user/req-dosen',
+                                    'icon' => 'fa fa-certificate',
+                                ],
+                                [
+                                    'label' => 'Request Penugasan Dosen',
+                                    'url' => '/user/request-penugasan-dosen',
                                     'icon' => 'fa fa-building-o',
                                 ],
                             ]

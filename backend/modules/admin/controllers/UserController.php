@@ -2,6 +2,8 @@
 
 namespace backend\modules\admin\controllers;
 
+use app\models\AdakPenugasanPengajaran;
+use app\models\RppxPengajuanPengajaran;
 use Yii;
 use backend\modules\admin\models\User;
 use common\models\User as UserIdentity;
@@ -10,6 +12,7 @@ use backend\modules\admin\models\form\UserForm;
 use backend\modules\admin\models\Role;
 use backend\modules\admin\models\AuthenticationMethod;
 use backend\modules\admin\models\search\AuthenticationMethodSearch;
+use app\models\RppxRequestDosen;
 
 
 use yii\web\Controller;
@@ -221,19 +224,89 @@ class UserController extends Controller
         return $sysx_key;
     }
 
-    /**
-     * Finds the User model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return User the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
-    {
-        if (($model = User::findOne($id)) !== null) {
-            return $model;
-        } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
+    public function actionReqDosen(){
+        $resultData = RppxPengajuanPengajaran::find()->alias('rpp')
+        ->select('rpp.pengajuan_id,hp.nama, hp.alias,kk.nama_kul_ind,kk.kode_mk,rpp.status_request')
+        ->innerJoin('adak_pengajaran ap','ap.pengajaran_id = rpp.pengajaran_id')
+        ->innerJoin('hrdx_pegawai hp','rpp.pegawai_id = hp.pegawai_id')
+        ->innerJoin('krkm_kuliah kk', 'kk.kuliah_id = ap.kuliah_id')
+        ->asArray()->all();
+        
+        
+        $dataProvider = new \yii\data\ArrayDataProvider([
+                'key'=>'pengajuan_id',
+                'allModels' => $resultData,
+        ]);
+
+        return $this->render('req-dosen', [
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    public function actionApproval(){
+        $resultData = RppxPengajuanPengajaran::find()->alias('rpp')
+        ->select('rpp.pengajaran_id,hp.nama,hp.alias,ip.singkatan_prodi,kk.nama_kul_ind,rlp.load')
+        ->innerJoin('hrdx_pegawai hp','rpp.pegawai_id = hp.pegawai_id')
+        ->innerJoin('inst_prodi ip', 'ip.ref_kbk_id = hp.ref_kbk_id')
+        ->innerJoin('adak_pengajaran ap', 'rpp.pengajaran_id = ap.pengajaran_id')
+        ->innerJoin('krkm_kuliah kk', 'kk.kuliah_id = ap.kuliah_id')
+        ->innerJoin('rppx_load_pengajaran rlp','rlp.pegawai_id = rpp.pegawai_id')
+        ->innerJoin('rppx_periode_pengajaran rrp','rlp.periode_pengajaran_id = rrp.periode_pengajaran_id')
+        ->where('rpp.status_request = -1')
+        ->andWhere('rrp.ta = 2021') // ini masih harus diubah
+        ->asArray()->all();
+        
+        
+        $dataProvider = new \yii\data\ArrayDataProvider([
+                'key'=>'pengajaran_id',
+                'allModels' => $resultData,
+        ]);
+
+        return $this->render('approval', [
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    public function actionApproves($id){
+        $model = RppxRequestDosen::findOne($id);
+        $model->status_request=1;
+        if($model->save()){
+            Yii::$app->session->setFlash('msgSuccess', 'Berhasi menyetujui!'
+    );
+        }else{
+            Yii::$app->session->setFlash('msgFailed', 'Gagal!'
+    );
+            
+        }
+        return $this->redirect(['approval']);
+    }
+
+    public function actionDeclines($id){
+        $model = RppxRequestDosen::findOne($id);
+        $model->status_request=-1;
+        if($model->save()){
+            Yii::$app->session->setFlash('msg', 'Berhasi menolak!'
+    );
+        }else{
+            Yii::$app->session->setFlash('msg', 'Gagal!'
+    );
+            
+        }
+        return $this->redirect(['approval']);
+    }
+        /**
+         * Finds the User model based on its primary key value.
+         * If the model is not found, a 404 HTTP exception will be thrown.
+         * @param integer $id
+         * @return User the loaded model
+         * @throws NotFoundHttpException if the model cannot be found
+         */
+        protected function findModel($id)
+        {
+            if (($model = User::findOne($id)) !== null) {
+                return $model;
+            } else {
+                throw new NotFoundHttpException('The requested page does not exist.');
+            }
         }
     }
-}

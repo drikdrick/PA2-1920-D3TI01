@@ -49,10 +49,6 @@ $uiHelper=\Yii::$app->uiHelper;
                           'attribute' => 'kode_mk',
                           'label' => 'Kode Matakuliah'
                       ],
-                      [
-                          'attribute' => 'id_pemohon',
-                          'label' => 'ID Pemohon'
-                      ],
                       [   
                            
                            'class' => 'yii\grid\ActionColumn',

@@ -110,6 +110,10 @@ use Yii;
  * @property LppmTPublikasi[] $lppmTPublikasis
  * @property PrklCourseUnit[] $prklCourseUnits
  * @property PrklKrsMhs[] $prklKrsMhs
+ * @property RppxDetailKuliah[] $rppxDetailKuliahs
+ * @property RppxLoadPengajaran[] $rppxLoadPengajarans
+ * @property RppxPengajuanPengajaran[] $rppxPengajuanPengajarans
+ * @property RppxRequestDosen[] $rppxRequestDosens
  * @property UbuxDataPaket[] $ubuxDataPakets
  * @property UbuxPemakaianKendaraan[] $ubuxPemakaianKendaraans
  * @property UbuxSupir[] $ubuxSupirs
@@ -612,6 +616,38 @@ class HrdxPegawai extends \yii\db\ActiveRecord
     public function getPrklKrsMhs()
     {
         return $this->hasMany(PrklKrsMhs::className(), ['approved_by' => 'pegawai_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRppxDetailKuliahs()
+    {
+        return $this->hasMany(RppxDetailKuliah::className(), ['pegawai_id' => 'pegawai_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRppxLoadPengajarans()
+    {
+        return $this->hasMany(RppxLoadPengajaran::className(), ['pegawai_id' => 'pegawai_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRppxPengajuanPengajarans()
+    {
+        return $this->hasMany(RppxPengajuanPengajaran::className(), ['pegawai_id' => 'pegawai_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRppxRequestDosens()
+    {
+        return $this->hasMany(RppxRequestDosen::className(), ['pegawai_id' => 'pegawai_id']);
     }
 
     /**

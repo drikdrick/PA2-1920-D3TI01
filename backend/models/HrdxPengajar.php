@@ -25,6 +25,7 @@ use Yii;
  *
  * @property HrdxPegawai $pegawai
  * @property KrkmKuliah $kurikulum
+ * @property RppxRequestDosen[] $rppxRequestDosens
  */
 class HrdxPengajar extends \yii\db\ActiveRecord
 {
@@ -53,6 +54,7 @@ class HrdxPengajar extends \yii\db\ActiveRecord
             [['kurikulum_id'], 'exist', 'skipOnError' => true, 'targetClass' => KrkmKuliah::className(), 'targetAttribute' => ['kurikulum_id' => 'kuliah_id']],
         ];
     }
+
     /**
      * @inheritdoc
      */
@@ -91,5 +93,13 @@ class HrdxPengajar extends \yii\db\ActiveRecord
     public function getKurikulum()
     {
         return $this->hasOne(KrkmKuliah::className(), ['kuliah_id' => 'kurikulum_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRppxRequestDosens()
+    {
+        return $this->hasMany(RppxRequestDosen::className(), ['pengajar_id' => 'pengajar_id']);
     }
 }

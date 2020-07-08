@@ -43,6 +43,8 @@ use Yii;
  * @property KrkmKuliah[] $krkmKuliahs
  * @property KrkmKuliahProdi[] $krkmKuliahProdis
  * @property KrkmKurikulumProdi[] $krkmKurikulumProdis
+ * @property RppxProdi[] $rppxProdis
+ * @property RppxRequestDosen[] $rppxRequestDosens
  */
 class InstProdi extends \yii\db\ActiveRecord
 {
@@ -71,8 +73,8 @@ class InstProdi extends \yii\db\ActiveRecord
             [['created_by', 'deleted_by'], 'string', 'max' => 32],
             [['updated_by'], 'string', 'max' => 45],
             [['kbk_id'], 'unique'],
-            //[['jenjang_id'], 'exist', 'skipOnError' => true, 'targetClass' => InstRJenjang::className(), 'targetAttribute' => ['jenjang_id' => 'jenjang_id']],
-            //[['fakultas_id'], 'exist', 'skipOnError' => true, 'targetClass' => InstFakultas::className(), 'targetAttribute' => ['fakultas_id' => 'fakultas_id']],
+            [['jenjang_id'], 'exist', 'skipOnError' => true, 'targetClass' => InstRJenjang::className(), 'targetAttribute' => ['jenjang_id' => 'jenjang_id']],
+            [['fakultas_id'], 'exist', 'skipOnError' => true, 'targetClass' => InstFakultas::className(), 'targetAttribute' => ['fakultas_id' => 'fakultas_id']],
         ];
     }
 
@@ -188,5 +190,21 @@ class InstProdi extends \yii\db\ActiveRecord
     public function getKrkmKurikulumProdis()
     {
         return $this->hasMany(KrkmKurikulumProdi::className(), ['ref_kbk_id' => 'ref_kbk_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRppxProdis()
+    {
+        return $this->hasMany(RppxProdi::className(), ['ref_kbk_id' => 'ref_kbk_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRppxRequestDosens()
+    {
+        return $this->hasMany(RppxRequestDosen::className(), ['ref_kbk_id' => 'ref_kbk_id']);
     }
 }

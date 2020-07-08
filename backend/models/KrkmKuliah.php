@@ -86,6 +86,7 @@ use Yii;
  * @property PrklKuesionerMateri[] $prklKuesionerMateris
  * @property PrklKuesionerPraktikum[] $prklKuesionerPraktikums
  * @property PrklKurikulumSyllabus[] $prklKurikulumSyllabi
+ * @property RppxDetailKuliah[] $rppxDetailKuliahs
  * @property SchdJadwalKuliah[] $schdJadwalKuliahs
  * @property TmbhSoftwareTools[] $tmbhSoftwareTools
  */
@@ -196,17 +197,6 @@ class KrkmKuliah extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-
-
-    // Buat sendiri (tidak hasil generate)
-
-    
-
-    // end
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-
     public function getAdakPengajarans()
     {
         return $this->hasMany(AdakPengajaran::className(), ['kuliah_id' => 'kuliah_id']);
@@ -354,6 +344,14 @@ class KrkmKuliah extends \yii\db\ActiveRecord
     public function getPrklKurikulumSyllabi()
     {
         return $this->hasMany(PrklKurikulumSyllabus::className(), ['kuliah_id' => 'kuliah_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRppxDetailKuliahs()
+    {
+        return $this->hasMany(RppxDetailKuliah::className(), ['kuliah_id' => 'kuliah_id']);
     }
 
     /**
