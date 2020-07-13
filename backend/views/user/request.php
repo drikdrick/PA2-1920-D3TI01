@@ -80,7 +80,7 @@
                                                        '<option value="<?= $pegawai['pengajar_id'] ?>"><?= $pegawai['nama_pegawai'] ?></option>'+
                                                   "<?php }?>"+
                                              '</select>'+
-                                    		'</div>'+
+                                    	'</div>'+
                                     	'</td>'+
                                         '<td>'+
                                         	'<div class="form-group">'+

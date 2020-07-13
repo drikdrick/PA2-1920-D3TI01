@@ -63,6 +63,7 @@
                     </tr>
                     <?php 
                         $i = 0; 
+                        $ctr = 0;
                         foreach($list_matkul as $matkul){ 
                             if($i % 2 == 0){
                                 $warna = '#f9f9f9';
@@ -80,26 +81,10 @@
                         <td><?= $matkul['kelas_riil'] ?></td>
                         <td><?= $matkul['kelas_tatap_muka'] ?></td>
                         <td><?= $matkul['kelas_praktikum'] ?></td>
-                        <td><?= 'LMG' ?></td>
-                        <td><?= '50%' ?></td>
+                        <td><?= $matkul['alias']?></td>
+                        <td><?= $matkul['persentasi_beban']."%" ?></td>
                         <td><?= 'RDS' ?></td>
                         <td><?= '100%' ?></td>
-                        <!-- <td>
-                            <select name="dosen1" class="form-control">
-                                <option>Pilih Dosen</option>
-                                <?php //foreach //($data_dosen as $pegawai){?>
-                                    <option><?= 1//$pegawai['nama_pegawai'] ?></option>
-                                <?php ?>
-                            </select>
-                        </td>
-                        <td>
-                            <select name="dosen2" class="form-control">
-                                <option>Pilih Dosen</option>
-                                <?php //foreach //($data_dosen as $pegawai){?>
-                                    <option><?= 2//$pegawai['nama_pegawai'] ?></option>
-                                <?php ?>
-                            </select>
-                        </td> -->
                     </tr>
                     <?php ++$i; }?>
                 </table>

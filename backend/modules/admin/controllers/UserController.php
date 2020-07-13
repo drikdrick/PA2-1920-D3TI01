@@ -3,7 +3,11 @@
 namespace backend\modules\admin\controllers;
 
 use app\models\AdakPenugasanPengajaran;
+use app\models\KrkmKuliah;
+use app\models\RppxDetailKuliah;
+use app\models\RppxLoadPengajaran;
 use app\models\RppxPengajuanPengajaran;
+use app\models\RppxPeriodePengajaran;
 use Yii;
 use backend\modules\admin\models\User;
 use common\models\User as UserIdentity;
@@ -245,20 +249,21 @@ class UserController extends Controller
 
     public function actionApproval(){
         $resultData = RppxPengajuanPengajaran::find()->alias('rpp')
-        ->select('rpp.pengajaran_id,hp.nama,hp.alias,ip.singkatan_prodi,kk.nama_kul_ind,rlp.load')
+        ->select('rpp.pengajuan_id,hp.nama,hp.alias,ip.singkatan_prodi,kk.nama_kul_ind,rlp.load')
         ->innerJoin('hrdx_pegawai hp','rpp.pegawai_id = hp.pegawai_id')
         ->innerJoin('inst_prodi ip', 'ip.ref_kbk_id = hp.ref_kbk_id')
         ->innerJoin('adak_pengajaran ap', 'rpp.pengajaran_id = ap.pengajaran_id')
         ->innerJoin('krkm_kuliah kk', 'kk.kuliah_id = ap.kuliah_id')
         ->innerJoin('rppx_load_pengajaran rlp','rlp.pegawai_id = rpp.pegawai_id')
-        ->innerJoin('rppx_periode_pengajaran rrp','rlp.periode_pengajaran_id = rrp.periode_pengajaran_id')
+        ->innerJoin('rppx_periode_pengajaran rrp','rlp.pengajaran_id = rrp.periode_pengajaran_id')
+        ->innerJoin('mref_r_role_pengajar mrp','rpp.role_pengajar_id = mrp.role_pengajar_id')
         ->where('rpp.status_request = -1')
-        ->andWhere('rrp.ta = 2021') // ini masih harus diubah
+        ->andWhere('ap.ta = 2021') // ini masih harus diubah
         ->asArray()->all();
         
         
         $dataProvider = new \yii\data\ArrayDataProvider([
-                'key'=>'pengajaran_id',
+                'key'=>'pengajuan_id',
                 'allModels' => $resultData,
         ]);
 
@@ -268,8 +273,34 @@ class UserController extends Controller
     }
 
     public function actionApproves($id){
-        $model = RppxRequestDosen::findOne($id);
+        $model = RppxPengajuanPengajaran::findOne($id);
+        $data_load = KrkmKuliah::find()->alias('kk')
+        ->select('ap.pengajaran_id,kk.sks, rdk.kelas_tatap_muka, rdk.kelas_riil,
+                  rdk.persentasi_beban,rpp.pegawai_id')
+        ->innerJoin('rppx_detail_kuliah rdk','kk.kuliah_id = rdk.kuliah_id')
+        ->innerJoin('rppx_pengajuan_pengajaran rpp','rpp.load_detail_id = rdk.load_detail_id')
+        ->innerJoin('adak_pengajaran ap','rpp.pengajaran_id = ap.pengajaran_id')
+        ->where(['rpp.pengajuan_id' => $id])->asArray()->all();
+        foreach($data_load as $info){
+            $sks = $info['sks'];
+            $tatap_muka = $info['kelas_tatap_muka'];
+            $kelas_riil = $info['kelas_riil'];
+            $persentase = $info['persentasi_beban'];
+            $pengajaran_id = $info['pengajaran_id'];
+            $pegawai_id = $info['pegawai_id'];
+        }
+        $jlh_load = ((($sks*1)
+                      +($sks*$tatap_muka)
+                      +($sks*$kelas_riil))/3)
+                      *($persentase/100);
         $model->status_request=1;
+        $load_terpilih = RppxLoadPengajaran::find()->where(['pengajaran_id' => $pengajaran_id])->andWhere(['pegawai_id' => $pegawai_id])->asArray()->all();
+        foreach($load_terpilih as $data){
+            $load_pengajaran_id = $data['load_pengajaran_id'];
+        }
+        $load_dosen = RppxLoadPengajaran::findOne(['load_pengajaran_id' => $load_pengajaran_id]);
+        $load_dosen->load += $jlh_load;
+        $load_dosen->save();
         if($model->save()){
             Yii::$app->session->setFlash('msgSuccess', 'Berhasi menyetujui!'
     );
@@ -282,7 +313,7 @@ class UserController extends Controller
     }
 
     public function actionDeclines($id){
-        $model = RppxRequestDosen::findOne($id);
+        $model = RppxPengajuanPengajaran::findOne($id);
         $model->status_request=-1;
         if($model->save()){
             Yii::$app->session->setFlash('msg', 'Berhasi menolak!'

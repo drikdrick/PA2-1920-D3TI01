@@ -56,7 +56,12 @@ return [
                                 ],
                                 [
                                     'label' => 'Request Penugasan Dosen',
-                                    'url' => '/user/request-penugasan-dosen',
+                                    'url' => '/user/req-dosen',
+                                    'icon' => 'fa fa-building-o',
+                                ],
+                                [
+                                    'label' => 'Coba',
+                                    'url' => '/user/form-request',
                                     'icon' => 'fa fa-building-o',
                                 ],
                             ]

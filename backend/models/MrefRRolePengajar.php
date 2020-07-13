@@ -5,12 +5,11 @@ namespace app\models;
 use Yii;
 
 /**
- * This is the model class for table "rppx_load_pengajaran".
+ * This is the model class for table "mref_r_role_pengajar".
  *
- * @property integer $load_pengajaran_id
- * @property integer $pengajaran_id
- * @property integer $pegawai_id
- * @property double $load
+ * @property integer $role_pengajar_id
+ * @property string $nama
+ * @property string $desc
  * @property integer $deleted
  * @property string $deleted_at
  * @property string $deleted_by
@@ -19,17 +18,17 @@ use Yii;
  * @property string $updated_at
  * @property string $updated_by
  *
- * @property AdakPengajaran $pengajaran
- * @property RppxPeriodePengajaran $pengajaran0
+ * @property AdakPenugasanPengajaran[] $adakPenugasanPengajarans
+ * @property RppxPengajuanPengajaran[] $rppxPengajuanPengajarans
  */
-class RppxLoadPengajaran extends \yii\db\ActiveRecord
+class MrefRRolePengajar extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'rppx_load_pengajaran';
+        return 'mref_r_role_pengajar';
     }
 
     /**
@@ -38,11 +37,12 @@ class RppxLoadPengajaran extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['pengajaran_id', 'pegawai_id', 'deleted'], 'integer'],
-            [['load'], 'number'],
+            [['nama'], 'required'],
+            [['desc'], 'string'],
+            [['deleted'], 'integer'],
             [['deleted_at', 'created_at', 'updated_at'], 'safe'],
+            [['nama'], 'string', 'max' => 45],
             [['deleted_by', 'created_by', 'updated_by'], 'string', 'max' => 32],
-            [['pengajaran_id'], 'exist', 'skipOnError' => true, 'targetClass' => AdakPengajaran::className(), 'targetAttribute' => ['pengajaran_id' => 'pengajaran_id']],
         ];
     }
 
@@ -52,10 +52,9 @@ class RppxLoadPengajaran extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'load_pengajaran_id' => 'Load Pengajaran ID',
-            'pengajaran_id' => 'Pengajaran ID',
-            'pegawai_id' => 'Pegawai ID',
-            'load' => 'Load',
+            'role_pengajar_id' => 'Role Pengajar ID',
+            'nama' => 'Nama',
+            'desc' => 'Desc',
             'deleted' => 'Deleted',
             'deleted_at' => 'Deleted At',
             'deleted_by' => 'Deleted By',
@@ -69,8 +68,16 @@ class RppxLoadPengajaran extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPengajaran()
+    public function getAdakPenugasanPengajarans()
     {
-        return $this->hasOne(AdakPengajaran::className(), ['pengajaran_id' => 'pengajaran_id']);
+        return $this->hasMany(AdakPenugasanPengajaran::className(), ['role_pengajar_id' => 'role_pengajar_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRppxPengajuanPengajarans()
+    {
+        return $this->hasMany(RppxPengajuanPengajaran::className(), ['role_pengajar_id' => 'role_pengajar_id']);
     }
 }

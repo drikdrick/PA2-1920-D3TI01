@@ -41,6 +41,9 @@ return [
         'rakx' => [
             'class' => 'backend\modules\rakx\Rakx',
         ],
+        'rpp' => [
+            'class' => 'backend\modules\menu\rpp',
+        ],
     ],
     'components' => [
         'uiHelper' => [

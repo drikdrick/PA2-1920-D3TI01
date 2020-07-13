@@ -50,7 +50,7 @@ class RppxDetailKuliah extends \yii\db\ActiveRecord
             [['deleted_by', 'created_by', 'updated_by'], 'string', 'max' => 32],
             [['kuliah_id'], 'exist', 'skipOnError' => true, 'targetClass' => KrkmKuliah::className(), 'targetAttribute' => ['kuliah_id' => 'kuliah_id']],
             [['pegawai_id'], 'exist', 'skipOnError' => true, 'targetClass' => HrdxPegawai::className(), 'targetAttribute' => ['pegawai_id' => 'pegawai_id']],
-            [['penugasan_pengajaran_prodi_id'], 'exist', 'skipOnError' => true, 'targetClass' => RppxProdi::className(), 'targetAttribute' => ['penugasan_pengajaran_prodi_id' => 'penugasan_pengajaran_prodi_id']],
+            
         ];
     }
 
@@ -98,10 +98,6 @@ class RppxDetailKuliah extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPenugasanPengajaranProdi()
-    {
-        return $this->hasOne(RppxProdi::className(), ['penugasan_pengajaran_prodi_id' => 'penugasan_pengajaran_prodi_id']);
-    }
 
     /**
      * @return \yii\db\ActiveQuery

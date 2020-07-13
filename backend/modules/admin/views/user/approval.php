@@ -26,8 +26,6 @@ $uiHelper=\Yii::$app->uiHelper;
     <?= $uiHelper->renderContentSubHeader('List Request Dosen', ['icon' => 'fa fa-list']);?>
         <?=$uiHelper->renderLine(); ?>
    
-
-
           <?php
                 
          
@@ -62,10 +60,17 @@ $uiHelper=\Yii::$app->uiHelper;
                           'class' => 'yii\grid\ActionColumn',
                           'template' => '{Approve}  {Decline}',
                           'buttons' => ['Approve' => function($url, $model) {
-                            return Html::a('<span class="btn btn-success btn-sm"><b class="">Approve</b></span>',['approves', 'id' => $model['pengajaran_id']], ['title' => 'Approve', 'pengajaran_id' => 'modal-btn-view']);
+                            return Html::a('<span class="btn btn-success btn-sm"><b class="">Approve</b></span>',
+                                          ['approves', 'id' => $model['pengajuan_id']], 
+                                          ['title' => 'Approve', 
+                                          'pengajaran_id' => 'modal-btn-view']);
                         },
                           'Decline' => function($url, $model) {
-                              return Html::a('<span class="btn btn-danger btn-sm"><b class="">Decline</b></span>', ['declines', 'id' => $model['pengajaran_id']], ['title' => 'Decline', 'class' => '', 'data' => ['confirm' => 'Apakah anda yakin akan menolak permintaan tersebut?', 'method' => 'post', 'data-pjax' => false],]);
+                              return Html::a('<span class="btn btn-danger btn-sm"><b class="">Decline</b></span>',
+                                          ['declines', 'id' => $model['pengajuan_id']],
+                                          ['title' => 'Decline', 'class' => '',
+                                          'data' => ['confirm' => 'Apakah anda yakin akan menolak permintaan tersebut?',
+                                          'method' => 'post', 'data-pjax' => false],]);
                           }
                           ]
                       ],
