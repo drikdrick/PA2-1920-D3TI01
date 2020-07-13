@@ -90,7 +90,6 @@
                 </table>
 
                 <br>
-                <?= Html::a('Submit',['/user/penugasan-dosen'],['class'=>['col-xs-5','btn btn-success','custom-btn']])?>
             <?php $form = ActiveForm::end(); ?>
     </body>
 </html>
