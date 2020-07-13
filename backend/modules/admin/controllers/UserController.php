@@ -258,7 +258,7 @@ class UserController extends Controller
         ->innerJoin('rppx_periode_pengajaran rrp','rlp.pengajaran_id = rrp.periode_pengajaran_id')
         ->innerJoin('mref_r_role_pengajar mrp','rpp.role_pengajar_id = mrp.role_pengajar_id')
         ->where('rpp.status_request = -1')
-        ->andWhere('ap.ta = 2021') // ini masih harus diubah
+        ->andWhere('ap.ta = 1920') // ini masih harus diubah
         ->asArray()->all();
         
         

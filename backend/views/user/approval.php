@@ -26,14 +26,7 @@ $uiHelper=\Yii::$app->uiHelper;
               <th class="col-md-1">Aksi</th>
             </tr>
           </thead> -->
-          <?php
-                $dataProvider = new ActiveDataProvider([
-                    'query' => RppxRequestDosen::find(),
-                    'pagination' => [
-                        'pageSize' => 10
-                    ]
-                ]);
-         
+          <?php         
                 echo  GridView::widget([
                         'dataProvider' => $dataProvider,
                         'columns' =>[

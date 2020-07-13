@@ -349,11 +349,9 @@ class UserController extends \yii\web\Controller
         ->andWhere('hp.ref_kbk_id = 1') // ref_kbk_id nya nanti dinamis
         ->asArray()->all();
         
-        $data = Yii::$app->request->post();
+        
             
 
-        if(Yii::$app->request->post()){
-            
             if(empty($data_post)){
                 return $this->render(
                     'form-request',
@@ -365,46 +363,77 @@ class UserController extends \yii\web\Controller
                     ]
                 );
             }else{
-                var_dump($data);
                 if($data_post['koordinator'] != NULL){
                     $load_detail = new RppxDetailKuliah();
                     $load_detail->kuliah_id = $data_post['kuliah_id'];
-                    $load_detail->pegawai_id = $data_post['koordinator'];
                     $load_detail->kelas_riil = $data_post['kelas_riil'];
+                    $current_pegawai = HrdxPegawai::findOne(['alias' => $data_post['koordinator']]);
+                    $load_detail->pegawai_id =  $current_pegawai->pegawai_id;
                     $load_detail->kelas_tatap_muka = $data_post['kelas_tatap_muka'];
                     $load_detail->kelas_praktikum = $data_post['kelas_praktikum'];
                     $load_detail->persentasi_beban = $data_post['beban_koordinator'];
-                    $load_detail->save();
-
+                    if($load_detail->validate()){
+                        echo "detail koordinator success <br>";
+                        $load_detail->save();
+                    }
+                    else{
+                        echo "detail koordinator failed <br>";
+                        var_dump($load_detail->errors);
+                    }
                     $model_rpp = new RppxPengajuanPengajaran();
                     $model_rpp->pengajaran_id = $data_post['pengajaran_id'];
-                    $model_rpp->pegawai_id = $data_post['koordinator'];
+                    $model_rpp->pegawai_id = $current_pegawai->pegawai_id;
                     $model_rpp->role_pengajar_id = 1;
                     $model_rpp->is_fulltime = 1;
                     $model_rpp->status_request = -1;
                     $model_rpp->load_detail_id = $load_detail->load_detail_id;
-                    $model_rpp->save();
+                    if($model_rpp->validate()){
+                        echo "rpp koordinator success <br>";
+                        $model_rpp->save();
+                    }
+                    else{
+                        echo "rpp koordinator failed <br>";
+                        $model_rpp->validate();
+                        var_dump($model_rpp->errors);
+                    }
 
                 for($i = 1;$i<=6;$i++){
-
                     if($data_post['dosen'.$i] != null){
                         $load_detail = new RppxDetailKuliah();
                         $load_detail->kuliah_id = $data_post['kuliah_id'];
-                        $load_detail->pegawai_id = $data_post['dosen'.$i];
+                        $current_pegawai = HrdxPegawai::findOne(['alias' => $data_post['dosen'.$i]]);
+                        $load_detail->pegawai_id =  $current_pegawai->pegawai_id;
                         $load_detail->kelas_riil = $data_post['kelas_riil'];
                         $load_detail->kelas_tatap_muka = $data_post['kelas_tatap_muka'];
                         $load_detail->kelas_praktikum = $data_post['kelas_praktikum'];
                         $load_detail->persentasi_beban = $data_post['beban_dosen'.$i];
+                        if($load_detail->validate()){
+                            echo "detail dosen ke-".$i." success <br>";
+                            $load_detail->save();
+                        }
+                        else{
+                            echo "detail dosen ke-".$i." failed <br>";
+                            var_dump($load_detail->errors);
+                        }
                         $load_detail->save();
     
                         $model_rpp = new RppxPengajuanPengajaran();
                         $model_rpp->pengajaran_id = $data_post['pengajaran_id'];
-                        $model_rpp->pegawai_id = $data_post['dosen'.$i];
+                        $current_pegawai = HrdxPegawai::findOne(['alias' => $data_post['dosen'.$i]]);
+                        $load_detail->pegawai_id =  $current_pegawai->pegawai_id;
                         $model_rpp->role_pengajar_id = 1;
                         $model_rpp->is_fulltime = 1;
                         $model_rpp->status_request = -1;
                         $model_rpp->load_detail_id = $load_detail->load_detail_id;
-                        $model_rpp->save();
+                        if($model_rpp->validate()){
+                            echo "rpp dosen ke-".$i." success <br>";
+                            $model_rpp->save();
+                        }
+                        else{
+                            echo "rpp dosen ke-".$i." failed <br>";
+                            $model_rpp->validate();
+                            var_dump($model_rpp->errors);
+                        }
                     }
                 }
             }
@@ -412,6 +441,6 @@ class UserController extends \yii\web\Controller
             }
         }
     }
-}
+
     
 
