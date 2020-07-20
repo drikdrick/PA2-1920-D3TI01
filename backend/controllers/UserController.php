@@ -176,6 +176,31 @@ class UserController extends \yii\web\Controller
         );
     }
 
+    public function actionViewPenugasanByBaakOld()
+    {
+        $prodi = InstProdi::find()->all();
+        $list_prodi = ArrayHelper::map($prodi,'singkatan_prodi','singkatan_prodi');
+        $selectedProdi = Yii::$app->request->post('selectedProdi');
+        $krkm_kuliah = AdakPenugasanPengajaran::find()->alias('app')
+        ->select('kk.kode_mk, kk.nama_kul_ind, kk.sks, rdp.sks_teori,ap.kuliah_id,
+                  rdp.sks_praktikum, rdp.kelas_tatap_muka, rdp.kelas_praktikum,
+                  rdp.kelas_riil, hp.alias, rdp.persentasi_beban')
+        ->innerJoin('adak_pengajaran ap', 'app.pengajaran_id = ap.pengajaran_id')
+        ->innerJoin('hrdx_pegawai hp', 'app.pegawai_id = hp.pegawai_id')
+        ->innerJoin('krkm_kuliah kk', 'ap.kuliah_id=kk.kuliah_id')
+        ->innerJoin('rppx_detail_kuliah rdp', 'kk.kuliah_id = rdp.kuliah_id')
+        ->where('ap.ta = 1920')->asArray()->all(); //TA masih harus diganti
+
+        return $this->render(
+            'view-penugasan-by-baak-old',
+            [
+                'list_prodi' => $list_prodi,
+                'selectedProdi' => $selectedProdi,
+                'list_matkul' => $krkm_kuliah
+            ]
+        );
+    }
+
     public function actionViewPenugasanByBaak()
     {
         $prodi = InstProdi::find()->all();
@@ -200,36 +225,115 @@ class UserController extends \yii\web\Controller
             ]
         );
     }
-
     public function actionViewPenugasanByDosen()
     {
-        $selectedProdi = Yii::$app->request->post('selectedProdi');
-        $krkm_kuliah = KrkmKuliah::find()->alias('kk')
-        ->select('app.penugasan_pengajaran_id,ap.pengajaran_id, kk.kode_mk, 
-                  kk.nama_kul_ind, kk.sks, rdp.sks_teori,ap.kuliah_id,
-                  rdp.sks_praktikum, rdp.kelas_tatap_muka, rdp.kelas_praktikum,
-                  rdp.kelas_riil, hp.alias')
-        ->innerJoin('adak_pengajaran ap', 'ap.kuliah_id = kk.kuliah_id')
-        ->innerJoin('rppx_detail_kuliah rdp', 'ap.kuliah_id = rdp.kuliah_id')
-        ->innerJoin('adak_penugasan_pengajaran app', 'app.pegawai_id = rdp.pegawai_id')
-        ->innerJoin('hrdx_pegawai hp', 'hp.pegawai_id = app.pegawai_id')
-        ->where('ap.ta = 1920')
-        ->asArray()->all(); 
+        $adak_pengajaran = AdakPengajaran::find()->all();
+        $tahun_ajaran = ArrayHelper::map($adak_pengajaran,'ta','ta');
 
+        $sem = AdakPengajaran::find()->all();
+        $semester = ArrayHelper::map($sem,'sem_ta','sem_ta');
 
-        foreach($krkm_kuliah as $matkul){
-
+        $jlh_data = sizeof($semester);
+        for($i = 1; $i<= $jlh_data;$i++){
+            if($semester[$i] == 1){
+                $semester[$i] = "Ganjil";
+            }
+            else if($semester[$i] == 2){
+                $semester[$i] = "Genap";
+            }
+            else{
+                $semester[$i] = "Pendek";
+            }
         }
+        $data_post = Yii::$app->request->post();
+        if($data_post != NULL){
+            $data_rpp = AdakPenugasanPengajaran::find()->alias('app')
+            ->select('kk.kode_mk, kk.nama_kul_ind, mrp.nama,
+                   ap.ta, ap.sem_ta')
+            ->innerJoin('adak_pengajaran ap','app.pengajaran_id = ap.pengajaran_id' )
+            ->innerJoin('krkm_kuliah kk', 'ap.kuliah_id = kk.kuliah_id')
+            ->innerJoin('mref_r_role_pengajar mrp','app.role_pengajar_id = mrp.role_pengajar_id')
+            ->where('app.pegawai_id = 1')->andWhere(['ap.ta' => $data_post['ta']])
+            ->andWhere(['ap.sem_ta' => $data_post['semester']])->asArray()->all();
 
-        return $this->render(
-            'view-penugasan-by-dosen',
-            [
-                'selectedProdi' => $selectedProdi,
-                'list_matkul' => $krkm_kuliah
-            ]
-        );
+            $data_dosen = RppxLoadPengajaran::find()->alias('rlp')
+            ->select('hp.pegawai_id,hp.nama, hp.nip, ap.ta, rlp.load ')
+            ->innerJoin('adak_pengajaran ap', 'rlp.pengajaran_id = ap.pengajaran_id')
+            ->innerJoin('hrdx_pegawai hp', ' rlp.pegawai_id = hp.pegawai_id')
+            ->where(['ap.ta' => $data_post['ta']])->andWhere('rlp.pegawai_id = 1')
+            ->andWhere(['ap.sem_ta' => $data_post['semester']])
+            ->asArray()->all(); //TA masih harus diganti
+            if($data_rpp != NULL){
+                $jlh_data = sizeof($data_rpp);
+                for($i = 0; $i< $jlh_data;$i++){
+                    if($data_rpp[$i]['sem_ta'] == 1){
+                       $data_rpp[$i]['sem_ta'] = "Ganjil";
+                    }
+                    else if($data_rpp[$i]['sem_ta'] == 2){
+                        $data_rpp[$i]['sem_ta'] = "Genap";
+                    }
+                    else{
+                        $data_rpp[$i]['sem_ta'] = "Pendek";
+                    }
+                }
+            }
+            $dataProvider = new \yii\data\ArrayDataProvider([
+                'key'=>'kode_mk',
+                'allModels' => $data_rpp,
+            ]);
+            return $this->render(
+                'view-penugasan-by-dosen',
+                [
+                'dataProvider' => $dataProvider,
+                'dataDosen' => $data_dosen,
+                'ta' => $tahun_ajaran,
+                'sem_ta' => $semester
+                ]
+            );
+        }
+        else{
+            $data_rpp = AdakPenugasanPengajaran::find()->alias('app')
+            ->select('kk.kode_mk, kk.nama_kul_ind, mrp.nama,
+                   ap.ta, ap.sem_ta')
+            ->innerJoin('adak_pengajaran ap','app.pengajaran_id = ap.pengajaran_id' )
+            ->innerJoin('krkm_kuliah kk', 'ap.kuliah_id = kk.kuliah_id')
+            ->innerJoin('mref_r_role_pengajar mrp','app.role_pengajar_id = mrp.role_pengajar_id')
+            ->where('app.pegawai_id = 1')->asArray()->all();
+
+            $data_dosen = RppxLoadPengajaran::find()->alias('rlp')
+            ->select('hp.pegawai_id,hp.nama, hp.nip, ap.ta, rlp.load ')
+            ->innerJoin('adak_pengajaran ap', 'rlp.pengajaran_id = ap.pengajaran_id')
+            ->innerJoin('hrdx_pegawai hp', ' rlp.pegawai_id = hp.pegawai_id')
+            ->where('rlp.pegawai_id = 1')->asArray()->all(); //TA masih harus diganti
+            if($data_rpp != NULL){
+                $jlh_data = sizeof($data_rpp);
+                for($i = 0; $i< $jlh_data;$i++){
+                    if($data_rpp[$i]['sem_ta'] == 1){
+                       $data_rpp[$i]['sem_ta'] = "Ganjil";
+                    }
+                    else if($data_rpp[$i]['sem_ta'] == 2){
+                        $data_rpp[$i]['sem_ta'] = "Genap";
+                    }
+                    else{
+                        $data_rpp[$i]['sem_ta'] = "Pendek";
+                    }
+                }
+            }
+            $dataProvider = new \yii\data\ArrayDataProvider([
+                'key'=>'kode_mk',
+                'allModels' => $data_rpp,
+            ]);
+            return $this->render(
+                'view-penugasan-by-dosen',
+                [
+                'dataProvider' => $dataProvider,
+                'dataDosen' => $data_dosen,
+                'ta' => $tahun_ajaran,
+                'sem_ta' => $semester
+                ]
+            );
+        }
     }
-
     public function actionRequestPenugasanDosen()
     {
         $prodi = InstProdi::find()->all();
@@ -273,7 +377,7 @@ class UserController extends \yii\web\Controller
         $dataProvider = new \yii\data\ArrayDataProvider([
             'key'=>'kode_mk',
             'allModels' => $krkm_kuliah,
-        ]);
+       ]);
 
         return $this->render(
             'req-dosen',
@@ -348,9 +452,6 @@ class UserController extends \yii\web\Controller
         ->where('ap.ta = 2021') //periode nya nanti dinamis
         ->andWhere('hp.ref_kbk_id = 1') // ref_kbk_id nya nanti dinamis
         ->asArray()->all();
-        
-        
-            
 
             if(empty($data_post)){
                 return $this->render(
@@ -370,6 +471,8 @@ class UserController extends \yii\web\Controller
                     $current_pegawai = HrdxPegawai::findOne(['alias' => $data_post['koordinator']]);
                     $load_detail->pegawai_id =  $current_pegawai->pegawai_id;
                     $load_detail->kelas_tatap_muka = $data_post['kelas_tatap_muka'];
+                    $load_detail->sks_praktikum = $data_post['sks_praktikum'];
+                    $load_detail->sks_teori = $data_post['sks_teori'];
                     $load_detail->kelas_praktikum = $data_post['kelas_praktikum'];
                     $load_detail->persentasi_beban = $data_post['beban_koordinator'];
                     if($load_detail->validate()){
@@ -385,7 +488,12 @@ class UserController extends \yii\web\Controller
                     $model_rpp->pegawai_id = $current_pegawai->pegawai_id;
                     $model_rpp->role_pengajar_id = 1;
                     $model_rpp->is_fulltime = 1;
-                    $model_rpp->status_request = -1;
+                    if($current_pegawai->ref_kbk_id == 1){ //ini nanti di ganti berdasarkan ref_kbk_id Kaprodi -> saat ini prodi D3TI dulu
+                        $model_rpp->status_request = 1;
+                    }
+                    else{
+                        $model_rpp->status_request = -1;
+                    }
                     $model_rpp->load_detail_id = $load_detail->load_detail_id;
                     if($model_rpp->validate()){
                         echo "rpp koordinator success <br>";
@@ -406,6 +514,8 @@ class UserController extends \yii\web\Controller
                         $load_detail->kelas_riil = $data_post['kelas_riil'];
                         $load_detail->kelas_tatap_muka = $data_post['kelas_tatap_muka'];
                         $load_detail->kelas_praktikum = $data_post['kelas_praktikum'];
+                        $load_detail->sks_praktikum = $data_post['sks_praktikum'];
+                        $load_detail->sks_teori = $data_post['sks_teori'];
                         $load_detail->persentasi_beban = $data_post['beban_dosen'.$i];
                         if($load_detail->validate()){
                             echo "detail dosen ke-".$i." success <br>";
@@ -423,7 +533,12 @@ class UserController extends \yii\web\Controller
                         $load_detail->pegawai_id =  $current_pegawai->pegawai_id;
                         $model_rpp->role_pengajar_id = 1;
                         $model_rpp->is_fulltime = 1;
-                        $model_rpp->status_request = -1;
+                        if($current_pegawai->ref_kbk_id == 1){ //ini nanti di ganti berdasarkan ref_kbk_id Kaprodi -> saat ini prodi D3TI dulu
+                            $model_rpp->status_request = 1;
+                        }
+                        else{
+                            $model_rpp->status_request = -1;
+                        }
                         $model_rpp->load_detail_id = $load_detail->load_detail_id;
                         if($model_rpp->validate()){
                             echo "rpp dosen ke-".$i." success <br>";
@@ -438,9 +553,29 @@ class UserController extends \yii\web\Controller
                 }
             }
             return $this->redirect(['req-dosen']);
-            }
         }
     }
+    public function actionDetailMatkul($kode_mk)
+    {
+        $krkm_kuliah = AdakPengajaran::find()->alias('ap')
+        ->select('kk.kode_mk, kk.nama_kul_ind, kk.sks, rdp.sks_teori,ap.kuliah_id,
+                  rdp.sks_praktikum, rdp.kelas_tatap_muka, rdp.kelas_praktikum,
+                  rdp.kelas_riil')->distinct()
+        ->innerJoin('krkm_kuliah kk', 'ap.kuliah_id=kk.kuliah_id')
+        ->innerJoin('rppx_detail_kuliah rdp', 'kk.kuliah_id = rdp.kuliah_id')
+        ->where('ap.pengajaran_id = 1')->andWhere(['kk.kode_mk' => $kode_mk])->asArray()->all(); //pengajaran id masih harus diganti
 
+        // $koordinator = 
+
+        return $this->render(
+            'detail-matkul',
+            [
+                'list_matkul' => $krkm_kuliah
+            ]
+        );
+    }
+}
+    
+    
     
 
