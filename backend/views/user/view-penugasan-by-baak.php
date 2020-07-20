@@ -8,6 +8,8 @@
     use yii\db\Query;
     //use yii\console\widgets\Table;
     //$table = new Table();
+    $this->params['header'] = 'Penugasan Pengajaran';
+    $uiHelper=\Yii::$app->uiHelper;
 ?>
 <html>
     <head>
@@ -33,63 +35,64 @@
     </head>
     <body>
             <?php $form = ActiveForm::begin();?>
-                <div class="col-xs-9" >
-                    <?= Html::dropDownList('selectedProdi','',$list_prodi,['class'=>'form-control','prompt' => 'Pilih Prodi'])?>
+                <?= $uiHelper->renderContentSubHeader('Cari Penugasan', ['icon' => 'fa fa-search']);?>
+                <?=$uiHelper->renderLine(); ?>
+                <div style="margin:20px">
+                    <label>Tahun Ajaran</label>
+                    <?= Html::dropDownList('selectedTA','',$list_ta,['class'=>'form-control','prompt' => 'Select...'])?>
                 </div>
-                <div class="col-xs-3" style="margin-bottom:20px">
-                    <?= Html::submitButton('Ganti Prodi',['class'=>['btn btn-primary','custom-btn']]);?>
+                <div style="margin:20px">
+                    <label>Prodi dan Jenjang</label>
+                    <?= Html::dropDownList('selectedProdi','',$list_prodi,['class'=>'form-control','prompt' => 'Select...'])?>
                 </div>
-                <h2 style="color:#3c8dbc"><b><?= $selectedProdi ?></b></h2>
-                
-                <?php
-                    $dataProvider = new ActiveDataProvider([
-                        'query' => KrkmKuliah::find(),
-                        'pagination' => [
-                            'pageSize' => 10
-                        ],
-
-                    ]);
-
-                    echo GridView::widget([
-                        'dataProvider' => $dataProvider,
-                        'columns' =>[
-                            [
-                                'attribute' => 'nama_kul_ind',
-                                'label' => 'Nama Mata Kuliah'
-                            ],
-                            'sks',
-                            [
-                                'attribute' => 'kode_mk',
-                                'label' => 'Kode Mata Kuliah'
-                            ],
-                            // [
-                            //     'attribute' => 'status',
-                            //     'value' => function($data,$key,$index,$column){
-                            //         if($data->status == -1){
-                            //             return 'menunggu';
-                            //         }
-                            //         else if($data->status == 0){
-                            //             return 'ditolak';
-                            //         }
-                            //         else if($data->status == 1){
-                            //             return 'diterima';
-                            //         }
-                            //     },
-                            // ],
-                            // [
-                                 return Html::a('<span class="btn btn-success btn-sm"><b class="">Approve</b></span>',['Approve', 'id' => $model['id_request']], ['title' => 'Approve', 'id_request' => 'modal-btn-view']);
-                            // ],
-                            // [
-                            //     'attribute' => 'pengajar_id',
-                            //     'label' => 'Dosen I',
-                            //     'filter' => $form->field($model,'singkatan_prodi')->dropDownList($list_prodi)
-                            // ],
-                        ]
-                    ]);
-                    
-                ?>
-
-                <?= Html::a('Submit',['/user/penugasan-dosen'],['class'=>['col-xs-5','btn btn-success','custom-btn']])?>
+                <div style="margin:20px">
+                    <label>Semester</label>
+                    <?= Html::dropDownList('selectedSemester','',$semester,['class'=>'form-control','prompt' => 'Select...'])?>
+                </div>
+                <div style="margin:20px">
+                    <?= Html::submitButton('Cari',['class'=>['btn btn-primary']]);?>
+                </div>
             <?php $form = ActiveForm::end(); ?>
+
+            <?php
+            // print_r($krkm);
+            if(!empty($krkm)){
+                echo $uiHelper->renderContentSubHeader('Data Penugasan', ['icon' => 'fa fa-list']);
+                $uiHelper->renderLine(); 
+            
+            ?>
+            <div class="content-sub-header">
+			
+		</div>
+		
+                    		<div class="page-line"></div>
+		
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Kode</th>
+                                <th>Nama</th>
+                                <th>SKS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <?php
+                        foreach($krkm as $krkms){
+
+                        
+                        ?>
+                            <tr><td><?=$krkms->kode_mk?></td>
+                            <td><a href="#"><?=$krkms->nama_kul_ind?></a></td>
+                            <td><?=$krkms->sks?></td>
+                            </tr>
+                        <?php
+                        }
+                        ?>                            
+                            </tbody>
+                    </table>
+                    <?php
+            }
+            ?>
+
     </body>
 </html>
