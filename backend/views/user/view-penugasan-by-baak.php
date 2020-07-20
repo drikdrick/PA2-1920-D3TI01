@@ -6,8 +6,7 @@
     use app\models\KrkmKuliah;
     use yii\widgets\Pjax;
     use yii\db\Query;
-    //use yii\console\widgets\Table;
-    //$table = new Table();
+    use yii\helpers\Url;
     $this->params['header'] = 'Penugasan Pengajaran';
     $uiHelper=\Yii::$app->uiHelper;
 ?>
@@ -61,12 +60,10 @@
                 $uiHelper->renderLine(); 
             
             ?>
-            <div class="content-sub-header">
-			
+            <div class="content-sub-header">			
 		</div>
 		
-                    		<div class="page-line"></div>
-		
+                <div class="page-line"></div>		
                     <table class="table">
                         <thead>
                             <tr>
@@ -78,11 +75,10 @@
                         <tbody>
                         <?php
                         foreach($krkm as $krkms){
-
                         
                         ?>
                             <tr><td><?=$krkms->kode_mk?></td>
-                            <td><a href="#"><?=$krkms->nama_kul_ind?></a></td>
+                            <td><?=Html::a($krkms->nama_kul_ind, Url::to(['user/detail-penugasan','id'=>$krkms->kuliah_id]))?></td>
                             <td><?=$krkms->sks?></td>
                             </tr>
                         <?php

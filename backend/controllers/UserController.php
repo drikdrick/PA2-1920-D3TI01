@@ -476,6 +476,14 @@ class UserController extends \yii\web\Controller
             return $this->redirect(['req-dosen']);
             }
         }
+        public function actionDetailPenugasan($id){
+            $rppxDetailKuliah = RppxDetailKuliah::find()->alias('a')->select('a.*,b.*')
+            ->leftJoin('hrdx_pegawai b','a.pegawai_id = b.pegawai_id')
+            ->where(['a.kuliah_id'=>$id])->asArray()->all();
+            // print_r ($rppxDetailKuliah);die;
+
+            return $this->render('view-detail-penugasan');
+        }
     }
 
     
