@@ -14,18 +14,6 @@ $uiHelper=\Yii::$app->uiHelper;
 ?>
     <?= $uiHelper->renderContentSubHeader('List Request Dosen', ['icon' => 'fa fa-list']);?>
         <?=$uiHelper->renderLine(); ?>
-   
-
-<!--     <table class="table table-striped table-hover table-bordered table-condensed">
- -->      <!--     <thead>
-            <tr>
-              <th width=40px></th>
-              <th>ID Pengajar</th>
-              <th>Kode Matakuliah</th>
-              <th>Prodi Pemohon</th>
-              <th class="col-md-1">Aksi</th>
-            </tr>
-          </thead> -->
           <?php         
                 echo  GridView::widget([
                         'dataProvider' => $dataProvider,
