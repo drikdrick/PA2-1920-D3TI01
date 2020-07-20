@@ -22,6 +22,7 @@ use backend\modules\admin\models\Profile;
 use backend\modules\admin\models\TelkomSsoUser;
 use backend\modules\admin\models\UserConfig;
 use backend\modules\admin\models\form\TelkomSsoUserResetForm;
+use backend\models\RppxPeriodePengajaran;
 
 use yii\web\ForbiddenHttpException;
 /**
@@ -176,29 +177,64 @@ class UserController extends \yii\web\Controller
         );
     }
 
-    public function actionViewPenugasanByBaak()
+    public function actionViewPenugasanByBaak($selectedProdi=null, $selectedTA=null, $selectedSemester=null)
     {
-        $prodi = InstProdi::find()->all();
-        $list_prodi = ArrayHelper::map($prodi,'singkatan_prodi','singkatan_prodi');
+        
         $selectedProdi = Yii::$app->request->post('selectedProdi');
-        $krkm_kuliah = AdakPenugasanPengajaran::find()->alias('app')
-        ->select('kk.kode_mk, kk.nama_kul_ind, kk.sks, rdp.sks_teori,ap.kuliah_id,
-                  rdp.sks_praktikum, rdp.kelas_tatap_muka, rdp.kelas_praktikum,
-                  rdp.kelas_riil, hp.alias, rdp.persentasi_beban')
-        ->innerJoin('adak_pengajaran ap', 'app.pengajaran_id = ap.pengajaran_id')
-        ->innerJoin('hrdx_pegawai hp', 'app.pegawai_id = hp.pegawai_id')
-        ->innerJoin('krkm_kuliah kk', 'ap.kuliah_id=kk.kuliah_id')
-        ->innerJoin('rppx_detail_kuliah rdp', 'kk.kuliah_id = rdp.kuliah_id')
-        ->where('ap.ta = 1920')->asArray()->all(); //TA masih harus diganti
+        $selectedTA = Yii::$app->request->post('selectedTA');
+        
+        $selectedSemester = Yii::$app->request->post('selectedSemester');
+        $prodi = InstProdi::find()->all();
+        $list_prodi = ArrayHelper::map($prodi,'ref_kbk_id','singkatan_prodi');
+        $listTa = ArrayHelper::map(RppxPeriodePengajaran::find()->all(),'ta','ta');
+        $semester= [
+                    1 => 'Ganjil',
+                    2 => 'Genap'
+        ];
+        if($selectedProdi==null || $selectedTA==null || $selectedSemester=null){
+           
+            return $this->render(
+                'view-penugasan-by-baak',
+                [
+                    "krkm" => null,
+                    'list_prodi' => $list_prodi,
+                    'list_ta' => $listTa,
+                    'semester' => $semester
+                ]
+            );
+        }else{
+            
+        if(Yii::$app->request->post('selectedSemester') ==1){
+            $krkm = KrkmKuliah::find()->alias('a')
+            ->leftJoin('rppx_detail_kuliah b','a.kuliah_id = b.kuliah_id')
+            ->leftJoin('rppx_prodi c','b.penugasan_pengajaran_prodi_id=c.penugasan_pengajaran_prodi_id')
+            ->leftJoin('rppx_periode_pengajaran d','c.periode_pengajaran_id = d.periode_pengajaran_id')
+            ->where(['MOD(a.sem, 2)' => 1])->andWhere(['d.ta'=>Yii::$app->request->post('selectedTA')])
+            ->andWhere(['a.ref_kbk_id'=>Yii::$app->request->post('selectedProdi')])
+            ->all();
+        }else{
+            $krkm = KrkmKuliah::find()->alias('a')
+            ->leftJoin('rppx_detail_kuliah b','a.kuliah_id = b.kuliah_id')
+            ->leftJoin('rppx_prodi c','b.penugasan_pengajaran_prodi_id=c.penugasan_pengajaran_prodi_id')
+            ->leftJoin('rppx_periode_pengajaran d','c.periode_pengajaran_id = d.periode_pengajaran_id')
+            ->where(['MOD(a.sem, 2)' => 0])->andWhere(['d.ta'=>Yii::$app->request->post('selectedTA')])
+            ->andWhere(['a.ref_kbk_id'=>Yii::$app->request->post('selectedProdi')])
+            ->all();
+        }
+
+
+
 
         return $this->render(
             'view-penugasan-by-baak',
             [
                 'list_prodi' => $list_prodi,
-                'selectedProdi' => $selectedProdi,
-                'list_matkul' => $krkm_kuliah
+                'list_ta' => $listTa,
+                'semester' => $semester,
+                'krkm' => $krkm
             ]
         );
+    }
     }
 
     public function actionViewPenugasanByDosen()

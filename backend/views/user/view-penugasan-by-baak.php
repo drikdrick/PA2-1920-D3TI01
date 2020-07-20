@@ -38,20 +38,61 @@
                 <?= $uiHelper->renderContentSubHeader('Cari Penugasan', ['icon' => 'fa fa-search']);?>
                 <?=$uiHelper->renderLine(); ?>
                 <div style="margin:20px">
-                    <h3>Tahun Ajaran</h3>
+                    <label>Tahun Ajaran</label>
+                    <?= Html::dropDownList('selectedTA','',$list_ta,['class'=>'form-control','prompt' => 'Select...'])?>
+                </div>
+                <div style="margin:20px">
+                    <label>Prodi dan Jenjang</label>
                     <?= Html::dropDownList('selectedProdi','',$list_prodi,['class'=>'form-control','prompt' => 'Select...'])?>
                 </div>
                 <div style="margin:20px">
-                    <h3>Prodi dan Jenjang</h3>
-                    <?= Html::dropDownList('selectedProdi','',$list_prodi,['class'=>'form-control','prompt' => 'Select...'])?>
+                    <label>Semester</label>
+                    <?= Html::dropDownList('selectedSemester','',$semester,['class'=>'form-control','prompt' => 'Select...'])?>
                 </div>
                 <div style="margin:20px">
-                    <h3>Tahun Ajaran</h3>
-                    <?= Html::dropDownList('selectedProdi','',$list_prodi,['class'=>'form-control','prompt' => 'Select...'])?>
-                </div>
-                <div style="margin:20px">
-                    <?= Html::submitButton('Cari',['class'=>['btn btn-primary','custom-btn']]);?>
+                    <?= Html::submitButton('Cari',['class'=>['btn btn-primary']]);?>
                 </div>
             <?php $form = ActiveForm::end(); ?>
+
+            <?php
+            // print_r($krkm);
+            if(!empty($krkm)){
+                echo $uiHelper->renderContentSubHeader('Data Penugasan', ['icon' => 'fa fa-list']);
+                $uiHelper->renderLine(); 
+            
+            ?>
+            <div class="content-sub-header">
+			
+		</div>
+		
+                    		<div class="page-line"></div>
+		
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Kode</th>
+                                <th>Nama</th>
+                                <th>SKS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <?php
+                        foreach($krkm as $krkms){
+
+                        
+                        ?>
+                            <tr><td><?=$krkms->kode_mk?></td>
+                            <td><a href="#"><?=$krkms->nama_kul_ind?></a></td>
+                            <td><?=$krkms->sks?></td>
+                            </tr>
+                        <?php
+                        }
+                        ?>                            
+                            </tbody>
+                    </table>
+                    <?php
+            }
+            ?>
+
     </body>
 </html>
